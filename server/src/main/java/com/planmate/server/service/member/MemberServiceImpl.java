@@ -42,13 +42,15 @@ public class MemberServiceImpl implements MemberService {
                 .authorityName("ROLE_USER")
                 .build();
 
-        return Member.builder()
+        final Member build = Member.builder()
                 .profile(googleIdTokenVo.getPicture())
                 .memberName(googleIdTokenVo.getName())
                 .eMail(googleIdTokenVo.getEmail())
                 .authorities(Arrays.asList(authority))
                 .loginType(0L)
                 .build();
+
+        return memberRepository.save(build);
     }
 
     @Override
@@ -60,8 +62,6 @@ public class MemberServiceImpl implements MemberService {
                 .refreshToken(JwtUtil.createRefreshToken())
                 .refreshTokenExpiredAt(LocalDateTime.now().plusYears(1))
                 .build();
-
-        memberRepository.save(member);
 
         tokenRepository.save(token);
 

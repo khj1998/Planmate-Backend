@@ -16,3 +16,43 @@ spring:
       hibernate:
       format_sql: true
   mvc.pathmatch.matching-strategy: ANT_PATH_MATCHER # Swagger-ui
+jwt:
+  header: Bearer
+  secret: ${JWT_SECRET}
+  #hs256 algorithm
+sns:
+  google:
+    url: https://accounts.google.com/o/oauth2/v2/auth
+    client:
+      id: ${GOOGLE_CLIENT_ID}
+      secret: ${GOOGLE_CLIENT_SECRET}
+    callback:
+      url: ${GOOGLE_CALLBACK_URL}
+    token:
+      url: https://oauth2.googleapis.com/token
+  github:
+    url:
+    client:
+      id: ${GITHUB_CLIENT_ID}
+      secret: ${GITHUB_CLIENT_SECRET}
+    callback:
+      url: ${GITHUB_CALLBACK_URL}
+    token:
+      url:
+  naver:
+    url:
+    client:
+      id: ${NAVER_CLIENT_ID}
+      secret: ${NAVER_CLIENT_SECRET}
+    callback:
+      url: ${NAVER_CALLBACK_URL}
+    token:
+      url:
+  kakao:
+    url:
+    client:
+      secret: ${KAKAO_CLIENT_SECRET}
+    callback:
+      url: ${KAKAO_CALLBACK_URL}
+    token:
+      url:

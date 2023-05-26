@@ -12,12 +12,19 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * @author 지승언
+ * security config file
+ * */
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)//@PreAuthorize 어노테이션을 메소드 단위로 추가하기 위해
 public class SecurityConfig {
 
     @Bean
     WebSecurityCustomizer webSecurityCustomizer() {
+        /**
+         * 별도의 권한 없이 실행되어야 하는 api들의 end point를 설정하는 메서드이다.
+         * */
         return new WebSecurityCustomizer() {
             @Override
             public void customize(WebSecurity web) {
@@ -28,12 +35,16 @@ public class SecurityConfig {
                         "/v3/api-docs/**",
                         "/swagger-resources/**",
                         "/health/**",
-                        "/login/**"
+                        "/login/**",
+                        "/token/refresh"
                 );
             }
         };
     }
 
+    /**
+     * 각 End Point를 어떤 권한을 가진 사용자가 사용하게 만들지에 대한 메소드이다.
+     * */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, MemberService memberService) throws Exception {
         return httpSecurity
@@ -43,7 +54,7 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .addFilterAfter(new JwtCustomFilter(memberService), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers("/token/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
+                .antMatchers("/token/expired_at").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
                 .and().build();
     }
 }

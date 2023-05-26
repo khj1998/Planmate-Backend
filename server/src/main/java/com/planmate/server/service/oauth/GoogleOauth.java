@@ -27,6 +27,10 @@ public class GoogleOauth implements SocialOauth {
     @Value("${sns.google.token.url}")
     private String GOOGLE_SNS_TOKEN_BASE_URL;
 
+    /**
+     * @aythor 지승언
+     * @return 구글 로그인 api 요청 url
+     * */
     @Override
     public String getOauthRedirectURL() {
         Map<String, Object> params = new HashMap<>();
@@ -44,6 +48,12 @@ public class GoogleOauth implements SocialOauth {
         return GOOGLE_SNS_BASE_URL + "?" + parameterString;
     }
 
+    /**
+     * @author 지승언
+     * 구글에 access token 요청 함수
+     * @param code (authentication code)
+     * @return accesstoken, refresh token, id token 등을 반환
+     * */
     @Override
     public String requestAccessToken(String code) {
         RestTemplate restTemplate = new RestTemplate();

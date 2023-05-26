@@ -24,6 +24,7 @@ public class LoginController {
     private final MemberService memberService;
 
     /**
+     * @author 지승언
      * 사용자로부터 SNS 로그인 요청을 Social Login Type 을 받아 처리
      * @param socialLoginType (GOOGLE, GITHUB, NAVER, KAKAO)
      */

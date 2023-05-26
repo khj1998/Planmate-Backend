@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.2'
     id 'io.spring.dependency-management' version '1.0.12.RELEASE'
+    id 'jacoco'
 }
 
 group = 'com.planmate'
@@ -40,6 +41,58 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-impl:0.11.2' // JWT
     implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2' // JWT
     implementation group: 'com.auth0', name: 'java-jwt', version: '3.1.0' // JWT
+}
+
+test {
+    useJUnitPlatform()
+    jacoco {
+        destinationFile = file("$buildDir/jacoco/jacoco.exec")
+    }
+}
+
+jacoco {
+    toolVersion = '0.8.5'
+}
+jacocoTestReport {
+    reports {
+        // 원하는 리포트를 켜고 끌 수 있습니다.
+        html.enabled true
+        xml.enabled false
+        csv.enabled false
+
+//  각 리포트 타입 마다 리포트 저장 경로를 설정할 수 있습니다.
+//  html.destination file("$buildDir/jacocoHtml")
+//  xml.destination file("$buildDir/jacoco.xml")
+    }
+}
+
+jacocoTestCoverageVerification {
+    // 이 커버리지 기준은 이 글의 맨 아래에서 다시 설명하겠습니다.
+    violationRules {
+        rule {
+            element = 'METHOD'
+
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.80
+            }
+            excludes = ['*.service.*', '*.controller.LoginController', '*.domain.*', '*.config.*', '*.converter.*', '*.dto.*', '*.enums.*', '*.exception.*', '*.repository.*'
+            , '*.util.*', '*.vo.*', '*.ServerApplication.*', '*.aspect.*']
+        }
+    }
+}
+
+task testCoverage(type: Test) {
+    group 'verification'
+    description 'Runs the unit tests with coverage'
+
+    dependsOn(':test',
+            ':jacocoTestReport',
+            ':jacocoTestCoverageVerification')
+
+    tasks['jacocoTestReport'].mustRunAfter(tasks['test'])
+    tasks['jacocoTestCoverageVerification'].mustRunAfter(tasks['jacocoTestReport'])
 }
 
 tasks.named('test') {

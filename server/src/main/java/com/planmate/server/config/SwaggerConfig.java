@@ -13,14 +13,20 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
+
+/**
+ * @author 지승언
+ * swagger-ui 설정 파일
+ * */
 @Configuration
 public class SwaggerConfig {
     private static final String REFERENCE = "Bearer ";
 
+    /**
+     * controller만 표시하도록 설정
+     * */
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.OAS_30)
@@ -41,6 +47,9 @@ public class SwaggerConfig {
                 .build();
     }
 
+    /**
+     * security 적용 시 sweager도 security 적용
+     * */
     private SecurityContext securityContext() {
         return springfox.documentation
                 .spi.service.contexts
@@ -50,6 +59,9 @@ public class SwaggerConfig {
                 .build();
     }
 
+    /**
+     * authorization 버튼 설정
+     * */
     private List<SecurityReference> defaultAuth() {
         AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
         authorizationScopes[0] = new AuthorizationScope("global", "accessEverything");

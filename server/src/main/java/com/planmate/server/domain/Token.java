@@ -7,7 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "token")
@@ -25,12 +25,12 @@ public class Token {
     @Column(name = "access_token", columnDefinition = "mediumtext")
     private String accessToken;
 
-    @Column(name = "access_token_expired_at", columnDefinition = "datetime")
-    private LocalDateTime accessTokenExpiredAt;
+    @Column(name = "access_token_expired_at", columnDefinition = "date")
+    private LocalDate accessTokenExpiredAt;
 
     @Column(name = "refresh_token", columnDefinition = "mediumtext")
     private String refreshToken;
 
-    @Column(name = "refresh_token_expired_at", columnDefinition = "datetime")
-    private LocalDateTime refreshTokenExpiredAt;
+    @Column(name = "refresh_token_expired_at", columnDefinition = "date")
+    private LocalDate refreshTokenExpiredAt;
 }

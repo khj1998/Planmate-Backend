@@ -63,3 +63,8 @@ sns:
       url: ${KAKAO_CALLBACK_URL}
     token:
       url:
+logging:
+  slack:
+    webhook-uri: ${WEBHOOK_URL}
+  config: classpath:logback-spring.xml
+  dir: ${LOG_DIR}

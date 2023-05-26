@@ -36,11 +36,9 @@ public class JwtCustomFilter extends OncePerRequestFilter {
     protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain) throws ServletException, IOException {
         final String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        log.info("JWT FILTER Called");
-
         // bearer이 아니면 오류
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            log.info("JWT Token does not begin with Bearer String");
+            log.error("JWT Token does not begin with Bearer String");
 
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "JWT Token does not begin with Bearer String");
 
@@ -52,7 +50,7 @@ public class JwtCustomFilter extends OncePerRequestFilter {
 
         // Token 검증
         if (!JwtUtil.validateToken(token)) {
-            log.info("JWT Token is not valid");
+            log.error("JWT Token is not valid");
 
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "JWT Token is not valid");
 
@@ -61,7 +59,7 @@ public class JwtCustomFilter extends OncePerRequestFilter {
 
         // Token 만료 체크
         if (JwtUtil.isExpired(token)) {
-            log.info("JWT is not expired");
+            log.error("JWT is not expired");
 
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT Token is expired");
 
@@ -74,7 +72,7 @@ public class JwtCustomFilter extends OncePerRequestFilter {
         Optional<Member> member = memberService.findMemberById(memberId);
 
         if(member.isEmpty()) {
-            log.info("JWT Token is not valid");
+            log.error("JWT Token is not valid");
 
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "JWT Token is not valid");
 
@@ -93,7 +91,7 @@ public class JwtCustomFilter extends OncePerRequestFilter {
             role = "ROLE_USER";
         }
         else {
-            log.info("User has not permission");
+            log.error("User has not permission");
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "User has not permission");
 
             return;

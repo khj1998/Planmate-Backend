@@ -1,11 +1,18 @@
 spring:
   profiles:
     active: local
-  datasource:
-    username: ${DB_USER_ID}
-    password: ${DB_USER_PASSWORD}
-    url: jdbc:mysql://${DB_IP}:${DB_PORT}/${DB_SCHEMA}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    driver-class-name: com.mysql.cj.jdbc.Driver
+  master:
+    datasource:
+      username: ${DB_USER_ID}
+      password: ${DB_USER_PASSWORD}
+      jdbcUrl: jdbc:mysql://${MASTER_DB_IP}:${MASTER_DB_PORT}/${DB_SCHEMA}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+      driver-class-name: com.mysql.cj.jdbc.Driver
+  slave:
+    datasource:
+      username: ${DB_USER_ID}
+      password: ${DB_USER_PASSWORD}
+      jdbcUrl: jdbc:mysql://${SLAVE_DB_IP}:${SLAVE_DB_PORT}/${DB_SCHEMA}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+      driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect

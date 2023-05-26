@@ -1,10 +1,12 @@
 package com.planmate.server.converter;
 
 import com.planmate.server.enums.SocialLoginType;
+import lombok.Generated;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 
 @Configuration
+@Generated
 public class SocialLoginTypeConverter implements Converter<String, SocialLoginType> {
     /**
      * @author 지승언

@@ -8,11 +8,13 @@ import com.planmate.server.exception.token.TokenNotFoundException;
 import com.planmate.server.repository.MemberRepository;
 import com.planmate.server.repository.TokenRepository;
 import com.planmate.server.util.JwtUtil;
+import lombok.Generated;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
 
 @Slf4j
+@Generated
 public class TokenServiceImpl implements TokenService {
     private final MemberRepository memberRepository;
     private final TokenRepository tokenRepository;

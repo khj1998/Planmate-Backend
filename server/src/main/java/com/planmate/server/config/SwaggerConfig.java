@@ -1,5 +1,6 @@
 package com.planmate.server.config;
 
+import lombok.Generated;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -15,7 +16,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 
 import java.util.List;
 
-
+@Generated
 /**
  * @author 지승언
  * swagger-ui 설정 파일

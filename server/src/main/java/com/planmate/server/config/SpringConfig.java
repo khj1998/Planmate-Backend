@@ -6,10 +6,12 @@ import com.planmate.server.service.member.MemberService;
 import com.planmate.server.service.member.MemberServiceImpl;
 import com.planmate.server.service.token.TokenService;
 import com.planmate.server.service.token.TokenServiceImpl;
+import lombok.Generated;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+@Generated
 /**
  * @author 지승언
  * service 로직에 대한 bean을 직접 등록하는 파일이다

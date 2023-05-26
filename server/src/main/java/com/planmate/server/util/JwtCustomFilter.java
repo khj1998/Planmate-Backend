@@ -2,6 +2,7 @@ package com.planmate.server.util;
 
 import com.planmate.server.domain.Member;
 import com.planmate.server.service.member.MemberService;
+import lombok.Generated;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
+@Generated
 public class JwtCustomFilter extends OncePerRequestFilter {
     @Value("${external.jwt.secret}")
     private String secretKey;

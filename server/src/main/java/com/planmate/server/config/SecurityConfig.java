@@ -2,6 +2,7 @@ package com.planmate.server.config;
 
 import com.planmate.server.service.member.MemberService;
 import com.planmate.server.util.JwtCustomFilter;
+import lombok.Generated;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,6 +13,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+@Generated
 /**
  * @author 지승언
  * security config file
@@ -26,6 +28,7 @@ public class SecurityConfig {
          * 별도의 권한 없이 실행되어야 하는 api들의 end point를 설정하는 메서드이다.
          * */
         return new WebSecurityCustomizer() {
+            @Generated
             @Override
             public void customize(WebSecurity web) {
                 web.ignoring().antMatchers(

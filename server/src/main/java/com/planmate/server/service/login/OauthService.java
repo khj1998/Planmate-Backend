@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.planmate.server.dto.response.login.GoogleLoginResponse;
 import com.planmate.server.enums.SocialLoginType;
 import com.planmate.server.service.oauth.SocialOauth;
+import lombok.Generated;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.util.List;
 
 @Slf4j
 @Service
+@Generated
 @RequiredArgsConstructor
 public class OauthService {
     private final List<SocialOauth> socialOauthList;

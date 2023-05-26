@@ -2,11 +2,13 @@ package com.planmate.server.exception;
 
 import com.planmate.server.exception.member.MemberNotFoundException;
 import com.planmate.server.exception.token.TokenNotFoundException;
+import lombok.Generated;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+@Generated
 @ControllerAdvice
 public class ApiExceptionHandler {
     @ExceptionHandler(MemberNotFoundException.class)

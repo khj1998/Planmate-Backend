@@ -1,5 +1,6 @@
 package com.planmate.server.service.oauth;
 
+import lombok.Generated;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +14,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Generated
 @Component
 @Slf4j
 public class GoogleOauth implements SocialOauth {

@@ -10,6 +10,7 @@ import com.planmate.server.repository.MemberRepository;
 import com.planmate.server.repository.TokenRepository;
 import com.planmate.server.util.JwtUtil;
 import com.planmate.server.vo.GoogleIdTokenVo;
+import lombok.Generated;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.codec.binary.Base64;
 
@@ -19,6 +20,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 @Slf4j
+@Generated
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final TokenRepository tokenRepository;

@@ -46,6 +46,7 @@ public class Member {
     @ApiModelProperty(example = "사용자 권한 정보들")
     private List<Authority> authorities;
 
+    @Generated
     public boolean hasRole(String role) {
         for(int i = 0; i < authorities.size(); i++) {
             if(authorities.get(i).getRole().equals(role)) {

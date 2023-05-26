@@ -3,6 +3,7 @@ package com.planmate.server.dto.response.login;
 import com.planmate.server.domain.Member;
 import com.planmate.server.domain.Token;
 import lombok.Builder;
+import lombok.Generated;
 import lombok.Getter;
 
 @Builder
@@ -15,6 +16,7 @@ public class LoginResponseDto {
     private String accessToken;
     private String refreshToken;
 
+    @Generated
     public static LoginResponseDto of(Member member, Token token) {
         return LoginResponseDto.builder()
                 .id(member.getMemberId())

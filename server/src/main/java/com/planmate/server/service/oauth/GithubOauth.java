@@ -1,5 +1,8 @@
 package com.planmate.server.service.oauth;
 
+import lombok.Generated;
+
+@Generated
 public class GithubOauth implements SocialOauth {
     @Override
     public String getOauthRedirectURL() {

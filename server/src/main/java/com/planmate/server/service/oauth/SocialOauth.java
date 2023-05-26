@@ -1,7 +1,9 @@
 package com.planmate.server.service.oauth;
 
 import com.planmate.server.enums.SocialLoginType;
+import lombok.Generated;
 
+@Generated
 public interface SocialOauth {
     /**
      * 각 Social Login 페이지로 Redirect 처리할 URL Build

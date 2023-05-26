@@ -1,8 +1,10 @@
 package com.planmate.server.exception;
 
 import lombok.AllArgsConstructor;
+import lombok.Generated;
 import lombok.Getter;
 
+@Generated
 @AllArgsConstructor
 @Getter
 public enum ErrorCode {

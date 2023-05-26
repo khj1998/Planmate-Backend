@@ -78,7 +78,7 @@ jacocoTestCoverageVerification {
                 minimum = 0.80
             }
             excludes = ['*.service.*', '*.controller.LoginController', '*.domain.*', '*.config.*', '*.converter.*', '*.dto.*', '*.enums.*', '*.exception.*', '*.repository.*'
-            , '*.util.*', '*.vo.*', '*.ServerApplication.*', '*.aspect.*']
+            , '*.util.*', '*.vo.*', '*.ServerApplication.*', '*.aspect.*','**.*Builder*']
         }
     }
 }

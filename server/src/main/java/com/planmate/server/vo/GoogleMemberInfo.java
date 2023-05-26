@@ -1,6 +1,7 @@
 package com.planmate.server.vo;
 
 import lombok.Builder;
+import lombok.Generated;
 import lombok.Getter;
 import lombok.Setter;
 

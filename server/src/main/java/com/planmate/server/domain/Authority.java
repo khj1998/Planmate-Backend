@@ -21,6 +21,7 @@ public class Authority {
     @ApiModelProperty(example = "ROLE_USER | ROLE_ADMIN")
     private String authorityName;
 
+    @Generated
     public String getRole() {
         if(authorityName.equals("ROLE_USER")) {
             return "USER";

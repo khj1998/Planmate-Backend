@@ -6,6 +6,8 @@ import com.planmate.server.service.member.MemberService;
 import com.planmate.server.service.member.MemberServiceImpl;
 import com.planmate.server.service.post.PostService;
 import com.planmate.server.service.post.PostServiceImpl;
+import com.planmate.server.service.subject.SubjectService;
+import com.planmate.server.service.subject.SubjectServiceImpl;
 import com.planmate.server.service.token.TokenService;
 import com.planmate.server.service.token.TokenServiceImpl;
 import lombok.Generated;
@@ -26,18 +28,24 @@ public class SpringConfig {
     private final PostRepository postRepository;
     private PostTagRepository postTagRepository;
     private final MemberScrapRepository memberScrapRepository;
+    private final SubjectRepository subjectRepository;
+    private final MemberSubjectRepository memberSubjectRepository;
 
     @Autowired
     public SpringConfig(final MemberRepository memberRepository,
                         final TokenRepository tokenRepository,
                         final PostRepository postRepository,
                         final PostTagRepository postTagRepository,
-                        final MemberScrapRepository memberScrapRepository) {
+                        final MemberScrapRepository memberScrapRepository,
+                        final SubjectRepository subjectRepository,
+                        final MemberSubjectRepository memberSubjectRepository) {
         this.memberRepository = memberRepository;
         this.tokenRepository = tokenRepository;
         this.postRepository = postRepository;
         this.postTagRepository = postTagRepository;
         this.memberScrapRepository = memberScrapRepository;
+        this.subjectRepository = subjectRepository;
+        this.memberSubjectRepository = memberSubjectRepository;
     }
 
     @Bean
@@ -53,5 +61,10 @@ public class SpringConfig {
     @Bean
     public PostService postService() {
         return new PostServiceImpl(postRepository,postTagRepository,memberRepository,memberScrapRepository);
+    }
+
+    @Bean
+    public SubjectService subjectService() {
+        return new SubjectServiceImpl(subjectRepository,memberSubjectRepository);
     }
 }

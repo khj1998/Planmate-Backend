@@ -2,6 +2,7 @@ package com.planmate.server.util;
 
 import com.planmate.server.domain.Member;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.Generated;
@@ -57,14 +58,24 @@ public class JwtUtil {
     }
 
     public static boolean isExpired(String token) {
-        Date expiredDate = Jwts.parserBuilder()
-                .setSigningKey(JWT_SECRET_KEY)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getExpiration();
+        boolean isExpired = true;
 
-        return expiredDate.before(new Date());
+        try {
+            Date expiredDate = Jwts.parserBuilder()
+                    .setSigningKey(JWT_SECRET_KEY)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .getExpiration();
+
+            isExpired = false;
+        }
+        catch (ExpiredJwtException ex) {
+            log.error("jwt is expired");
+            isExpired = true;
+        }
+
+        return isExpired;
     }
 
     public static Long getMemberId() {

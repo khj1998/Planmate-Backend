@@ -39,7 +39,7 @@ public class SecurityConfig {
                         "/swagger-resources/**",
                         "/health/**",
                         "/login/**",
-                        "/token/refresh"
+                        "/token/**"
                 );
             }
         };
@@ -57,7 +57,7 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .addFilterAfter(new JwtCustomFilter(memberService), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers("/token/expired_at").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
+                .anyRequest().denyAll()
                 .and().build();
     }
 }

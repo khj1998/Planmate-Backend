@@ -6,6 +6,7 @@ import com.planmate.server.domain.Authority;
 import com.planmate.server.domain.Member;
 import com.planmate.server.domain.Token;
 import com.planmate.server.dto.response.login.LoginResponseDto;
+import com.planmate.server.exception.member.MemberNotFoundException;
 import com.planmate.server.repository.MemberRepository;
 import com.planmate.server.repository.TokenRepository;
 import com.planmate.server.util.JwtUtil;
@@ -17,6 +18,7 @@ import org.apache.tomcat.util.codec.binary.Base64;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -85,6 +87,14 @@ public class MemberServiceImpl implements MemberService {
         tokenRepository.save(token);
 
         return LoginResponseDto.of(member, token);
+    }
+
+    @Override
+    public List<Authority> getAuthorities() {
+        log.info("called");
+        return memberRepository.findById(JwtUtil.getMemberId()).orElseThrow(
+                () -> new MemberNotFoundException(JwtUtil.getMemberId())
+        ).getAuthorities();
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.planmate.server.util;
 
 import com.planmate.server.domain.Member;
+import com.planmate.server.exception.token.TokenNotStartWithBearerException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -116,7 +117,7 @@ public class JwtUtil {
         }
         else
         {
-            throw new RuntimeException();
+            throw new TokenNotStartWithBearerException("Token in header not start with Bearer");
         }
 
         return token;

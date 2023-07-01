@@ -2,6 +2,8 @@ package com.planmate.server.config;
 
 import com.planmate.server.domain.MemberScrap;
 import com.planmate.server.repository.*;
+import com.planmate.server.service.comment.CommentService;
+import com.planmate.server.service.comment.CommentServiceImpl;
 import com.planmate.server.service.member.MemberService;
 import com.planmate.server.service.member.MemberServiceImpl;
 import com.planmate.server.service.post.PostService;
@@ -30,6 +32,7 @@ public class SpringConfig {
     private final MemberScrapRepository memberScrapRepository;
     private final SubjectRepository subjectRepository;
     private final MemberSubjectRepository memberSubjectRepository;
+    private final CommentRepository commentRepository;
 
     @Autowired
     public SpringConfig(final MemberRepository memberRepository,
@@ -38,7 +41,8 @@ public class SpringConfig {
                         final PostTagRepository postTagRepository,
                         final MemberScrapRepository memberScrapRepository,
                         final SubjectRepository subjectRepository,
-                        final MemberSubjectRepository memberSubjectRepository) {
+                        final MemberSubjectRepository memberSubjectRepository,
+                        final CommentRepository commentRepository) {
         this.memberRepository = memberRepository;
         this.tokenRepository = tokenRepository;
         this.postRepository = postRepository;
@@ -46,6 +50,7 @@ public class SpringConfig {
         this.memberScrapRepository = memberScrapRepository;
         this.subjectRepository = subjectRepository;
         this.memberSubjectRepository = memberSubjectRepository;
+        this.commentRepository = commentRepository;
     }
 
     @Bean
@@ -66,5 +71,10 @@ public class SpringConfig {
     @Bean
     public SubjectService subjectService() {
         return new SubjectServiceImpl(subjectRepository,memberSubjectRepository);
+    }
+
+    @Bean
+    public CommentService commentService() {
+        return new CommentServiceImpl(commentRepository,memberRepository);
     }
 }

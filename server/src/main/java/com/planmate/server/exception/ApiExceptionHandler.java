@@ -1,8 +1,10 @@
 package com.planmate.server.exception;
 
+import com.planmate.server.exception.comment.CommentNotFoundException;
 import com.planmate.server.exception.member.MemberNotFoundException;
 import com.planmate.server.exception.post.PostNotFoundException;
 import com.planmate.server.exception.post.ScrapNotFoundException;
+import com.planmate.server.exception.subject.SubjectNotFoundException;
 import com.planmate.server.exception.token.TokenNotFoundException;
 import com.planmate.server.exception.token.TokenNotStartWithBearerException;
 import org.apache.coyote.Response;
@@ -42,6 +44,18 @@ public class ApiExceptionHandler {
     @ExceptionHandler(ScrapNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleException(ScrapNotFoundException ex) {
         ApiErrorResponse response = new ApiErrorResponse("ERROR-0005","Scrap is not found : "+ex.getMessage());
+        return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(SubjectNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleException(SubjectNotFoundException ex) {
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0006","Subject is not found : "+ex.getMessage());
+        return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(CommentNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleException(CommentNotFoundException ex) {
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0007","Comment is not found : "+ex.getMessage());
         return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
     }
 }

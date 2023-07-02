@@ -43,6 +43,8 @@ dependencies {
     implementation group: 'com.auth0', name: 'java-jwt', version: '3.1.0' // JWT
     //slack
     implementation 'com.github.maricn:logback-slack-appender:1.4.0'
+    //s3
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 }
 
 test {

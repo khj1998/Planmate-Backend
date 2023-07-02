@@ -6,6 +6,7 @@ import com.planmate.server.domain.Authority;
 import com.planmate.server.domain.Member;
 import com.planmate.server.domain.Token;
 import com.planmate.server.dto.response.login.LoginResponseDto;
+import com.planmate.server.exception.member.MemberNotFoundException;
 import com.planmate.server.repository.MemberRepository;
 import com.planmate.server.repository.TokenRepository;
 import com.planmate.server.util.JwtUtil;
@@ -13,10 +14,12 @@ import com.planmate.server.vo.GoogleIdTokenVo;
 import lombok.Generated;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.codec.binary.Base64;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -85,6 +88,58 @@ public class MemberServiceImpl implements MemberService {
         tokenRepository.save(token);
 
         return LoginResponseDto.of(member, token);
+    }
+
+    @Override
+    public List<Authority> getAuthorities() {
+        log.info("called");
+        return memberRepository.findById(JwtUtil.getMemberId()).orElseThrow(
+                () -> new MemberNotFoundException(JwtUtil.getMemberId())
+        ).getAuthorities();
+    }
+
+    @Override
+    public Member getInfo() {
+        return memberRepository.findById(JwtUtil.getMemberId()).orElseThrow(
+                () -> new MemberNotFoundException(JwtUtil.getMemberId())
+        );
+    }
+
+    @Override
+    public Member getInfo(final Long id) {
+        return memberRepository.findById(id).orElseThrow(
+                () -> new MemberNotFoundException(JwtUtil.getMemberId())
+        );
+    }
+
+    @Override
+    public void signOut() {
+        memberRepository.deleteById(JwtUtil.getMemberId());
+    }
+
+    /**
+     * TODO: query annotation 써서 alter
+     * */
+    @Override
+    public Member modifyName(final String name) {
+        Member member = memberRepository.findById(JwtUtil.getMemberId()).orElseThrow(
+                () -> new MemberNotFoundException(JwtUtil.getMemberId())
+        );
+
+        member.setMemberName(name);
+
+        return memberRepository.save(member);
+    }
+
+    @Override
+    public Member modifyImg(final String img) {
+        Member member = memberRepository.findById(JwtUtil.getMemberId()).orElseThrow(
+                () -> new MemberNotFoundException(JwtUtil.getMemberId())
+        );
+
+        member.setProfile(img);
+
+        return memberRepository.save(member);
     }
 
     /**

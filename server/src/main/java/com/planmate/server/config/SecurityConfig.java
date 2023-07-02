@@ -39,7 +39,7 @@ public class SecurityConfig {
                         "/swagger-resources/**",
                         "/health/**",
                         "/login/**",
-                        "/token/refresh"
+                        "/token/**"
                 );
             }
         };
@@ -57,7 +57,16 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .addFilterAfter(new JwtCustomFilter(memberService), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers("/token/expired_at").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
+                .antMatchers("/admin/**").hasAnyAuthority("ROLE_ADMIN")
+                .antMatchers("/member/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
+                .antMatchers("/post/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
+                .antMatchers("/comment/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
+                .antMatchers("/tendinous/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
+                .antMatchers("/subject/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
+                .antMatchers("/auth/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
+                .antMatchers("/schedule/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
+                .antMatchers("/logout/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+                .anyRequest().denyAll()
                 .and().build();
     }
 }

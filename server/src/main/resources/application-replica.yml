@@ -1,15 +1,18 @@
 spring:
   profiles:
-    active: local
-  servlet:
-    multipart:
-      max-file-size: 300MB
-      max-request-size: 300MB
-  datasource:
-    username: ${DB_USER_ID}
-    password: ${DB_USER_PASSWORD}
-    url: jdbc:mysql://${MASTER_DB_IP}:${MASTER_DB_PORT}/${DB_SCHEMA}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    active: replica
+  master:
+    datasource:
+      username: ${DB_USER_ID}
+      password: ${DB_USER_PASSWORD}
+      jdbcUrl: jdbc:mysql://${MASTER_DB_IP}:${MASTER_DB_PORT}/${DB_SCHEMA}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+      driver-class-name: com.mysql.cj.jdbc.Driver
+  slave:
+    datasource:
+      username: ${DB_USER_ID}
+      password: ${DB_USER_PASSWORD}
+      jdbcUrl: jdbc:mysql://${SLAVE_DB_IP}:${SLAVE_DB_PORT}/${DB_SCHEMA}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+      driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect
@@ -60,24 +63,8 @@ sns:
       url: ${KAKAO_CALLBACK_URL}
     token:
       url:
-cloud:
-  aws:
-    s3:
-      bucket: ${S3_BUCKET}
-    credentials:
-      accessKey: ${S3_ACCESS_KEY}
-      secretKey: ${S3_SECRET_KEY}
-    region:
-      static: ap-northeast-2
-    stack:
-      auto: false
 logging:
-  amazonaws:
-    util:
-      EC2MetadataUtils: ERROR
   slack:
     webhook-uri: ${WEBHOOK_URL}
   config: classpath:logback-spring.xml
   dir: ${LOG_DIR}
-slack:
-  url: ${ALERT_URL}

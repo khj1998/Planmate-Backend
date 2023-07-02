@@ -1,7 +1,9 @@
 package com.planmate.server.util;
 
 import com.planmate.server.domain.Member;
+import com.planmate.server.exception.token.TokenNotStartWithBearerException;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.Generated;
@@ -46,6 +48,21 @@ public class JwtUtil {
                 .compact();
     }
 
+    public static String logout(Member member) {
+        Date now = new Date();
+        Date expiredDate = new Date(now.getTime() - EXPIRATION_TIME);
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("id", member.getMemberId());
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(expiredDate)
+                .signWith(SignatureAlgorithm.HS256, JWT_SECRET_KEY)
+                .compact();
+    }
+
     // jwt refresh 토큰 생성
     public static String createRefreshToken() {
         Date now = new Date();
@@ -57,14 +74,24 @@ public class JwtUtil {
     }
 
     public static boolean isExpired(String token) {
-        Date expiredDate = Jwts.parserBuilder()
-                .setSigningKey(JWT_SECRET_KEY)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getExpiration();
+        boolean isExpired = true;
 
-        return expiredDate.before(new Date());
+        try {
+            Date expiredDate = Jwts.parserBuilder()
+                    .setSigningKey(JWT_SECRET_KEY)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .getExpiration();
+
+            isExpired = false;
+        }
+        catch (ExpiredJwtException ex) {
+            log.error("jwt is expired");
+            isExpired = true;
+        }
+
+        return isExpired;
     }
 
     public static Long getMemberId() {
@@ -105,7 +132,7 @@ public class JwtUtil {
         }
         else
         {
-            throw new RuntimeException();
+            throw new TokenNotStartWithBearerException("Token in header not start with Bearer");
         }
 
         return token;

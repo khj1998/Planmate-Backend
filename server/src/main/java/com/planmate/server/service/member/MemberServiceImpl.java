@@ -14,6 +14,7 @@ import com.planmate.server.vo.GoogleIdTokenVo;
 import lombok.Generated;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.codec.binary.Base64;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
@@ -95,6 +96,50 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.findById(JwtUtil.getMemberId()).orElseThrow(
                 () -> new MemberNotFoundException(JwtUtil.getMemberId())
         ).getAuthorities();
+    }
+
+    @Override
+    public Member getInfo() {
+        return memberRepository.findById(JwtUtil.getMemberId()).orElseThrow(
+                () -> new MemberNotFoundException(JwtUtil.getMemberId())
+        );
+    }
+
+    @Override
+    public Member getInfo(final Long id) {
+        return memberRepository.findById(id).orElseThrow(
+                () -> new MemberNotFoundException(JwtUtil.getMemberId())
+        );
+    }
+
+    @Override
+    public void signOut() {
+        memberRepository.deleteById(JwtUtil.getMemberId());
+    }
+
+    /**
+     * TODO: query annotation 써서 alter
+     * */
+    @Override
+    public Member modifyName(final String name) {
+        Member member = memberRepository.findById(JwtUtil.getMemberId()).orElseThrow(
+                () -> new MemberNotFoundException(JwtUtil.getMemberId())
+        );
+
+        member.setMemberName(name);
+
+        return memberRepository.save(member);
+    }
+
+    @Override
+    public Member modifyImg(final String img) {
+        Member member = memberRepository.findById(JwtUtil.getMemberId()).orElseThrow(
+                () -> new MemberNotFoundException(JwtUtil.getMemberId())
+        );
+
+        member.setProfile(img);
+
+        return memberRepository.save(member);
     }
 
     /**

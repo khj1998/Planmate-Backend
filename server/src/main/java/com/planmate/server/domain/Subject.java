@@ -39,9 +39,6 @@ public class Subject {
     @Column(name = "rest_time",columnDefinition = "time")
     private Time restTime;
 
-    @Column(name = "d_day",columnDefinition = "int")
-    private Long dDay;
-
     @Column(name = "start_at",columnDefinition = "datetime")
     private LocalDate startAt;
 

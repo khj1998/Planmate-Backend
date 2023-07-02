@@ -4,18 +4,29 @@ import com.planmate.server.domain.MemberScrap;
 import com.planmate.server.repository.*;
 import com.planmate.server.service.comment.CommentService;
 import com.planmate.server.service.comment.CommentServiceImpl;
+import com.amazonaws.services.s3.AmazonS3;
+import com.planmate.server.service.logout.LogOutService;
+import com.planmate.server.service.logout.LogOutServiceImpl;
 import com.planmate.server.service.member.MemberService;
 import com.planmate.server.service.member.MemberServiceImpl;
 import com.planmate.server.service.post.PostService;
 import com.planmate.server.service.post.PostServiceImpl;
 import com.planmate.server.service.subject.SubjectService;
 import com.planmate.server.service.subject.SubjectServiceImpl;
+import com.planmate.server.service.s3.S3UploadService;
+import com.planmate.server.service.s3.S3UploaderServiceImpl;
+import com.planmate.server.service.schedule.ScheduleService;
+import com.planmate.server.service.schedule.ScheduleServiceImpl;
+import com.planmate.server.service.tendinous.AlertService;
+import com.planmate.server.service.tendinous.AlertServiceImpl;
 import com.planmate.server.service.token.TokenService;
 import com.planmate.server.service.token.TokenServiceImpl;
 import lombok.Generated;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 
 @Generated
 /**
@@ -33,16 +44,19 @@ public class SpringConfig {
     private final SubjectRepository subjectRepository;
     private final MemberSubjectRepository memberSubjectRepository;
     private final CommentRepository commentRepository;
+    private final AmazonS3 amazonS3Client;
+    private final String url;
+    private final ScheduleRepository scheduleRepository;
 
     @Autowired
     public SpringConfig(final MemberRepository memberRepository,
                         final TokenRepository tokenRepository,
                         final PostRepository postRepository,
                         final PostTagRepository postTagRepository,
-                        final MemberScrapRepository memberScrapRepository,
                         final SubjectRepository subjectRepository,
                         final MemberSubjectRepository memberSubjectRepository,
-                        final CommentRepository commentRepository) {
+                        final CommentRepository commentRepository,
+                        final MemberScrapRepository memberScrapRepository, final AmazonS3 amazonS3Client, @Value("${slack.url}") String url, final ScheduleRepository scheduleRepository) {
         this.memberRepository = memberRepository;
         this.tokenRepository = tokenRepository;
         this.postRepository = postRepository;
@@ -51,6 +65,9 @@ public class SpringConfig {
         this.subjectRepository = subjectRepository;
         this.memberSubjectRepository = memberSubjectRepository;
         this.commentRepository = commentRepository;
+        this.amazonS3Client = amazonS3Client;
+        this.url = url;
+        this.scheduleRepository = scheduleRepository;
     }
 
     @Bean
@@ -75,6 +92,26 @@ public class SpringConfig {
 
     @Bean
     public CommentService commentService() {
-        return new CommentServiceImpl(commentRepository,memberRepository);
+        return new CommentServiceImpl(commentRepository, memberRepository);
+    }
+
+    @Bean
+    public S3UploadService S3UploadService() {
+        return new S3UploaderServiceImpl(amazonS3Client);
+    }
+
+    @Bean
+    public AlertService alertService() {
+        return new AlertServiceImpl(new RestTemplate(), url);
+    }
+
+    @Bean
+    public ScheduleService scheduleService() {
+        return new ScheduleServiceImpl(scheduleRepository);
+    }
+
+    @Bean
+    public LogOutService logOutService() {
+        return new LogOutServiceImpl(tokenRepository, memberRepository);
     }
 }

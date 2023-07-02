@@ -5,6 +5,8 @@ import com.planmate.server.exception.member.MemberNotFoundException;
 import com.planmate.server.exception.post.PostNotFoundException;
 import com.planmate.server.exception.post.ScrapNotFoundException;
 import com.planmate.server.exception.subject.SubjectNotFoundException;
+import com.planmate.server.exception.schedule.MemberScheduleNotFoundException;
+import com.planmate.server.exception.schedule.ScheduleNotFoundException;
 import com.planmate.server.exception.token.TokenNotFoundException;
 import com.planmate.server.exception.token.TokenNotStartWithBearerException;
 import org.apache.coyote.Response;
@@ -55,7 +57,19 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(CommentNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleException(CommentNotFoundException ex) {
-        ApiErrorResponse response = new ApiErrorResponse("ERROR-0007","Comment is not found : "+ex.getMessage());
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0007", "Comment is not found : " + ex.getMessage());
+        return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ScheduleNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleException(ScheduleNotFoundException ex) {
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0008","Schedule is not found : "+ex.getMessage());
+        return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(MemberScheduleNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleException(MemberScheduleNotFoundException ex) {
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0009","Member's schedule is not exist. member id: " + ex.getMessage());
         return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
     }
 }

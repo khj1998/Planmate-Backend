@@ -48,6 +48,21 @@ public class JwtUtil {
                 .compact();
     }
 
+    public static String logout(Member member) {
+        Date now = new Date();
+        Date expiredDate = new Date(now.getTime() - EXPIRATION_TIME);
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("id", member.getMemberId());
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(expiredDate)
+                .signWith(SignatureAlgorithm.HS256, JWT_SECRET_KEY)
+                .compact();
+    }
+
     // jwt refresh 토큰 생성
     public static String createRefreshToken() {
         Date now = new Date();

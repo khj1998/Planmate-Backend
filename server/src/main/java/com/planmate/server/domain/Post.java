@@ -3,13 +3,11 @@ package com.planmate.server.domain;
 import com.planmate.server.dto.request.post.PostDto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import javax.swing.plaf.metal.MetalLookAndFeel;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,7 +20,10 @@ import java.util.List;
 @Table(name = "post")
 @ApiModel(value = "게시물 테이블")
 @Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Post {
     @Id
     @Column(name = "post_id",columnDefinition = "int")
@@ -30,10 +31,9 @@ public class Post {
     @ApiModelProperty(example = "게시물 고유 식별자")
     private Long postId;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "owner_id")
+    @Column(name = "owner_id",nullable = false,columnDefinition = "int")
     @ApiModelProperty(example = "게시물 소유 맴버와 매핑")
-    private Member owner;
+    private Long memberId;
 
     @Column(name = "title",columnDefinition = "varchar(100)")
     @ApiModelProperty(example = "게시물 제목")
@@ -48,24 +48,11 @@ public class Post {
     @ApiModelProperty(example = "게시물 업데이트 날짜")
     private Date updatedAt;
 
-    @OneToMany(mappedBy = "post",orphanRemoval = true)
-    final private List<PostTag> postTagList = new ArrayList<>();
-
-    @Builder
-    public Post(String title,String content) {
-        this.title = title;
-        this.content = content;
-    }
-
-    public void setOwner(Member owner) {
-        this.owner = owner;
-    }
-
-    public void updateTitle(String title) {
-        this.title = title;
-    }
-
-    public void updateContent(String content) {
-        this.content = content;
+    public static Post of(PostDto postDto,Long memberId)  {
+        return Post.builder()
+                .memberId(memberId)
+                .title(postDto.getTitle())
+                .content(postDto.getContent())
+                .build();
     }
 }

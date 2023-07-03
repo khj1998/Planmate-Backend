@@ -16,12 +16,12 @@ public class CommentResponseDto {
     private String content;
     private Long likeCount;
 
-    public static CommentResponseDto of(Comment comment,String memberName) {
+    public static CommentResponseDto of(Comment comment,String memberName,Long likeCount) {
         return CommentResponseDto.builder()
                 .memberName(memberName)
                 .content(comment.getContent())
                 .updatedAt(comment.getUpdatedAt())
-                .likeCount(comment.getCommentLike())
+                .likeCount(likeCount)
                 .build();
     }
 }

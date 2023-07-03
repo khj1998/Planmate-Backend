@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/post")
 @RequiredArgsConstructor
 public class PostController {
 
@@ -139,7 +140,7 @@ public class PostController {
             @ApiResponse(responseCode = "403",description = "해당 사용자가 Member 권한이 아님"),
             @ApiResponse(responseCode = "404",description = "게시물 스크랩에 실패함")
     })
-    public ResponseEntity<PostResponseDto> scrapPost(@RequestBody ScrapDto scrapDto) {
+    public ResponseEntity<Boolean> scrapPost(@RequestBody ScrapDto scrapDto) {
         return ResponseEntity.ok(postService.scrapPost(scrapDto));
     }
 

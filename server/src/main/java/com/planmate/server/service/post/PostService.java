@@ -13,7 +13,7 @@ public interface PostService {
     void deleteScrapById(Long postId);
     List<PostResponseDto> findMyPost();
     PostResponseDto editPost(PostDto postDto);
-    PostResponseDto scrapPost(ScrapDto scrapDto);
+    Boolean scrapPost(ScrapDto scrapDto);
     List<PostResponseDto> findScrapPost();
     List<PostResponseDto> findPostByTagName(String tagName);
 }

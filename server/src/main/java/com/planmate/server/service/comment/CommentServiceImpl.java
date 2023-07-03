@@ -1,12 +1,14 @@
 package com.planmate.server.service.comment;
 
 import com.planmate.server.domain.Comment;
+import com.planmate.server.domain.CommentLike;
 import com.planmate.server.domain.Member;
 import com.planmate.server.dto.request.comment.CommentCreateRequestDto;
 import com.planmate.server.dto.request.comment.CommentEditRequestDto;
 import com.planmate.server.dto.response.comment.CommentResponseDto;
 import com.planmate.server.exception.comment.CommentNotFoundException;
 import com.planmate.server.exception.member.MemberNotFoundException;
+import com.planmate.server.repository.CommentLikeRepository;
 import com.planmate.server.repository.CommentRepository;
 import com.planmate.server.repository.MemberRepository;
 import com.planmate.server.util.JwtUtil;
@@ -20,10 +22,13 @@ import java.util.List;
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
+    private final CommentLikeRepository commentLikeRepository;
 
-    public CommentServiceImpl(CommentRepository commentRepository,MemberRepository memberRepository) {
+    public CommentServiceImpl(CommentRepository commentRepository,MemberRepository memberRepository
+            ,CommentLikeRepository commentLikeRepository) {
         this.commentRepository = commentRepository;
         this.memberRepository = memberRepository;
+        this.commentLikeRepository = commentLikeRepository;
     }
 
     @Override
@@ -37,7 +42,8 @@ public class CommentServiceImpl implements CommentService {
         List<Comment> commentList = commentRepository.findAllByMemberId(memberId);
 
         for (Comment comment : commentList) {
-            CommentResponseDto responseDto = CommentResponseDto.of(comment,member.getMemberName());
+            List<CommentLike> commentLikeList = commentLikeRepository.findAllByCommentId(comment.getCommentId());
+            CommentResponseDto responseDto = CommentResponseDto.of(comment,member.getMemberName(),(long) commentLikeList.size());
             responseDtoList.add(responseDto);
         }
 
@@ -67,10 +73,20 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Boolean addCommentLike(Long commentId) {
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new CommentNotFoundException(commentId));
-        commentRepository.save(comment);
+    public Boolean setCommentLike(Long commentId) {
+        Long userId = JwtUtil.getMemberId();
+
+        CommentLike commentLike = commentLikeRepository.findCommentLike(userId,commentId);
+
+        if (commentLike == null) {
+            commentLike = CommentLike.builder()
+                    .userId(userId)
+                    .commentId(commentId)
+                    .build();
+            commentLikeRepository.save(commentLike);
+        } else {
+            commentLikeRepository.delete(commentLike);
+        }
 
         return true;
     }

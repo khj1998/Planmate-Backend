@@ -47,6 +47,8 @@ public class SpringConfig {
     private final AmazonS3 amazonS3Client;
     private final String url;
     private final ScheduleRepository scheduleRepository;
+    private final CommentLikeRepository commentLikeRepository;
+    private final PostLikeRepository postLikeRepository;
 
     @Autowired
     public SpringConfig(final MemberRepository memberRepository,
@@ -56,7 +58,9 @@ public class SpringConfig {
                         final SubjectRepository subjectRepository,
                         final MemberSubjectRepository memberSubjectRepository,
                         final CommentRepository commentRepository,
-                        final MemberScrapRepository memberScrapRepository, final AmazonS3 amazonS3Client, @Value("${slack.url}") String url, final ScheduleRepository scheduleRepository) {
+                        final MemberScrapRepository memberScrapRepository, final AmazonS3 amazonS3Client, @Value("${slack.url}") String url, final ScheduleRepository scheduleRepository,
+                        final CommentLikeRepository commentLikeRepository,
+                        final PostLikeRepository postLikeRepository) {
         this.memberRepository = memberRepository;
         this.tokenRepository = tokenRepository;
         this.postRepository = postRepository;
@@ -68,6 +72,8 @@ public class SpringConfig {
         this.amazonS3Client = amazonS3Client;
         this.url = url;
         this.scheduleRepository = scheduleRepository;
+        this.commentLikeRepository = commentLikeRepository;
+        this.postLikeRepository = postLikeRepository;
     }
 
     @Bean
@@ -82,7 +88,7 @@ public class SpringConfig {
 
     @Bean
     public PostService postService() {
-        return new PostServiceImpl(postRepository,postTagRepository,memberRepository,memberScrapRepository);
+        return new PostServiceImpl(postRepository,postTagRepository,memberRepository,memberScrapRepository,postLikeRepository);
     }
 
     @Bean
@@ -92,7 +98,7 @@ public class SpringConfig {
 
     @Bean
     public CommentService commentService() {
-        return new CommentServiceImpl(commentRepository, memberRepository);
+        return new CommentServiceImpl(commentRepository, memberRepository,commentLikeRepository);
     }
 
     @Bean

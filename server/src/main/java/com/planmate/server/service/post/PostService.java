@@ -16,4 +16,5 @@ public interface PostService {
     Boolean scrapPost(ScrapDto scrapDto);
     List<PostResponseDto> findScrapPost();
     List<PostResponseDto> findPostByTagName(String tagName);
+    Boolean setPostLike(Long postId);
 }

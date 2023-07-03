@@ -83,7 +83,7 @@ public class PostServiceImpl implements PostService {
 
         List<PostTag> postTagList = postTagRepository.findByPostId(postId);
         List<MemberScrap> memberScrapList = memberScrapRepository.findByPostId(postId);
-        List<PostLike> postLikeList = postLikeRepository.findByPostId(postId);
+        List<PostLike> postLikeList = postLikeRepository.findAllByPostId(postId);
 
         Long likeCount = (long) postLikeList.size();
         Long scrapCount = (long) memberScrapList.size();
@@ -113,7 +113,7 @@ public class PostServiceImpl implements PostService {
 
         List<PostTag> postTagList = postTagRepository.findByPostId(postDto.getId());
         List<MemberScrap> memberScrapList = memberScrapRepository.findByPostId(post.getPostId());
-        List<PostLike> postLikeList = postLikeRepository.findByPostId(post.getPostId());
+        List<PostLike> postLikeList = postLikeRepository.findAllByPostId(post.getPostId());
 
         Long likeCount = (long) postLikeList.size();
         Long scrapCount = (long) memberScrapList.size();
@@ -153,7 +153,7 @@ public class PostServiceImpl implements PostService {
         for (Post post : postList) {
             List<PostTag> postTagList = postTagRepository.findByPostId(post.getPostId());
             List<MemberScrap> memberScrapList = memberScrapRepository.findByPostId(post.getPostId());
-            List<PostLike> postLikeList = postLikeRepository.findByPostId(post.getPostId());
+            List<PostLike> postLikeList = postLikeRepository.findAllByPostId(post.getPostId());
 
             Long likeCount = (long) postLikeList.size();
             Long scrapCount = (long) memberScrapList.size();
@@ -209,7 +209,7 @@ public class PostServiceImpl implements PostService {
                     .orElseThrow(() -> new PostNotFoundException(memberScrap.getPostId()));
 
             List<PostTag> postTagList = postTagRepository.findByPostId(post.getPostId());
-            List<PostLike> postLikeList = postLikeRepository.findByPostId(post.getPostId());
+            List<PostLike> postLikeList = postLikeRepository.findAllByPostId(post.getPostId());
             List<MemberScrap> memberScrapList =  memberScrapRepository.findByPostId(post.getPostId());
 
             Long likeCount = (long) postLikeList.size();
@@ -260,7 +260,7 @@ public class PostServiceImpl implements PostService {
             Member member = memberRepository.findById(post.getMemberId())
                     .orElseThrow(() -> new MemberNotFoundException(post.getMemberId()));
 
-            List<PostLike> postLikeList = postLikeRepository.findByPostId(post.getPostId());
+            List<PostLike> postLikeList = postLikeRepository.findAllByPostId(post.getPostId());
             List<MemberScrap> scrapList = memberScrapRepository.findByPostId(post.getPostId());
             List<PostTag> postTags = postTagRepository.findByPostId(post.getPostId());
 
@@ -271,5 +271,20 @@ public class PostServiceImpl implements PostService {
         }
 
         return responseDtoList;
+    }
+
+    @Override
+    public Boolean setPostLike(Long postId) {
+        Long memberId = JwtUtil.getMemberId();
+        PostLike postLike = postLikeRepository.findByPost(memberId,postId);
+
+        if (postLike == null) {
+            postLike = PostLike.of(memberId,postId);
+            postLikeRepository.save(postLike);
+        } else {
+            postLikeRepository.delete(postLike);
+        }
+
+        return true;
     }
 }

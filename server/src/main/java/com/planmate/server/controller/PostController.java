@@ -1,6 +1,7 @@
 package com.planmate.server.controller;
 
 import com.planmate.server.dto.request.post.PostDto;
+import com.planmate.server.dto.request.post.PostLikeDto;
 import com.planmate.server.dto.request.post.ScrapDto;
 import com.planmate.server.dto.response.post.PostResponseDto;
 import com.planmate.server.service.post.PostService;
@@ -178,5 +179,17 @@ public class PostController {
     public ResponseEntity removeScrap(@RequestParam Long postId) {
         postService.deleteScrapById(postId);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/like")
+    @ApiOperation("게시물에 좋아요 추가/취소")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200",description = "게시물 좋아요 추가/취소 성공"),
+            @ApiResponse(responseCode = "401",description = "해당 사용자가 인증되지 않음 | 토큰 만료"),
+            @ApiResponse(responseCode = "403",description = "해당 사용자가 Member 권한이 아님"),
+            @ApiResponse(responseCode = "404",description = "게시물 좋아요 추가/취소 실패함")
+    })
+    public ResponseEntity<Boolean> setPostLike(@RequestBody PostLikeDto postLikeDto) {
+        return ResponseEntity.ok(postService.setPostLike(postLikeDto.getPostId()));
     }
 }

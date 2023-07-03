@@ -21,20 +21,18 @@ public class MemberScrap {
     @ApiModelProperty(example = "스크랩 식별자")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "member_id",columnDefinition = "int")
+    @Column(name = "member_id",nullable = false,columnDefinition = "int")
     @ApiModelProperty(example = "맴버 참조 외래키")
-    private Member owner;
+    private Long memberId;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "post_id",columnDefinition = "int")
+    @Column(name = "post_id",nullable = false,columnDefinition = "int")
     @ApiModelProperty(example = "게시물 참조 외래키")
-    private Post post;
+    private Long postId;
 
-    public static MemberScrap of(Member owner,Post post) {
+    public static MemberScrap of(Long memberId,Long postId) {
         return MemberScrap.builder()
-                .owner(owner)
-                .post(post)
+                .memberId(memberId)
+                .postId(postId)
                 .build();
     }
 }

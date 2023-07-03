@@ -24,19 +24,18 @@ public class PostTag {
     @ApiModelProperty(name = "게시물 태그 식별자")
     private Long tagId;
 
-    @Column(name = "tag_name",columnDefinition = "varchar(15)")
+    @Column(name = "tag_name",nullable = false,columnDefinition = "varchar(15)")
     @ApiModelProperty(example = "태그 이름")
     private String tagName;
 
-    @JoinColumn(name = "post_id",columnDefinition = "int")
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
+    @Column(name = "post_id",nullable = false,columnDefinition = "int")
     @ApiModelProperty(example = "게시물 참조 외래키")
-    private Post post;
+    private Long postId;
 
-    public static PostTag of(String tagName,Post post) {
+    public static PostTag of(String tagName,Long postId) {
         return PostTag.builder()
                 .tagName(tagName)
-                .post(post)
+                .postId(postId)
                 .build();
     }
 }

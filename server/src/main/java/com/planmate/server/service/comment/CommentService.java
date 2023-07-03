@@ -11,6 +11,6 @@ public interface CommentService {
     List<CommentResponseDto> findMyComment();
     Comment createComment(CommentCreateRequestDto commentCreateRequestDto);
     Comment editComment(CommentEditRequestDto commentEditRequestDto);
-    Boolean addCommentLike(Long commentId);
+    Boolean setCommentLike(Long commentId);
     void deleteComment(Long commentId);
 }

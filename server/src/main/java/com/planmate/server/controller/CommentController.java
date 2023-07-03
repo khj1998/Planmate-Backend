@@ -63,7 +63,7 @@ public class CommentController {
             @ApiResponse(responseCode = "404", description = "댓글 좋아요 생성/취소 하는데 실패함")
     })
     public ResponseEntity<Boolean> addLike(@RequestParam Long commendId) {
-        return ResponseEntity.ok(commentService.addCommentLike(commendId));
+        return ResponseEntity.ok(commentService.setCommentLike(commendId));
     }
 
     @PostMapping("/modify")

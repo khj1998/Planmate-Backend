@@ -11,7 +11,8 @@ import java.util.List;
 @Repository
 public interface MemberScrapRepository extends JpaRepository<MemberScrap,Long> {
     @Query("SELECT m from MemberScrap m " +
-            "WHERE m.owner.memberId = :ownerId AND m.post.postId  = :postId")
-    MemberScrap findByOwnerMemberIdAndPostPostId(@Param("ownerId") Long ownerId,@Param("postId") Long postId);
-    List<MemberScrap> findByOwnerMemberId(Long memberId);
+            "WHERE m.memberId = :ownerId AND m.postId  = :postId")
+    MemberScrap findMemberScrap(@Param("ownerId") Long ownerId,@Param("postId") Long postId);
+    List<MemberScrap> findByMemberId(Long memberId);
+    List<MemberScrap> findByPostId(Long postId);
 }

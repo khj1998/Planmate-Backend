@@ -4,7 +4,6 @@ import com.planmate.server.dto.request.comment.CommentCreateRequestDto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -27,11 +26,11 @@ public class Comment {
     @Column(name = "member_id",nullable = false,columnDefinition = "int")
     private Long memberId;
 
+    @Column(name = "post_id",nullable = false,columnDefinition = "int")
+    private Long postId;
+
     @Column(name = "content",nullable = false,columnDefinition = "longtext")
     private String content;
-
-    @Column(name = "comment_like",columnDefinition = "int")
-    private Long commentLike;
 
     @Column(name = "parent_comment",columnDefinition = "int")
     private Long parentCommentId;
@@ -44,6 +43,7 @@ public class Comment {
 
         return Comment.builder()
                 .memberId(memberId)
+                .postId(commentCreateRequestDto.getPostId())
                 .content(commentCreateRequestDto.getContent())
                 .updatedAt(now)
                 .build();

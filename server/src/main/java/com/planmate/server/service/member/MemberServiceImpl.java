@@ -114,7 +114,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public void signOut() {
-        memberRepository.deleteById(JwtUtil.getMemberId());
+        final Long memberId = JwtUtil.getMemberId();
+        memberRepository.deleteById(memberId);
+        tokenRepository.deleteByMemberId(memberId);
     }
 
     /**

@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 /**
  * @author 지승언
  * */
+
+@CrossOrigin
 @RestController
 @RequestMapping("/token")
 @RequiredArgsConstructor

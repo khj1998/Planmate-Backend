@@ -38,9 +38,9 @@ public class JwtCustomFilter extends OncePerRequestFilter {
 
         // bearer이 아니면 오류
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            log.error("JWT Token does not begin with Bearer String");
-
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, "JWT Token does not begin with Bearer String");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("text/plain;charset=UTF-8");
+            response.getWriter().write("JWT Token does not begin with Bearer String");
 
             return;
         }
@@ -50,18 +50,18 @@ public class JwtCustomFilter extends OncePerRequestFilter {
 
         // Token 검증
         if (!JwtUtil.validateToken(token)) {
-            log.error("JWT Token is not valid");
-
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, "JWT Token is not valid");
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.setContentType("text/plain;charset=UTF-8");
+            response.getWriter().write("JWT Token is not valid");
 
             return;
         }
 
         // Token 만료 체크
         if (JwtUtil.isExpired(token)) {
-            log.error("JWT is not expired");
-
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT Token is expired");
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.setContentType("text/plain;charset=UTF-8");
+            response.getWriter().write("JWT Token is expired");
 
             return;
         }
@@ -72,11 +72,9 @@ public class JwtCustomFilter extends OncePerRequestFilter {
         Optional<Member> member = memberService.findMemberById(memberId);
 
         if(member.isEmpty()) {
-            log.error("JWT Token is not valid");
-
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, "JWT Token is not valid");
-
-            filterChain.doFilter(request, response);
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.setContentType("text/plain;charset=UTF-8");
+            response.getWriter().write("JWT Token is not valid");
 
             return;
         }
@@ -91,8 +89,9 @@ public class JwtCustomFilter extends OncePerRequestFilter {
             role = "ROLE_USER";
         }
         else {
-            log.error("User has not permission");
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, "User has not permission");
+            response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+            response.setContentType("text/plain;charset=UTF-8");
+            response.getWriter().write("User do not have any permission");
 
             return;
         }

@@ -27,10 +27,7 @@ public class TendinousController {
     @PostMapping("alert")
     @ApiOperation(value = "신고 내용을 슬랙으로 전송")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "삭제 환료"),
-            @ApiResponse(responseCode = "401", description = "토큰 만료"),
-            @ApiResponse(responseCode = "403", description = "권한 없음"),
-            @ApiResponse(responseCode = "404", description = "해당 멤버 없음"),
+            @ApiResponse(responseCode = "200", description = "삭제 환료")
     })
     public ResponseEntity signOut(@RequestBody AlertRequestDto alertRequestDto) {
         alertService.alert(alertRequestDto);

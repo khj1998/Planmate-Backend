@@ -28,10 +28,7 @@ public class AuthorityController {
     @GetMapping("check")
     @ApiOperation(value = "사용자가 가진 권한 확인")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "조회 환료"),
-            @ApiResponse(responseCode = "401", description = "토큰 만료"),
-            @ApiResponse(responseCode = "403", description = "권한 없음"),
-            @ApiResponse(responseCode = "404", description = "해당 멤버 없음"),
+            @ApiResponse(responseCode = "200", description = "조회 환료")
     })
     public ResponseEntity<List<Authority>> getAuthorities() {
         return ResponseEntity.ok(memberService.getAuthorities());

@@ -43,10 +43,7 @@ public class SubjectController {
     @PostMapping("/edit")
     @ApiOperation("과목 정보 수정")
     @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "과목 수정 성공"),
-            @ApiResponse(responseCode = "401",description = "해당 사용자가 인증되지 않음 | 토큰 만료"),
-            @ApiResponse(responseCode = "403",description = "해당 사용자가 Member 권한이 아님"),
-            @ApiResponse(responseCode = "404",description = "과목을 수정하는데 실패함")
+            @ApiResponse(responseCode = "200",description = "과목 수정 성공")
     })
     public ResponseEntity<Subject> editSubject(@RequestBody SubjectEditRequestDto subjectEditRequestDto) {
         Subject subject = subjectService.editSubject(subjectEditRequestDto);
@@ -56,10 +53,7 @@ public class SubjectController {
     @DeleteMapping("/remove")
     @ApiOperation("과목 삭제")
     @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "과목 삭제 성공"),
-            @ApiResponse(responseCode = "401",description = "해당 사용자가 인증되지 않음 | 토큰 만료"),
-            @ApiResponse(responseCode = "403",description = "해당 사용자가 Member 권한이 아님"),
-            @ApiResponse(responseCode = "404",description = "과목을 삭제하는데 실패함")
+            @ApiResponse(responseCode = "200",description = "과목 삭제 성공")
     })
     public ResponseEntity<Boolean> deleteSubject(@RequestParam Long subjectId) {
         subjectService.deleteSubject(subjectId);

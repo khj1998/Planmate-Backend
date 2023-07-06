@@ -33,7 +33,7 @@ public class PostController {
             @ApiResponse(responseCode = "403",description = "해당 사용자가 Member 권한이 아님"),
             @ApiResponse(responseCode = "404",description = "게시물 N개 조회하는데 실패함")
     })
-    public ResponseEntity<List<PostResponseDto>> findRecentPost(@RequestParam Integer pages) {
+    public ResponseEntity<List<PostResponseDto>> findRecentPost(@RequestParam("pages") Integer pages) {
         List<PostResponseDto> responseDtoList = postService.findRecentPost(pages);
         return ResponseEntity.ok(responseDtoList);
     }
@@ -193,7 +193,7 @@ public class PostController {
             @ApiResponse(responseCode = "403",description = "해당 사용자가 Member 권한이 아님"),
             @ApiResponse(responseCode = "404",description = "해당 Id를 가진 게시물을 찾을 수 없음")
     })
-    public ResponseEntity removeScrap(@RequestParam Long postId) {
+    public ResponseEntity removeScrap(@RequestParam("postId") Long postId) {
         postService.deleteScrapById(postId);
         return ResponseEntity.ok().build();
     }

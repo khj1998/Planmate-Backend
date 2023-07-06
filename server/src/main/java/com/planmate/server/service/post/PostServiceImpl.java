@@ -45,6 +45,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public List<PostResponseDto> findRecentPost(Integer pages) {
         List<PostResponseDto> responseDtoList = new ArrayList<>();
         Sort sort = Sort.by(Sort.Direction.DESC,"updatedAt");
@@ -75,6 +76,7 @@ public class PostServiceImpl implements PostService {
      * @return PostResponseDto - 게시물이 성공적으로 데이터베이스에 저장되면 반환되는 게시물 응답 Dto 입니다.
      */
     @Override
+    @Transactional
     public PostResponseDto createPost(PostDto postDto) {
         Long memberId = JwtUtil.getMemberId();
         List<PostTag> postTagList = new ArrayList<>();
@@ -133,6 +135,7 @@ public class PostServiceImpl implements PostService {
      * @return PostResponseDto - 게시물이 성공적으로 수정되어 데이터베이스에 반영되면 반환되는 게시물 응답 Dto 입니다.
      */
     @Override
+    @Transactional
     public PostResponseDto editPost(PostDto postDto) {
         Long memberId = JwtUtil.getMemberId();
 
@@ -165,6 +168,7 @@ public class PostServiceImpl implements PostService {
      * @param postId 쿼리 파라미터로 전달받은 게시물의 Id 값입니다.
      */
     @Override
+    @Transactional
     public void deletePost(Long postId) {
         Long memberId = JwtUtil.getMemberId();
         Post post = postRepository.findMemberPost(postId,memberId)
@@ -319,6 +323,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public Boolean setPostLike(Long postId) {
         Long memberId = JwtUtil.getMemberId();
         PostLike postLike = postLikeRepository.findByPost(memberId,postId);

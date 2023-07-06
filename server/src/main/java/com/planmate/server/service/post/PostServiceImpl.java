@@ -10,6 +10,10 @@ import com.planmate.server.exception.post.ScrapNotFoundException;
 import com.planmate.server.repository.*;
 import com.planmate.server.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -25,16 +29,42 @@ public class PostServiceImpl implements PostService {
     private final MemberScrapRepository memberScrapRepository;
     private final PostTagRepository postTagRepository;
     private final PostLikeRepository postLikeRepository;
+    private final CommentRepository commentRepository;
 
     public PostServiceImpl(PostRepository postRepository, PostTagRepository postTagRepository
             ,MemberRepository memberRepository
             ,MemberScrapRepository memberScrapRepository
-            ,PostLikeRepository postLikeRepository) {
+            ,PostLikeRepository postLikeRepository
+            ,CommentRepository commentRepository) {
         this.postRepository = postRepository;
         this.memberRepository = memberRepository;
         this.memberScrapRepository = memberScrapRepository;
         this.postTagRepository = postTagRepository;
         this.postLikeRepository = postLikeRepository;
+        this.commentRepository = commentRepository;
+    }
+
+    @Override
+    public List<PostResponseDto> findRecentPost(Integer pages) {
+        List<PostResponseDto> responseDtoList = new ArrayList<>();
+        Sort sort = Sort.by(Sort.Direction.DESC,"updatedAt");
+        Pageable pageable = PageRequest.of(pages,10,sort);
+        Page<Post> postList = postRepository.findAll(pageable);
+
+        for (Post post : postList) {
+            Member member = memberRepository.findById(post.getMemberId())
+                    .orElseThrow(() -> new MemberNotFoundException(post.getMemberId()));
+
+            List<PostLike> postLikeList = postLikeRepository.findAllByPostId(post.getPostId());
+            List<MemberScrap> scrapList = memberScrapRepository.findByPostId(post.getPostId());
+            List<PostTag> postTagList = postTagRepository.findByPostId(post.getPostId());
+
+            PostResponseDto responseDto = PostResponseDto.of(post,member.getMemberName(),
+                    (long) postLikeList.size(),(long) scrapList.size(),postTagList);
+            responseDtoList.add(responseDto);
+        }
+
+        return responseDtoList;
     }
 
     /**

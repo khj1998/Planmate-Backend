@@ -34,10 +34,7 @@ public class MemberController {
     @GetMapping("info")
     @ApiOperation(value = "사용자 정보 조회")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "조회 환료"),
-            @ApiResponse(responseCode = "401", description = "토큰 만료"),
-            @ApiResponse(responseCode = "403", description = "권한 없음"),
-            @ApiResponse(responseCode = "404", description = "해당 멤버 없음"),
+            @ApiResponse(responseCode = "200", description = "조회 환료")
     })
     public ResponseEntity<Member> getInfo() {
         return ResponseEntity.ok(memberService.getInfo());
@@ -46,10 +43,7 @@ public class MemberController {
     @DeleteMapping("sign-out")
     @ApiOperation(value = "회원 탈퇴")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "삭제 환료"),
-            @ApiResponse(responseCode = "401", description = "토큰 만료"),
-            @ApiResponse(responseCode = "403", description = "권한 없음"),
-            @ApiResponse(responseCode = "404", description = "해당 멤버 없음"),
+            @ApiResponse(responseCode = "200", description = "삭제 환료")
     })
     public ResponseEntity signOut() {
         memberService.signOut();
@@ -59,10 +53,7 @@ public class MemberController {
     @GetMapping("name")
     @ApiOperation(value = "회원 이름 변경")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "이름 변경 환료"),
-            @ApiResponse(responseCode = "401", description = "토큰 만료"),
-            @ApiResponse(responseCode = "403", description = "권한 없음"),
-            @ApiResponse(responseCode = "404", description = "해당 멤버 없음"),
+            @ApiResponse(responseCode = "200", description = "이름 변경 환료")
     })
     public ResponseEntity<Member> modifyName(@RequestParam(value = "name") String name) {
         return ResponseEntity.ok(memberService.modifyName(name));
@@ -70,10 +61,7 @@ public class MemberController {
 
     @ApiOperation(value = "프로필 이미지 변경")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "이미지 변경 환료"),
-            @ApiResponse(responseCode = "401", description = "토큰 만료"),
-            @ApiResponse(responseCode = "403", description = "권한 없음"),
-            @ApiResponse(responseCode = "404", description = "해당 멤버 없음"),
+            @ApiResponse(responseCode = "200", description = "이미지 변경 환료")
     })
     @PostMapping(value = "/img", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Member> modifyImg(@RequestParam(value = "image")MultipartFile multipartFile) throws IOException {

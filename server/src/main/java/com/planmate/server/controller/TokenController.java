@@ -32,10 +32,7 @@ public class TokenController {
     @GetMapping("/expired_at")
     @ApiOperation("토큰 만료 확인 api")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "정상 응답"),
-            @ApiResponse(responseCode = "404", description = "해당 정보를 가진 Member가 없음"),
-            @ApiResponse(responseCode = "403", description = "해당 사용자가 Member 권한이 아님"),
-            @ApiResponse(responseCode = "401", description = "해당 사용자가 인증되지 않음 | 토큰 만료")
+            @ApiResponse(responseCode = "200", description = "정상 응답")
     })
     public ResponseEntity<Boolean> checkExpiredAt() {
         return ResponseEntity.ok(JwtUtil.isExpired(JwtUtil.getAccessToken()));
@@ -48,10 +45,7 @@ public class TokenController {
      * */
     @PostMapping("/refresh")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "정상 응답"),
-            @ApiResponse(responseCode = "404", description = "해당 정보를 가진 Member가 없음"),
-            @ApiResponse(responseCode = "403", description = "해당 사용자가 Member 권한이 아님"),
-            @ApiResponse(responseCode = "401", description = "해당 사용자가 인증되지 않음 | 토큰 만료")
+            @ApiResponse(responseCode = "200", description = "정상 응답")
     })
     public ResponseEntity<Token> reissueAccessToken(@RequestBody RefreshTokenDto refreshTokenDto){
         return ResponseEntity.ok(tokenService.reissueAccessToken(refreshTokenDto));

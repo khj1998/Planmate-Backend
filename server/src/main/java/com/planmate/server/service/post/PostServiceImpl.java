@@ -58,9 +58,10 @@ public class PostServiceImpl implements PostService {
             List<PostLike> postLikeList = postLikeRepository.findAllByPostId(post.getPostId());
             List<MemberScrap> scrapList = memberScrapRepository.findByPostId(post.getPostId());
             List<PostTag> postTagList = postTagRepository.findByPostId(post.getPostId());
+            List<Comment> commentList = commentRepository.findByPostId(post.getPostId());
 
             PostResponseDto responseDto = PostResponseDto.of(post,member.getMemberName(),
-                    (long) postLikeList.size(),(long) scrapList.size(),postTagList);
+                    (long) postLikeList.size(),(long) scrapList.size(),(long) commentList.size(),postTagList);
             responseDtoList.add(responseDto);
         }
 
@@ -91,7 +92,8 @@ public class PostServiceImpl implements PostService {
 
         postTagRepository.saveAll(postTagList);
 
-        return PostResponseDto.of(post,owner.getMemberName(),0L,0L,postTagList);
+        return PostResponseDto.of(post,owner.getMemberName(),
+                0L,0L,0L,postTagList);
     }
 
     /**
@@ -114,11 +116,14 @@ public class PostServiceImpl implements PostService {
         List<PostTag> postTagList = postTagRepository.findByPostId(postId);
         List<MemberScrap> memberScrapList = memberScrapRepository.findByPostId(postId);
         List<PostLike> postLikeList = postLikeRepository.findAllByPostId(postId);
+        List<Comment> commentList = commentRepository.findByPostId(post.getPostId());
 
         Long likeCount = (long) postLikeList.size();
         Long scrapCount = (long) memberScrapList.size();
+        Long commentCount = (long) commentList.size();
 
-        return PostResponseDto.of(post,member.getMemberName(),likeCount ,scrapCount,postTagList);
+        return PostResponseDto.of(post,member.getMemberName()
+                ,likeCount ,scrapCount,commentCount,postTagList);
     }
 
     /**
@@ -144,11 +149,14 @@ public class PostServiceImpl implements PostService {
         List<PostTag> postTagList = postTagRepository.findByPostId(postDto.getId());
         List<MemberScrap> memberScrapList = memberScrapRepository.findByPostId(post.getPostId());
         List<PostLike> postLikeList = postLikeRepository.findAllByPostId(post.getPostId());
+        List<Comment> commentList = commentRepository.findByPostId(post.getPostId());
 
         Long likeCount = (long) postLikeList.size();
         Long scrapCount = (long) memberScrapList.size();
+        Long commentCount = (long) commentList.size();
 
-        return PostResponseDto.of(post,member.getMemberName(),likeCount,scrapCount,postTagList);
+        return PostResponseDto.of(post,member.getMemberName(),
+                likeCount,scrapCount,commentCount,postTagList);
     }
 
     /**
@@ -184,11 +192,14 @@ public class PostServiceImpl implements PostService {
             List<PostTag> postTagList = postTagRepository.findByPostId(post.getPostId());
             List<MemberScrap> memberScrapList = memberScrapRepository.findByPostId(post.getPostId());
             List<PostLike> postLikeList = postLikeRepository.findAllByPostId(post.getPostId());
+            List<Comment> commentList = commentRepository.findByPostId(post.getPostId());
 
             Long likeCount = (long) postLikeList.size();
             Long scrapCount = (long) memberScrapList.size();
+            Long commentCount = (long) commentList.size();
 
-            PostResponseDto responseDto = PostResponseDto.of(post, member.getMemberName(),likeCount,scrapCount,postTagList);
+            PostResponseDto responseDto = PostResponseDto.of(post, member.getMemberName(),
+                    likeCount,scrapCount,commentCount,postTagList);
             responseDtoList.add(responseDto);
         }
 
@@ -241,11 +252,14 @@ public class PostServiceImpl implements PostService {
             List<PostTag> postTagList = postTagRepository.findByPostId(post.getPostId());
             List<PostLike> postLikeList = postLikeRepository.findAllByPostId(post.getPostId());
             List<MemberScrap> memberScrapList =  memberScrapRepository.findByPostId(post.getPostId());
+            List<Comment> commentList = commentRepository.findByPostId(post.getPostId());
 
             Long likeCount = (long) postLikeList.size();
             Long scrapCount = (long) memberScrapList.size();
+            Long commentCount = (long) commentList.size();
 
-            PostResponseDto responseDto = PostResponseDto.of(post,member.getMemberName(),likeCount,scrapCount,postTagList);
+            PostResponseDto responseDto = PostResponseDto.of(post,member.getMemberName(),
+                    likeCount,scrapCount,commentCount,postTagList);
             responseDtoList.add(responseDto);
         }
 
@@ -293,9 +307,10 @@ public class PostServiceImpl implements PostService {
             List<PostLike> postLikeList = postLikeRepository.findAllByPostId(post.getPostId());
             List<MemberScrap> scrapList = memberScrapRepository.findByPostId(post.getPostId());
             List<PostTag> postTags = postTagRepository.findByPostId(post.getPostId());
+            List<Comment> commentList = commentRepository.findByPostId(post.getPostId());
 
             PostResponseDto responseDto = PostResponseDto.of(post,member.getMemberName(),
-                                        (long) postLikeList.size(),(long) scrapList.size(),postTags);
+                                        (long) postLikeList.size(),(long) scrapList.size(),(long) commentList.size(),postTags);
 
             responseDtoList.add(responseDto);
         }

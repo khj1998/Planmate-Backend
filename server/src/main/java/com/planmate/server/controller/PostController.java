@@ -1,5 +1,6 @@
 package com.planmate.server.controller;
 
+import com.planmate.server.domain.Post;
 import com.planmate.server.dto.request.post.PostDto;
 import com.planmate.server.dto.request.post.PostLikeDto;
 import com.planmate.server.dto.request.post.ScrapDto;
@@ -9,9 +10,12 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.print.Pageable;
 import java.util.List;
 
 @RestController
@@ -20,6 +24,19 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
+
+    @GetMapping("/find/all")
+    @ApiOperation("게시물 N개 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200",description = "게시물 최신 N개 조회 성공"),
+            @ApiResponse(responseCode = "401",description = "해당 사용자가 인증되지 않음 | 토큰 만료"),
+            @ApiResponse(responseCode = "403",description = "해당 사용자가 Member 권한이 아님"),
+            @ApiResponse(responseCode = "404",description = "게시물 N개 조회하는데 실패함")
+    })
+    public ResponseEntity<List<PostResponseDto>> findRecentPost(@RequestParam Integer pages) {
+        List<PostResponseDto> responseDtoList = postService.findRecentPost(pages);
+        return ResponseEntity.ok(responseDtoList);
+    }
 
     /**
      * 게시물 생성 요청을 받습니다.

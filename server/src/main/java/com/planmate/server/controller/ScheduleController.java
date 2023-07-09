@@ -32,10 +32,7 @@ public class ScheduleController {
     @PostMapping("/add")
     @ApiOperation(value = "d-day 추가")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "추가 환료"),
-            @ApiResponse(responseCode = "401", description = "토큰 만료"),
-            @ApiResponse(responseCode = "403", description = "관리자 권한 없음"),
-            @ApiResponse(responseCode = "404", description = "해당 멤버 없음"),
+            @ApiResponse(responseCode = "200", description = "추가 환료")
     })
     public ResponseEntity<ScheduleResponseDto> addDDay(@RequestBody AddScheduleRequestDto dto) {
         return ResponseEntity.ok(scheduleService.addDDay(dto));
@@ -44,10 +41,7 @@ public class ScheduleController {
     @DeleteMapping("/remove")
     @ApiOperation(value = "d-day 삭제")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "삭제 환료"),
-            @ApiResponse(responseCode = "401", description = "토큰 만료"),
-            @ApiResponse(responseCode = "403", description = "관리자 권한 없음"),
-            @ApiResponse(responseCode = "404", description = "해당 멤버 없음"),
+            @ApiResponse(responseCode = "200", description = "삭제 환료")
     })
     public ResponseEntity removeDDay(@RequestParam(value = "id") Long id) {
         scheduleService.deleteDDay(id);
@@ -57,10 +51,7 @@ public class ScheduleController {
     @PostMapping("/modify")
     @ApiOperation(value = "d-day 수정")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "수정 환료"),
-            @ApiResponse(responseCode = "401", description = "토큰 만료"),
-            @ApiResponse(responseCode = "403", description = "관리자 권한 없음"),
-            @ApiResponse(responseCode = "404", description = "해당 멤버 없음"),
+            @ApiResponse(responseCode = "200", description = "수정 환료")
     })
     public ResponseEntity<ScheduleResponseDto> modifyDDay(@RequestBody ScheduleEditRequestDto dto) {
         return ResponseEntity.ok(scheduleService.modifySchedule(dto));
@@ -69,10 +60,7 @@ public class ScheduleController {
     @GetMapping("/all")
     @ApiOperation(value = "d-day 전체 조회")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "조회 환료"),
-            @ApiResponse(responseCode = "401", description = "토큰 만료"),
-            @ApiResponse(responseCode = "403", description = "관리자 권한 없음"),
-            @ApiResponse(responseCode = "404", description = "해당 멤버 없음"),
+            @ApiResponse(responseCode = "200", description = "조회 환료")
     })
     public ResponseEntity<List<Schedule>> findAll() {
         return ResponseEntity.ok(scheduleService.findAll());
@@ -81,10 +69,7 @@ public class ScheduleController {
     @GetMapping("/min")
     @ApiOperation(value = "d-day 가장 적은거 조회")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "조회 환료"),
-            @ApiResponse(responseCode = "401", description = "토큰 만료"),
-            @ApiResponse(responseCode = "403", description = "관리자 권한 없음"),
-            @ApiResponse(responseCode = "404", description = "해당 멤버 없음"),
+            @ApiResponse(responseCode = "200", description = "조회 환료")
     })
     public ResponseEntity<ScheduleResponseDto> findMin() {
         return ResponseEntity.ok(scheduleService.findMin());

@@ -14,6 +14,7 @@ import com.planmate.server.vo.GoogleIdTokenVo;
 import lombok.Generated;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.codec.binary.Base64;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.charset.StandardCharsets;
@@ -113,8 +114,11 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public void signOut() {
-        memberRepository.deleteById(JwtUtil.getMemberId());
+        final Long memberId = JwtUtil.getMemberId();
+        memberRepository.deleteById(memberId);
+        tokenRepository.deleteByMemberId(memberId);
     }
 
     /**

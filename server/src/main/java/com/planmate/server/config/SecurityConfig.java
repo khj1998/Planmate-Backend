@@ -75,6 +75,8 @@ public class SecurityConfig {
                 .configurationSource(corsConfigurationSource())
                 .and()
                 .csrf().disable()
+                .cors().and()
+
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .addFilterAfter(new JwtCustomFilter(memberService), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()

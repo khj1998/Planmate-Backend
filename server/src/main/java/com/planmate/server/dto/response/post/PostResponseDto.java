@@ -29,8 +29,10 @@ public class PostResponseDto {
     private Date updatedAt;
     private Long likeCount;
     private Long scrapCount;
+    private Long commentCount;
 
-    public static PostResponseDto of(Post post,String nickname,Long likeCount,Long scrapCount,List<PostTag> postTagList) {
+    public static PostResponseDto of(Post post,String nickname,Long likeCount,
+                                     Long scrapCount,Long commentCount,List<PostTag> postTagList) {
         List<String> tagList = new ArrayList<>();
 
         for (PostTag tag : postTagList) {
@@ -45,6 +47,7 @@ public class PostResponseDto {
                 .postTagList(tagList)
                 .likeCount(likeCount)
                 .scrapCount(scrapCount)
+                .commentCount(commentCount)
                 .updatedAt(post.getUpdatedAt())
                 .build();
     }

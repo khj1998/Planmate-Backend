@@ -10,6 +10,10 @@ import com.planmate.server.exception.post.ScrapNotFoundException;
 import com.planmate.server.repository.*;
 import com.planmate.server.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -25,16 +29,44 @@ public class PostServiceImpl implements PostService {
     private final MemberScrapRepository memberScrapRepository;
     private final PostTagRepository postTagRepository;
     private final PostLikeRepository postLikeRepository;
+    private final CommentRepository commentRepository;
 
     public PostServiceImpl(PostRepository postRepository, PostTagRepository postTagRepository
             ,MemberRepository memberRepository
             ,MemberScrapRepository memberScrapRepository
-            ,PostLikeRepository postLikeRepository) {
+            ,PostLikeRepository postLikeRepository
+            ,CommentRepository commentRepository) {
         this.postRepository = postRepository;
         this.memberRepository = memberRepository;
         this.memberScrapRepository = memberScrapRepository;
         this.postTagRepository = postTagRepository;
         this.postLikeRepository = postLikeRepository;
+        this.commentRepository = commentRepository;
+    }
+
+    @Override
+    @Transactional
+    public List<PostResponseDto> findRecentPost(Integer pages) {
+        List<PostResponseDto> responseDtoList = new ArrayList<>();
+        Sort sort = Sort.by(Sort.Direction.DESC,"updatedAt");
+        Pageable pageable = PageRequest.of(pages,10,sort);
+        Page<Post> postList = postRepository.findAll(pageable);
+
+        for (Post post : postList) {
+            Member member = memberRepository.findById(post.getMemberId())
+                    .orElseThrow(() -> new MemberNotFoundException(post.getMemberId()));
+
+            List<PostLike> postLikeList = postLikeRepository.findAllByPostId(post.getPostId());
+            List<MemberScrap> scrapList = memberScrapRepository.findByPostId(post.getPostId());
+            List<PostTag> postTagList = postTagRepository.findByPostId(post.getPostId());
+            List<Comment> commentList = commentRepository.findByPostId(post.getPostId());
+
+            PostResponseDto responseDto = PostResponseDto.of(post,member.getMemberName(),
+                    (long) postLikeList.size(),(long) scrapList.size(),(long) commentList.size(),postTagList);
+            responseDtoList.add(responseDto);
+        }
+
+        return responseDtoList;
     }
 
     /**
@@ -44,6 +76,7 @@ public class PostServiceImpl implements PostService {
      * @return PostResponseDto - 게시물이 성공적으로 데이터베이스에 저장되면 반환되는 게시물 응답 Dto 입니다.
      */
     @Override
+    @Transactional
     public PostResponseDto createPost(PostDto postDto) {
         Long memberId = JwtUtil.getMemberId();
         List<PostTag> postTagList = new ArrayList<>();
@@ -61,7 +94,8 @@ public class PostServiceImpl implements PostService {
 
         postTagRepository.saveAll(postTagList);
 
-        return PostResponseDto.of(post,owner.getMemberName(),0L,0L,postTagList);
+        return PostResponseDto.of(post,owner.getMemberName(),
+                0L,0L,0L,postTagList);
     }
 
     /**
@@ -84,11 +118,14 @@ public class PostServiceImpl implements PostService {
         List<PostTag> postTagList = postTagRepository.findByPostId(postId);
         List<MemberScrap> memberScrapList = memberScrapRepository.findByPostId(postId);
         List<PostLike> postLikeList = postLikeRepository.findAllByPostId(postId);
+        List<Comment> commentList = commentRepository.findByPostId(post.getPostId());
 
         Long likeCount = (long) postLikeList.size();
         Long scrapCount = (long) memberScrapList.size();
+        Long commentCount = (long) commentList.size();
 
-        return PostResponseDto.of(post,member.getMemberName(),likeCount ,scrapCount,postTagList);
+        return PostResponseDto.of(post,member.getMemberName()
+                ,likeCount ,scrapCount,commentCount,postTagList);
     }
 
     /**
@@ -98,6 +135,7 @@ public class PostServiceImpl implements PostService {
      * @return PostResponseDto - 게시물이 성공적으로 수정되어 데이터베이스에 반영되면 반환되는 게시물 응답 Dto 입니다.
      */
     @Override
+    @Transactional
     public PostResponseDto editPost(PostDto postDto) {
         Long memberId = JwtUtil.getMemberId();
 
@@ -114,11 +152,14 @@ public class PostServiceImpl implements PostService {
         List<PostTag> postTagList = postTagRepository.findByPostId(postDto.getId());
         List<MemberScrap> memberScrapList = memberScrapRepository.findByPostId(post.getPostId());
         List<PostLike> postLikeList = postLikeRepository.findAllByPostId(post.getPostId());
+        List<Comment> commentList = commentRepository.findByPostId(post.getPostId());
 
         Long likeCount = (long) postLikeList.size();
         Long scrapCount = (long) memberScrapList.size();
+        Long commentCount = (long) commentList.size();
 
-        return PostResponseDto.of(post,member.getMemberName(),likeCount,scrapCount,postTagList);
+        return PostResponseDto.of(post,member.getMemberName(),
+                likeCount,scrapCount,commentCount,postTagList);
     }
 
     /**
@@ -127,6 +168,7 @@ public class PostServiceImpl implements PostService {
      * @param postId 쿼리 파라미터로 전달받은 게시물의 Id 값입니다.
      */
     @Override
+    @Transactional
     public void deletePost(Long postId) {
         Long memberId = JwtUtil.getMemberId();
         Post post = postRepository.findMemberPost(postId,memberId)
@@ -154,11 +196,14 @@ public class PostServiceImpl implements PostService {
             List<PostTag> postTagList = postTagRepository.findByPostId(post.getPostId());
             List<MemberScrap> memberScrapList = memberScrapRepository.findByPostId(post.getPostId());
             List<PostLike> postLikeList = postLikeRepository.findAllByPostId(post.getPostId());
+            List<Comment> commentList = commentRepository.findByPostId(post.getPostId());
 
             Long likeCount = (long) postLikeList.size();
             Long scrapCount = (long) memberScrapList.size();
+            Long commentCount = (long) commentList.size();
 
-            PostResponseDto responseDto = PostResponseDto.of(post, member.getMemberName(),likeCount,scrapCount,postTagList);
+            PostResponseDto responseDto = PostResponseDto.of(post, member.getMemberName(),
+                    likeCount,scrapCount,commentCount,postTagList);
             responseDtoList.add(responseDto);
         }
 
@@ -211,11 +256,14 @@ public class PostServiceImpl implements PostService {
             List<PostTag> postTagList = postTagRepository.findByPostId(post.getPostId());
             List<PostLike> postLikeList = postLikeRepository.findAllByPostId(post.getPostId());
             List<MemberScrap> memberScrapList =  memberScrapRepository.findByPostId(post.getPostId());
+            List<Comment> commentList = commentRepository.findByPostId(post.getPostId());
 
             Long likeCount = (long) postLikeList.size();
             Long scrapCount = (long) memberScrapList.size();
+            Long commentCount = (long) commentList.size();
 
-            PostResponseDto responseDto = PostResponseDto.of(post,member.getMemberName(),likeCount,scrapCount,postTagList);
+            PostResponseDto responseDto = PostResponseDto.of(post,member.getMemberName(),
+                    likeCount,scrapCount,commentCount,postTagList);
             responseDtoList.add(responseDto);
         }
 
@@ -263,9 +311,10 @@ public class PostServiceImpl implements PostService {
             List<PostLike> postLikeList = postLikeRepository.findAllByPostId(post.getPostId());
             List<MemberScrap> scrapList = memberScrapRepository.findByPostId(post.getPostId());
             List<PostTag> postTags = postTagRepository.findByPostId(post.getPostId());
+            List<Comment> commentList = commentRepository.findByPostId(post.getPostId());
 
             PostResponseDto responseDto = PostResponseDto.of(post,member.getMemberName(),
-                                        (long) postLikeList.size(),(long) scrapList.size(),postTags);
+                                        (long) postLikeList.size(),(long) scrapList.size(),(long) commentList.size(),postTags);
 
             responseDtoList.add(responseDto);
         }
@@ -274,6 +323,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public Boolean setPostLike(Long postId) {
         Long memberId = JwtUtil.getMemberId();
         PostLike postLike = postLikeRepository.findByPost(memberId,postId);

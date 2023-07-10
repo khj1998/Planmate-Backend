@@ -11,6 +11,7 @@ public interface PostService {
     PostResponseDto findByPostId(Long postId);
     void deletePost(Long postId);
     void deleteScrapById(Long postId);
+    List<PostResponseDto> findRecentPost(Integer pages);
     List<PostResponseDto> findMyPost();
     PostResponseDto editPost(PostDto postDto);
     Boolean scrapPost(ScrapDto scrapDto);

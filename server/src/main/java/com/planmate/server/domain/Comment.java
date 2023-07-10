@@ -1,5 +1,6 @@
 package com.planmate.server.domain;
 
+import com.planmate.server.dto.request.comment.ChildCommentRequestDto;
 import com.planmate.server.dto.request.comment.CommentCreateRequestDto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -45,6 +46,18 @@ public class Comment {
                 .memberId(memberId)
                 .postId(commentCreateRequestDto.getPostId())
                 .content(commentCreateRequestDto.getContent())
+                .updatedAt(now)
+                .build();
+    }
+
+    public static Comment of(ChildCommentRequestDto childCommentRequestDto,Long memberId) {
+        LocalDate now = LocalDate.now();
+
+        return Comment.builder()
+                .memberId(memberId)
+                .postId(childCommentRequestDto.getPostId())
+                .parentCommentId(childCommentRequestDto.getParentCommentId())
+                .content(childCommentRequestDto.getContent())
                 .updatedAt(now)
                 .build();
     }

@@ -3,16 +3,25 @@ package com.planmate.server.service.comment;
 import com.planmate.server.domain.Comment;
 import com.planmate.server.domain.CommentLike;
 import com.planmate.server.domain.Member;
+import com.planmate.server.domain.Post;
+import com.planmate.server.dto.request.comment.ChildCommentRequestDto;
 import com.planmate.server.dto.request.comment.CommentCreateRequestDto;
 import com.planmate.server.dto.request.comment.CommentEditRequestDto;
+import com.planmate.server.dto.request.comment.CommentRequestDto;
 import com.planmate.server.dto.response.comment.CommentResponseDto;
 import com.planmate.server.exception.comment.CommentNotFoundException;
 import com.planmate.server.exception.member.MemberNotFoundException;
+import com.planmate.server.exception.post.PostNotFoundException;
 import com.planmate.server.repository.CommentLikeRepository;
 import com.planmate.server.repository.CommentRepository;
 import com.planmate.server.repository.MemberRepository;
+import com.planmate.server.repository.PostRepository;
 import com.planmate.server.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -20,19 +29,21 @@ import java.util.List;
 
 @Slf4j
 public class CommentServiceImpl implements CommentService {
+    private final PostRepository postRepository;
     private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
     private final CommentLikeRepository commentLikeRepository;
 
-    public CommentServiceImpl(CommentRepository commentRepository,MemberRepository memberRepository
+    public CommentServiceImpl(PostRepository postRepository,CommentRepository commentRepository,MemberRepository memberRepository
             ,CommentLikeRepository commentLikeRepository) {
+        this.postRepository = postRepository;
         this.commentRepository = commentRepository;
         this.memberRepository = memberRepository;
         this.commentLikeRepository = commentLikeRepository;
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<CommentResponseDto> findMyComment() {
         List<CommentResponseDto> responseDtoList = new ArrayList<>();
         Long memberId = JwtUtil.getMemberId();
@@ -52,27 +63,44 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public Comment createComment(CommentCreateRequestDto commentCreateRequestDto) {
+    public CommentResponseDto createComment(CommentCreateRequestDto commentCreateRequestDto) {
         Long memberId = JwtUtil.getMemberId();
         Comment comment = Comment.of(commentCreateRequestDto,memberId);
         commentRepository.save(comment);
 
-        return comment;
+        return CommentResponseDto.of(comment);
     }
 
     @Override
     @Transactional
-    public Comment editComment(CommentEditRequestDto commentEditRequestDto) {
+    public CommentResponseDto createChildComment(ChildCommentRequestDto childCommentRequestDto) {
+        Long memberId = JwtUtil.getMemberId();
+        Comment parentComment = commentRepository.findById(childCommentRequestDto.getParentCommentId())
+                .orElseThrow(() -> new CommentNotFoundException(childCommentRequestDto.getParentCommentId()));
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundException(memberId));
+
+        Comment childComment = Comment.of(childCommentRequestDto,memberId);
+        commentRepository.save(childComment);
+
+        return CommentResponseDto.of(childComment,member.getMemberName(),0L);
+    }
+
+    @Override
+    @Transactional
+    public CommentResponseDto editComment(CommentEditRequestDto commentEditRequestDto) {
         Long memberId = JwtUtil.getMemberId();
         Comment comment = commentRepository.findComment(memberId,commentEditRequestDto.getCommentId())
               .orElseThrow(() -> new CommentNotFoundException(commentEditRequestDto.getCommentId()));
 
         comment.setContent(commentEditRequestDto.getContent());
         commentRepository.save(comment);
-        return comment;
+        return CommentResponseDto.of(comment);
     }
 
     @Override
+    @Transactional
     public Boolean setCommentLike(Long commentId) {
         Long userId = JwtUtil.getMemberId();
 
@@ -99,5 +127,33 @@ public class CommentServiceImpl implements CommentService {
                 .orElseThrow(() -> new CommentNotFoundException(commentId));
 
         commentRepository.delete(comment);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CommentResponseDto> findRecentComment(CommentRequestDto commentRequestDto) {
+        List<CommentResponseDto> responseDtoList = new ArrayList<>();
+
+        Post post = postRepository.findById(commentRequestDto.getPostId())
+                .orElseThrow(() -> new PostNotFoundException(commentRequestDto.getPostId()));
+
+        Sort sort = Sort.by(Sort.Direction.DESC,"updatedAt");
+        Pageable pageable = PageRequest.of(commentRequestDto.getPages(),10,sort);
+
+        List<Comment> comments = commentRepository.findRecentComment(commentRequestDto.getPostId(), pageable);
+
+        for (Comment comment : comments) {
+            Member member = memberRepository.findById(comment.getMemberId())
+                    .orElseThrow(() -> new MemberNotFoundException(comment.getMemberId()));
+
+            Boolean isAuthor = comment.getMemberId().equals(post.getMemberId());
+            List<CommentLike> commentLikeList = commentLikeRepository.findAllByCommentId(comment.getCommentId());
+
+            CommentResponseDto responseDto = CommentResponseDto.of(comment,member.getMemberName()
+                    ,(long) commentLikeList.size(),isAuthor);
+            responseDtoList.add(responseDto);
+        }
+
+        return responseDtoList;
     }
 }

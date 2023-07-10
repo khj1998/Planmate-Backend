@@ -98,7 +98,7 @@ public class SpringConfig {
 
     @Bean
     public CommentService commentService() {
-        return new CommentServiceImpl(commentRepository, memberRepository,commentLikeRepository);
+        return new CommentServiceImpl(postRepository,commentRepository, memberRepository,commentLikeRepository);
     }
 
     @Bean

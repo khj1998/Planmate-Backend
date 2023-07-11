@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CommentResponseDto {
+    private Long commentId;
     private String memberName;
     private LocalDateTime updatedAt;
     private String content;
@@ -22,6 +23,7 @@ public class CommentResponseDto {
 
     public static CommentResponseDto of(Comment comment,String memberName,Long likeCount,Boolean isAuthor) {
         return CommentResponseDto.builder()
+                .commentId(comment.getCommentId())
                 .memberName(memberName)
                 .content(comment.getContent())
                 .updatedAt(comment.getUpdatedAt())
@@ -32,6 +34,7 @@ public class CommentResponseDto {
 
     public static CommentResponseDto of(Comment comment,String memberName,Long likeCount) {
         return CommentResponseDto.builder()
+                .commentId(comment.getCommentId())
                 .memberName(memberName)
                 .content(comment.getContent())
                 .updatedAt(comment.getUpdatedAt())
@@ -41,6 +44,7 @@ public class CommentResponseDto {
 
     public static CommentResponseDto of(Comment comment) {
         return CommentResponseDto.builder()
+                .commentId(comment.getCommentId())
                 .content(comment.getContent())
                 .updatedAt(comment.getUpdatedAt())
                 .likeCount(0L)

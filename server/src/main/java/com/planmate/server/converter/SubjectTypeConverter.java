@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 public enum SubjectTypeConverter {
-    공부(0L),
+    과목(0L),
     운동(1L),
     기타(2L);
 

@@ -1,36 +1,82 @@
 package com.planmate.server.service.subject;
 
-import com.planmate.server.domain.MemberSubject;
 import com.planmate.server.domain.Subject;
 import com.planmate.server.dto.request.subject.SubjectCreateRequestDto;
 import com.planmate.server.dto.request.subject.SubjectEditRequestDto;
+import com.planmate.server.dto.request.subject.SubjectTimeRequest;
+import com.planmate.server.dto.response.subject.SubjectCreateResponse;
+import com.planmate.server.dto.response.subject.SubjectResponse;
+import com.planmate.server.dto.response.subject.SubjectTimeResponse;
 import com.planmate.server.exception.subject.SubjectNotFoundException;
-import com.planmate.server.repository.MemberSubjectRepository;
 import com.planmate.server.repository.SubjectRepository;
 import com.planmate.server.util.JwtUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
+@Slf4j
 public class SubjectServiceImpl implements SubjectService {
     private final SubjectRepository subjectRepository;
-    private final MemberSubjectRepository memberSubjectRepository;
 
-    public SubjectServiceImpl(SubjectRepository subjectRepository,MemberSubjectRepository memberSubjectRepository) {
+    public SubjectServiceImpl(SubjectRepository subjectRepository) {
         this.subjectRepository = subjectRepository;
-        this.memberSubjectRepository = memberSubjectRepository;
     }
 
     @Override
     @Transactional
-    public Subject createSubject(SubjectCreateRequestDto subjectCreateRequestDto) {
+    public List<SubjectResponse> findSubject(Long subjectId) {
+        List<SubjectResponse> responseList = new ArrayList<>();
+        Long memberId = JwtUtil.getMemberId();
+        List<Subject> subjectList = subjectRepository.findByMemberId(memberId);
+
+        for (Subject subject : subjectList) {
+            SubjectResponse response = SubjectResponse.of(subject);
+            responseList.add(response);
+        }
+
+        return responseList;
+    }
+
+    @Override
+    @Transactional
+    public SubjectCreateResponse createSubject(SubjectCreateRequestDto subjectCreateRequestDto) {
         Long memberId = JwtUtil.getMemberId();
 
-        Subject subject = Subject.of(subjectCreateRequestDto);
+        Subject subject = Subject.of(subjectCreateRequestDto,memberId);
         subjectRepository.save(subject);
 
-        MemberSubject memberSubject = MemberSubject.of(memberId, subject.getId());
-        memberSubjectRepository.save(memberSubject);
+        return SubjectCreateResponse.of(subject);
+    }
 
-        return subject;
+    @Override
+    @Transactional
+    public Boolean initTime() {
+        Long memberId = JwtUtil.getMemberId();
+        List<Subject> subjectList = subjectRepository.findByMemberId(memberId);
+
+        for (Subject subject : subjectList) {
+            subject.initTime();
+        }
+        subjectRepository.saveAll(subjectList);
+
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public SubjectTimeResponse updateSubjectTime(SubjectTimeRequest subjectTimeRequest) {
+        Long memberId = JwtUtil.getMemberId();
+        Subject subject = subjectRepository.findSubject(memberId, subjectTimeRequest.getSubjectId())
+                .orElseThrow(() -> new SubjectNotFoundException(subjectTimeRequest.getSubjectId()));
+
+        subject.updateStudyTime(subjectTimeRequest.getStartAt(),subjectTimeRequest.getEndAt());
+        subject.updateRestTime(subjectTimeRequest.getStartAt());
+        subject.updateStartEndTime(subjectTimeRequest);
+        subjectRepository.save(subject);
+
+        return SubjectTimeResponse.of(subject);
     }
 
     /**
@@ -43,13 +89,10 @@ public class SubjectServiceImpl implements SubjectService {
         Long memberId = JwtUtil.getMemberId();
         Long subjectId = subjectEditRequestDto.getSubjectId();
 
-        MemberSubject memberSubject = memberSubjectRepository.findMemberSubject(memberId, subjectId)
+        Subject subject = subjectRepository.findSubject(memberId,subjectId)
                 .orElseThrow(() -> new SubjectNotFoundException(subjectId));
-
-        Subject subject = subjectRepository.findById(memberSubject.getSubjectId())
-                .orElseThrow(() -> new SubjectNotFoundException(subjectId));
-
         subject.setName(subjectEditRequestDto.getName());
+        subject.setColorHex(subjectEditRequestDto.getColorHex());
         subjectRepository.save(subject);
 
         return subject;
@@ -60,10 +103,7 @@ public class SubjectServiceImpl implements SubjectService {
     public void deleteSubject(Long subjectId) {
         Long memberId = JwtUtil.getMemberId();
 
-        MemberSubject memberSubject = memberSubjectRepository.findMemberSubject(memberId, subjectId)
-                .orElseThrow(() -> new SubjectNotFoundException(subjectId));
-
-        Subject subject = subjectRepository.findById(memberSubject.getSubjectId())
+        Subject subject = subjectRepository.findSubject(memberId,subjectId)
                 .orElseThrow(() -> new SubjectNotFoundException(subjectId));
 
         subjectRepository.delete(subject);

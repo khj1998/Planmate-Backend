@@ -5,9 +5,11 @@ import com.planmate.server.dto.request.comment.CommentCreateRequestDto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Slf4j
 @Entity
@@ -36,29 +38,24 @@ public class Comment {
     @Column(name = "parent_comment",columnDefinition = "int")
     private Long parentCommentId;
 
+    @UpdateTimestamp
     @Column(name = "updatedAt",nullable = false,columnDefinition = "datetime")
-    private LocalDate updatedAt;
+    private LocalDateTime updatedAt;
 
     public static Comment of(CommentCreateRequestDto commentCreateRequestDto,Long memberId){
-        LocalDate now = LocalDate.now();
-
         return Comment.builder()
                 .memberId(memberId)
                 .postId(commentCreateRequestDto.getPostId())
                 .content(commentCreateRequestDto.getContent())
-                .updatedAt(now)
                 .build();
     }
 
     public static Comment of(ChildCommentRequestDto childCommentRequestDto,Long memberId) {
-        LocalDate now = LocalDate.now();
-
         return Comment.builder()
                 .memberId(memberId)
                 .postId(childCommentRequestDto.getPostId())
                 .parentCommentId(childCommentRequestDto.getParentCommentId())
                 .content(childCommentRequestDto.getContent())
-                .updatedAt(now)
                 .build();
     }
 }

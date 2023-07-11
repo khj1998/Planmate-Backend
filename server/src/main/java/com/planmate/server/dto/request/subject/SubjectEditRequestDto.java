@@ -6,4 +6,5 @@ import lombok.Getter;
 public class SubjectEditRequestDto {
     private Long subjectId;
     private String name;
+    private String colorHex;
 }

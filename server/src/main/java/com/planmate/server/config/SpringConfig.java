@@ -42,7 +42,6 @@ public class SpringConfig {
     private PostTagRepository postTagRepository;
     private final MemberScrapRepository memberScrapRepository;
     private final SubjectRepository subjectRepository;
-    private final MemberSubjectRepository memberSubjectRepository;
     private final CommentRepository commentRepository;
     private final AmazonS3 amazonS3Client;
     private final String url;
@@ -56,7 +55,6 @@ public class SpringConfig {
                         final PostRepository postRepository,
                         final PostTagRepository postTagRepository,
                         final SubjectRepository subjectRepository,
-                        final MemberSubjectRepository memberSubjectRepository,
                         final CommentRepository commentRepository,
                         final MemberScrapRepository memberScrapRepository, final AmazonS3 amazonS3Client, @Value("${slack.url}") String url, final ScheduleRepository scheduleRepository,
                         final CommentLikeRepository commentLikeRepository,
@@ -67,7 +65,6 @@ public class SpringConfig {
         this.postTagRepository = postTagRepository;
         this.memberScrapRepository = memberScrapRepository;
         this.subjectRepository = subjectRepository;
-        this.memberSubjectRepository = memberSubjectRepository;
         this.commentRepository = commentRepository;
         this.amazonS3Client = amazonS3Client;
         this.url = url;
@@ -93,7 +90,7 @@ public class SpringConfig {
 
     @Bean
     public SubjectService subjectService() {
-        return new SubjectServiceImpl(subjectRepository,memberSubjectRepository);
+        return new SubjectServiceImpl(subjectRepository);
     }
 
     @Bean

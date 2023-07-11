@@ -11,6 +11,8 @@ import com.planmate.server.service.member.MemberService;
 import com.planmate.server.service.member.MemberServiceImpl;
 import com.planmate.server.service.post.PostService;
 import com.planmate.server.service.post.PostServiceImpl;
+import com.planmate.server.service.statistic.StatisticService;
+import com.planmate.server.service.statistic.StatisticServiceImpl;
 import com.planmate.server.service.subject.SubjectService;
 import com.planmate.server.service.subject.SubjectServiceImpl;
 import com.planmate.server.service.s3.S3UploadService;
@@ -116,5 +118,10 @@ public class SpringConfig {
     @Bean
     public LogOutService logOutService() {
         return new LogOutServiceImpl(tokenRepository, memberRepository);
+    }
+
+    @Bean
+    public StatisticService statisticService() {
+        return new StatisticServiceImpl(subjectRepository);
     }
 }

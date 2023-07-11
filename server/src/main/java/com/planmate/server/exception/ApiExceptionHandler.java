@@ -5,6 +5,7 @@ import com.planmate.server.exception.converter.InvalidSubjectTypeException;
 import com.planmate.server.exception.member.MemberNotFoundException;
 import com.planmate.server.exception.post.PostNotFoundException;
 import com.planmate.server.exception.post.ScrapNotFoundException;
+import com.planmate.server.exception.subject.SubjectDuplicatedException;
 import com.planmate.server.exception.subject.SubjectNotFoundException;
 import com.planmate.server.exception.schedule.MemberScheduleNotFoundException;
 import com.planmate.server.exception.schedule.ScheduleNotFoundException;
@@ -78,5 +79,11 @@ public class ApiExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handleException(InvalidSubjectTypeException ex) {
         ApiErrorResponse response = new ApiErrorResponse("ERROR-0010","Subject type converting failed value/name : "+ex.getMessage());
         return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(SubjectDuplicatedException.class)
+    public ResponseEntity<ApiErrorResponse> handleException(SubjectDuplicatedException ex) {
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0011",ex.getMessage()+" already exists subject");
+        return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
     }
 }

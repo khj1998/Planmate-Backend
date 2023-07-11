@@ -3,6 +3,7 @@ package com.planmate.server.service.post;
 import com.planmate.server.domain.*;
 import com.planmate.server.dto.request.post.PostDto;
 import com.planmate.server.dto.request.post.ScrapDto;
+import com.planmate.server.dto.response.post.PostPageResponseDto;
 import com.planmate.server.dto.response.post.PostResponseDto;
 import com.planmate.server.exception.member.MemberNotFoundException;
 import com.planmate.server.exception.post.PostNotFoundException;
@@ -10,10 +11,7 @@ import com.planmate.server.exception.post.ScrapNotFoundException;
 import com.planmate.server.repository.*;
 import com.planmate.server.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -46,7 +44,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public List<PostResponseDto> findRecentPost(Integer pages) {
+    public PostPageResponseDto findRecentPost(Integer pages) {
         List<PostResponseDto> responseDtoList = new ArrayList<>();
         Sort sort = Sort.by(Sort.Direction.DESC,"updatedAt");
         Pageable pageable = PageRequest.of(pages,10,sort);
@@ -66,7 +64,7 @@ public class PostServiceImpl implements PostService {
             responseDtoList.add(responseDto);
         }
 
-        return responseDtoList;
+        return PostPageResponseDto.of(postList.getTotalElements(),responseDtoList);
     }
 
     /**

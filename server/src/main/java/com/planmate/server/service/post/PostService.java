@@ -2,6 +2,7 @@ package com.planmate.server.service.post;
 
 import com.planmate.server.dto.request.post.PostDto;
 import com.planmate.server.dto.request.post.ScrapDto;
+import com.planmate.server.dto.response.post.PostPageResponseDto;
 import com.planmate.server.dto.response.post.PostResponseDto;
 
 import java.util.List;
@@ -11,7 +12,7 @@ public interface PostService {
     PostResponseDto findByPostId(Long postId);
     void deletePost(Long postId);
     void deleteScrapById(Long postId);
-    List<PostResponseDto> findRecentPost(Integer pages);
+    PostPageResponseDto findRecentPost(Integer pages);
     List<PostResponseDto> findMyPost();
     PostResponseDto editPost(PostDto postDto);
     Boolean scrapPost(ScrapDto scrapDto);

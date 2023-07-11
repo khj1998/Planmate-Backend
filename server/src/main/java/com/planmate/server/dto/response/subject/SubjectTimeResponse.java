@@ -12,6 +12,7 @@ import java.sql.Time;
 @AllArgsConstructor
 @Builder
 public class SubjectTimeResponse {
+    private Long subjectId;
     private String type;
     private String name;
     private Time maxStudyTime;
@@ -23,6 +24,7 @@ public class SubjectTimeResponse {
         String type = SubjectTypeConverter.getTypeName(inputValue);
 
         return SubjectTimeResponse.builder()
+                .subjectId(subject.getId())
                 .type(type)
                 .name(subject.getName())
                 .maxStudyTime(subject.getMaxStudyTime())

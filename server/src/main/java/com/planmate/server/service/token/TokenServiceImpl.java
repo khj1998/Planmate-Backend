@@ -10,6 +10,7 @@ import com.planmate.server.repository.TokenRepository;
 import com.planmate.server.util.JwtUtil;
 import lombok.Generated;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
@@ -30,6 +31,7 @@ public class TokenServiceImpl implements TokenService {
      * @return 재갱신된 access token, refresh token, member id
      * */
     @Override
+    @Transactional
     public Token reissueAccessToken(RefreshTokenDto refreshTokenDto) {
         Member member = memberRepository.findById(refreshTokenDto.getId()).orElseThrow((() -> new MemberNotFoundException(refreshTokenDto.getId())));
 

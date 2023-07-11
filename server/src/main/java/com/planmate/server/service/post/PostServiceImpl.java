@@ -43,7 +43,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public PostPageResponseDto findRecentPost(Integer pages) {
         List<PostResponseDto> responseDtoList = new ArrayList<>();
         Sort sort = Sort.by(Sort.Direction.DESC,"updatedAt");
@@ -237,7 +237,7 @@ public class PostServiceImpl implements PostService {
      * @return PostResponseDto 유저 자신이 스크랩한 게시물 조회에 성공하면 반환되는 게시물 응답 Dto 리스트입니다.
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<PostResponseDto> findScrapPost() {
         List<PostResponseDto> responseDtoList = new ArrayList<>();
         Long memberId = JwtUtil.getMemberId();
@@ -294,7 +294,7 @@ public class PostServiceImpl implements PostService {
      * @return List<PostResponseDto> 태그를 가지는 게시물들 조회에 성공하면 반한되는 게시물 응답 Dto 리스트입니다.
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<PostResponseDto> findPostByTagName(String tagName) {
         List<PostResponseDto> responseDtoList = new ArrayList<>();
         List<PostTag> postTagList = postTagRepository.findByTagName(tagName);

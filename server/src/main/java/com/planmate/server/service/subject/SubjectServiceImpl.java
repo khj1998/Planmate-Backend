@@ -26,7 +26,7 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<SubjectResponse> findSubject(Long subjectId) {
         List<SubjectResponse> responseList = new ArrayList<>();
         Long memberId = JwtUtil.getMemberId();

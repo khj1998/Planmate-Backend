@@ -8,6 +8,7 @@ import com.planmate.server.dto.request.comment.ChildCommentRequestDto;
 import com.planmate.server.dto.request.comment.CommentCreateRequestDto;
 import com.planmate.server.dto.request.comment.CommentEditRequestDto;
 import com.planmate.server.dto.request.comment.CommentRequestDto;
+import com.planmate.server.dto.response.comment.CommentPageResponseDto;
 import com.planmate.server.dto.response.comment.CommentResponseDto;
 import com.planmate.server.exception.comment.CommentNotFoundException;
 import com.planmate.server.exception.member.MemberNotFoundException;
@@ -131,7 +132,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CommentResponseDto> findRecentComment(CommentRequestDto commentRequestDto) {
+    public CommentPageResponseDto findRecentComment(CommentRequestDto commentRequestDto) {
         List<CommentResponseDto> responseDtoList = new ArrayList<>();
 
         Post post = postRepository.findById(commentRequestDto.getPostId())
@@ -139,8 +140,7 @@ public class CommentServiceImpl implements CommentService {
 
         Sort sort = Sort.by(Sort.Direction.DESC,"updatedAt");
         Pageable pageable = PageRequest.of(commentRequestDto.getPages(),10,sort);
-
-        List<Comment> comments = commentRepository.findRecentComment(commentRequestDto.getPostId(), pageable);
+        Page<Comment> comments = commentRepository.findRecentComment(commentRequestDto.getPostId(), pageable);
 
         for (Comment comment : comments) {
             Member member = memberRepository.findById(comment.getMemberId())
@@ -154,6 +154,6 @@ public class CommentServiceImpl implements CommentService {
             responseDtoList.add(responseDto);
         }
 
-        return responseDtoList;
+        return CommentPageResponseDto.of(comments.getTotalPages(),responseDtoList);
     }
 }

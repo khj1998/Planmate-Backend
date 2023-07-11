@@ -10,6 +10,7 @@ import com.planmate.server.repository.ScheduleRepository;
 import com.planmate.server.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -21,6 +22,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     private final ScheduleRepository scheduleRepository;
 
     @Override
+    @Transactional
     public ScheduleResponseDto addDDay(final AddScheduleRequestDto addScheduleRequestDto) {
         return ScheduleResponseDto.of(scheduleRepository.save(
             Schedule.builder()
@@ -32,6 +34,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
+    @Transactional
     public void deleteDDay(final Long id) {
         Schedule schedule = scheduleRepository.findById(id).orElseThrow(
                 () -> new ScheduleNotFoundException(id)
@@ -41,6 +44,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
+    @Transactional
     public ScheduleResponseDto modifySchedule(final ScheduleEditRequestDto editRequestDto) {
         Schedule schedule = scheduleRepository.findById(editRequestDto.getId()).orElseThrow(
                 () -> new ScheduleNotFoundException(editRequestDto.getId())
@@ -53,6 +57,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Schedule> findAll() {
         return scheduleRepository.findAllByMemberId(JwtUtil.getMemberId()).orElseThrow(
                 () -> new MemberScheduleNotFoundException(JwtUtil.getMemberId())
@@ -60,6 +65,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ScheduleResponseDto findMin() {
         return ScheduleResponseDto.of(scheduleRepository.findMinSchedule());
     }

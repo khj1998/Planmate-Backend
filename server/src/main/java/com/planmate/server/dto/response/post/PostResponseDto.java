@@ -8,9 +8,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * 게시물 응답시 사용되는 Dto 객체입니다.
@@ -26,7 +28,7 @@ public class PostResponseDto {
     private String title;
     private String content;
     private List<String> postTagList;
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
     private Long likeCount;
     private Long scrapCount;
     private Long commentCount;

@@ -5,6 +5,7 @@ import com.planmate.server.domain.Comment;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -14,7 +15,7 @@ import java.time.LocalDate;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CommentResponseDto {
     private String memberName;
-    private LocalDate updatedAt;
+    private LocalDateTime updatedAt;
     private String content;
     private Long likeCount;
     private Boolean isAuthor;

@@ -9,6 +9,8 @@ import com.planmate.server.service.logout.LogOutService;
 import com.planmate.server.service.logout.LogOutServiceImpl;
 import com.planmate.server.service.member.MemberService;
 import com.planmate.server.service.member.MemberServiceImpl;
+import com.planmate.server.service.planner.PlannerService;
+import com.planmate.server.service.planner.PlannerServiceImpl;
 import com.planmate.server.service.post.PostService;
 import com.planmate.server.service.post.PostServiceImpl;
 import com.planmate.server.service.statistic.StatisticService;
@@ -50,6 +52,7 @@ public class SpringConfig {
     private final ScheduleRepository scheduleRepository;
     private final CommentLikeRepository commentLikeRepository;
     private final PostLikeRepository postLikeRepository;
+    private final PlannerRepository plannerRepository;
 
     @Autowired
     public SpringConfig(final MemberRepository memberRepository,
@@ -60,7 +63,8 @@ public class SpringConfig {
                         final CommentRepository commentRepository,
                         final MemberScrapRepository memberScrapRepository, final AmazonS3 amazonS3Client, @Value("${slack.url}") String url, final ScheduleRepository scheduleRepository,
                         final CommentLikeRepository commentLikeRepository,
-                        final PostLikeRepository postLikeRepository) {
+                        final PostLikeRepository postLikeRepository,
+                        PlannerRepository plannerRepository) {
         this.memberRepository = memberRepository;
         this.tokenRepository = tokenRepository;
         this.postRepository = postRepository;
@@ -73,6 +77,7 @@ public class SpringConfig {
         this.scheduleRepository = scheduleRepository;
         this.commentLikeRepository = commentLikeRepository;
         this.postLikeRepository = postLikeRepository;
+        this.plannerRepository = plannerRepository;
     }
 
     @Bean
@@ -123,5 +128,10 @@ public class SpringConfig {
     @Bean
     public StatisticService statisticService() {
         return new StatisticServiceImpl(subjectRepository);
+    }
+
+    @Bean
+    public PlannerService plannerService() {
+        return new PlannerServiceImpl(plannerRepository);
     }
 }

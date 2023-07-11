@@ -24,7 +24,7 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public StatisticResponse getStatisticData() {
         Long memberId = JwtUtil.getMemberId();
         Sort sort = Sort.by(Sort.Direction.DESC,"studyTime");

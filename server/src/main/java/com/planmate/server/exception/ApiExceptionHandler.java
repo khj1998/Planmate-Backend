@@ -3,6 +3,7 @@ package com.planmate.server.exception;
 import com.planmate.server.exception.comment.CommentNotFoundException;
 import com.planmate.server.exception.converter.InvalidSubjectTypeException;
 import com.planmate.server.exception.member.MemberNotFoundException;
+import com.planmate.server.exception.planner.PlannerNotFoundException;
 import com.planmate.server.exception.post.PostNotFoundException;
 import com.planmate.server.exception.post.ScrapNotFoundException;
 import com.planmate.server.exception.subject.SubjectDuplicatedException;
@@ -85,5 +86,11 @@ public class ApiExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handleException(SubjectDuplicatedException ex) {
         ApiErrorResponse response = new ApiErrorResponse("ERROR-0011",ex.getMessage()+" already exists subject");
         return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(PlannerNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleException(PlannerNotFoundException ex) {
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0012","planner not found id : "+ex.getMessage());
+        return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
     }
 }

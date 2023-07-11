@@ -5,6 +5,7 @@ import com.planmate.server.dto.request.comment.ChildCommentRequestDto;
 import com.planmate.server.dto.request.comment.CommentCreateRequestDto;
 import com.planmate.server.dto.request.comment.CommentEditRequestDto;
 import com.planmate.server.dto.request.comment.CommentRequestDto;
+import com.planmate.server.dto.response.comment.CommentPageResponseDto;
 import com.planmate.server.dto.response.comment.CommentResponseDto;
 import com.planmate.server.service.comment.CommentService;
 import io.swagger.annotations.Api;
@@ -50,9 +51,9 @@ public class CommentController {
             @ApiResponse(responseCode = "403",description = "유저가 맴버 | admin 권한이 아님"),
             @ApiResponse(responseCode = "404",description = "최근 댓글 N개 조회 실패")
     })
-    public ResponseEntity<List<CommentResponseDto>> findRecentComment(@RequestBody CommentRequestDto commentRequestDto) {
-        List<CommentResponseDto> responseDtoList = commentService.findRecentComment(commentRequestDto);
-        return ResponseEntity.ok(responseDtoList);
+    public ResponseEntity<CommentPageResponseDto> findRecentComment(@RequestBody CommentRequestDto commentRequestDto) {
+        CommentPageResponseDto responseDto = commentService.findRecentComment(commentRequestDto);
+        return ResponseEntity.ok(responseDto);
     }
 
     @PostMapping("/create")

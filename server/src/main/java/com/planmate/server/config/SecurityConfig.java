@@ -3,6 +3,7 @@ package com.planmate.server.config;
 import com.planmate.server.service.member.MemberService;
 import com.planmate.server.util.JwtCustomFilter;
 import lombok.Generated;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,7 +24,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
  * */
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)//@PreAuthorize 어노테이션을 메소드 단위로 추가하기 위해
+@RequiredArgsConstructor
 public class SecurityConfig {
+    private final CorsConfigurationSource corsConfigurationSource;
 
     @Bean
     WebSecurityCustomizer webSecurityCustomizer() {
@@ -48,22 +51,6 @@ public class SecurityConfig {
         };
     }
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-
-        configuration.addAllowedOrigin("http://localhost:3000");
-        configuration.addAllowedHeader("*");
-        configuration.addAllowedMethod("*");
-        configuration.setAllowCredentials(true);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-
-        return source;
-    }
-
-
     /**
      * 각 End Point를 어떤 권한을 가진 사용자가 사용하게 만들지에 대한 메소드이다.
      * */
@@ -72,9 +59,11 @@ public class SecurityConfig {
         return httpSecurity
                 .httpBasic().disable()
                 .cors()
-                .configurationSource(corsConfigurationSource())
+                .configurationSource(corsConfigurationSource)
                 .and()
                 .csrf().disable()
+                .cors().and()
+
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .addFilterAfter(new JwtCustomFilter(memberService), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()

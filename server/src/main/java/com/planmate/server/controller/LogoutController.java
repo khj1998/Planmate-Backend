@@ -23,10 +23,7 @@ public class LogoutController {
     @GetMapping("sign-out")
     @ApiOperation(value = "로그 아웃")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "로그아웃 환료"),
-            @ApiResponse(responseCode = "401", description = "토큰 만료"),
-            @ApiResponse(responseCode = "403", description = "권한 없음"),
-            @ApiResponse(responseCode = "404", description = "해당 멤버 없음"),
+            @ApiResponse(responseCode = "200", description = "로그아웃 환료")
     })
     public ResponseEntity<String> logout() {
         return ResponseEntity.ok(logOutService.logout());

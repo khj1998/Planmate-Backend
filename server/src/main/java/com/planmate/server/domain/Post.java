@@ -8,6 +8,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import javax.swing.plaf.metal.MetalLookAndFeel;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -46,7 +47,7 @@ public class Post {
     @UpdateTimestamp
     @Column(name = "updated_at",columnDefinition = "datetime")
     @ApiModelProperty(example = "게시물 업데이트 날짜")
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
 
     public static Post of(PostDto postDto,Long memberId)  {
         return Post.builder()

@@ -1,6 +1,7 @@
 package com.planmate.server.exception;
 
 import com.planmate.server.exception.comment.CommentNotFoundException;
+import com.planmate.server.exception.converter.InvalidSubjectTypeException;
 import com.planmate.server.exception.member.MemberNotFoundException;
 import com.planmate.server.exception.post.PostNotFoundException;
 import com.planmate.server.exception.post.ScrapNotFoundException;
@@ -70,6 +71,12 @@ public class ApiExceptionHandler {
     @ExceptionHandler(MemberScheduleNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleException(MemberScheduleNotFoundException ex) {
         ApiErrorResponse response = new ApiErrorResponse("ERROR-0009","Member's schedule is not exist. member id: " + ex.getMessage());
+        return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(InvalidSubjectTypeException.class)
+    public ResponseEntity<ApiErrorResponse> handleException(InvalidSubjectTypeException ex) {
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0010","Subject type converting failed value/name : "+ex.getMessage());
         return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
     }
 }

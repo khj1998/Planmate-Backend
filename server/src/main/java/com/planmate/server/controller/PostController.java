@@ -4,6 +4,7 @@ import com.planmate.server.domain.Post;
 import com.planmate.server.dto.request.post.PostDto;
 import com.planmate.server.dto.request.post.PostLikeDto;
 import com.planmate.server.dto.request.post.ScrapDto;
+import com.planmate.server.dto.response.post.PostPageResponseDto;
 import com.planmate.server.dto.response.post.PostResponseDto;
 import com.planmate.server.service.post.PostService;
 import io.swagger.annotations.ApiOperation;
@@ -34,9 +35,9 @@ public class PostController {
             @ApiResponse(responseCode = "403",description = "해당 사용자가 Member 권한이 아님"),
             @ApiResponse(responseCode = "404",description = "게시물 N개 조회하는데 실패함")
     })
-    public ResponseEntity<List<PostResponseDto>> findRecentPost(@RequestParam("pages") Integer pages) {
-        List<PostResponseDto> responseDtoList = postService.findRecentPost(pages);
-        return ResponseEntity.ok(responseDtoList);
+    public ResponseEntity<PostPageResponseDto> findRecentPost(@RequestParam("pages") Integer pages) {
+        PostPageResponseDto responseDto = postService.findRecentPost(pages);
+        return ResponseEntity.ok(responseDto);
     }
 
     /**

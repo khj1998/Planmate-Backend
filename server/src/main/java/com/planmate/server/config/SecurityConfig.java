@@ -76,6 +76,7 @@ public class SecurityConfig {
                 .antMatchers("/auth/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
                 .antMatchers("/schedule/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
                 .antMatchers("/logout/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+                .antMatchers("/statistic/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
                 .anyRequest().denyAll()
                 .and().build();
     }

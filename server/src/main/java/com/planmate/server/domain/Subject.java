@@ -69,6 +69,8 @@ public class Subject {
                 .maxStudyTime(new Time(0,0,0))
                 .studyTime(new Time(0,0,0))
                 .restTime(new Time(0,0,0))
+                .startAt(new Time(5,0,0))
+                .endAt(new Time(5,0,0))
                 .colorHex(colorHex)
                 .build();
     }

@@ -5,6 +5,7 @@ import com.planmate.server.dto.request.comment.ChildCommentRequestDto;
 import com.planmate.server.dto.request.comment.CommentCreateRequestDto;
 import com.planmate.server.dto.request.comment.CommentEditRequestDto;
 import com.planmate.server.dto.request.comment.CommentRequestDto;
+import com.planmate.server.dto.response.comment.CommentCreateResponseDto;
 import com.planmate.server.dto.response.comment.CommentPageResponseDto;
 import com.planmate.server.dto.response.comment.CommentResponseDto;
 import com.planmate.server.service.comment.CommentService;
@@ -64,8 +65,8 @@ public class CommentController {
             @ApiResponse(responseCode = "403",description = "유저가 맴버 | admin 권한이 아님"),
             @ApiResponse(responseCode = "404",description = "새 댓글 생성 실패")
     })
-    public ResponseEntity<CommentResponseDto> addComment(@RequestBody CommentCreateRequestDto commentCreateRequestDto) {
-        CommentResponseDto responseDto = commentService.createComment(commentCreateRequestDto);
+    public ResponseEntity<CommentCreateResponseDto> addComment(@RequestBody CommentCreateRequestDto commentCreateRequestDto) {
+        CommentCreateResponseDto responseDto = commentService.createComment(commentCreateRequestDto);
         return ResponseEntity.ok(responseDto);
     }
 
@@ -77,8 +78,8 @@ public class CommentController {
             @ApiResponse(responseCode = "403",description = "유저가 맴버 | admin 권한이 아님"),
             @ApiResponse(responseCode = "404",description = "새 대댓글 생성 실패")
     })
-    public ResponseEntity<CommentResponseDto> addChildComment(@RequestBody ChildCommentRequestDto commentRequestDto) {
-        CommentResponseDto responseDto = commentService.createChildComment(commentRequestDto);
+    public ResponseEntity<CommentCreateResponseDto> addChildComment(@RequestBody ChildCommentRequestDto commentRequestDto) {
+        CommentCreateResponseDto responseDto = commentService.createChildComment(commentRequestDto);
         return ResponseEntity.ok(responseDto);
     }
 
@@ -90,8 +91,8 @@ public class CommentController {
             @ApiResponse(responseCode = "403",description = "유저가 맴버 | admin 권한이 아님"),
             @ApiResponse(responseCode = "404",description = "댓글 좋아요 생성/취소 실패")
     })
-    public ResponseEntity<Boolean> addLike(@RequestParam Long commendId) {
-        return ResponseEntity.ok(commentService.setCommentLike(commendId));
+    public ResponseEntity<Boolean> addLike(@RequestParam Long commentId) {
+        return ResponseEntity.ok(commentService.setCommentLike(commentId));
     }
 
     @PostMapping("/modify")

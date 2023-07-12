@@ -2,10 +2,13 @@ package com.planmate.server.dto.response.comment;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.planmate.server.domain.Comment;
+import com.planmate.server.domain.CommentLike;
+import com.planmate.server.domain.Member;
 import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,25 +23,46 @@ public class CommentResponseDto {
     private String content;
     private Long likeCount;
     private Boolean isAuthor;
+    private Boolean isMyHearted;
 
-    public static CommentResponseDto of(Comment comment,String memberName,Long likeCount,Boolean isAuthor) {
+    public static CommentResponseDto of(Comment comment, Member member, List<CommentLike> commentLikeList, Boolean isAuthor,Long memberId) {
+        Boolean isMyHearted = false;
+
+        for (CommentLike commentLike : commentLikeList) {
+            if (commentLike.getUserId() == memberId) {
+                isMyHearted = true;
+                break;
+            }
+        }
+
         return CommentResponseDto.builder()
                 .commentId(comment.getCommentId())
-                .memberName(memberName)
+                .memberName(member.getMemberName())
                 .content(comment.getContent())
                 .updatedAt(comment.getUpdatedAt())
-                .likeCount(likeCount)
+                .likeCount((long) commentLikeList.size())
                 .isAuthor(isAuthor)
+                .isMyHearted(isMyHearted)
                 .build();
     }
 
-    public static CommentResponseDto of(Comment comment,String memberName,Long likeCount) {
+    public static CommentResponseDto of(Comment comment,Member member,List<CommentLike> commentLikeList,Long memberId) {
+        Boolean isMyHearted = false;
+
+        for (CommentLike commentLike : commentLikeList) {
+            if (commentLike.getUserId() == memberId) {
+                isMyHearted = true;
+                break;
+            }
+        }
+
         return CommentResponseDto.builder()
                 .commentId(comment.getCommentId())
-                .memberName(memberName)
+                .memberName(member.getMemberName())
                 .content(comment.getContent())
                 .updatedAt(comment.getUpdatedAt())
-                .likeCount(likeCount)
+                .likeCount((long) commentLikeList.size())
+                .isMyHearted(isMyHearted)
                 .build();
     }
 

@@ -3,6 +3,8 @@ package com.planmate.server.service.post;
 import com.planmate.server.domain.*;
 import com.planmate.server.dto.request.post.PostDto;
 import com.planmate.server.dto.request.post.ScrapDto;
+import com.planmate.server.dto.response.post.PostCreateResponseDto;
+import com.planmate.server.dto.response.post.PostEditResponseDto;
 import com.planmate.server.dto.response.post.PostPageResponseDto;
 import com.planmate.server.dto.response.post.PostResponseDto;
 import com.planmate.server.exception.member.MemberNotFoundException;
@@ -45,6 +47,8 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public PostPageResponseDto findRecentPost(Integer pages) {
+        Long memberId = JwtUtil.getMemberId();
+
         List<PostResponseDto> responseDtoList = new ArrayList<>();
         Sort sort = Sort.by(Sort.Direction.DESC,"updatedAt");
         Pageable pageable = PageRequest.of(pages,10,sort);
@@ -56,15 +60,15 @@ public class PostServiceImpl implements PostService {
 
             List<PostLike> postLikeList = postLikeRepository.findAllByPostId(post.getPostId());
             List<MemberScrap> scrapList = memberScrapRepository.findByPostId(post.getPostId());
-            List<PostTag> postTagList = postTagRepository.findByPostId(post.getPostId());
             List<Comment> commentList = commentRepository.findByPostId(post.getPostId());
 
             PostResponseDto responseDto = PostResponseDto.of(post,member.getMemberName(),
-                    (long) postLikeList.size(),(long) scrapList.size(),(long) commentList.size(),postTagList);
+                    postLikeList,scrapList,commentList,memberId);
+
             responseDtoList.add(responseDto);
         }
 
-        return PostPageResponseDto.of(postList.getTotalElements(),responseDtoList);
+        return PostPageResponseDto.of(postList.getTotalPages(),responseDtoList);
     }
 
     /**
@@ -75,7 +79,7 @@ public class PostServiceImpl implements PostService {
      */
     @Override
     @Transactional
-    public PostResponseDto createPost(PostDto postDto) {
+    public PostCreateResponseDto createPost(PostDto postDto) {
         Long memberId = JwtUtil.getMemberId();
         List<PostTag> postTagList = new ArrayList<>();
 
@@ -92,8 +96,7 @@ public class PostServiceImpl implements PostService {
 
         postTagRepository.saveAll(postTagList);
 
-        return PostResponseDto.of(post,owner.getMemberName(),
-                0L,0L,0L,postTagList);
+        return PostCreateResponseDto.of(post,owner.getMemberName(), postTagList);
     }
 
     /**
@@ -107,23 +110,19 @@ public class PostServiceImpl implements PostService {
     public PostResponseDto  findByPostId(Long postId) {
         Long memberId = JwtUtil.getMemberId();
 
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(memberId));
-
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostNotFoundException(postId));
+
+        Member member = memberRepository.findById(post.getMemberId())
+                .orElseThrow(() -> new MemberNotFoundException(post.getMemberId()));
 
         List<PostTag> postTagList = postTagRepository.findByPostId(postId);
         List<MemberScrap> memberScrapList = memberScrapRepository.findByPostId(postId);
         List<PostLike> postLikeList = postLikeRepository.findAllByPostId(postId);
         List<Comment> commentList = commentRepository.findByPostId(post.getPostId());
 
-        Long likeCount = (long) postLikeList.size();
-        Long scrapCount = (long) memberScrapList.size();
-        Long commentCount = (long) commentList.size();
-
         return PostResponseDto.of(post,member.getMemberName()
-                ,likeCount ,scrapCount,commentCount,postTagList);
+                ,postLikeList,memberScrapList,commentList,postTagList,memberId);
     }
 
     /**
@@ -134,11 +133,8 @@ public class PostServiceImpl implements PostService {
      */
     @Override
     @Transactional
-    public PostResponseDto editPost(PostDto postDto) {
+    public PostEditResponseDto editPost(PostDto postDto) {
         Long memberId = JwtUtil.getMemberId();
-
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(memberId));
 
         Post post = postRepository.findMemberPost(postDto.getId(),memberId)
                 .orElseThrow(() -> new PostNotFoundException(postDto.getId()));
@@ -147,17 +143,7 @@ public class PostServiceImpl implements PostService {
         post.setContent(postDto.getContent());
         postRepository.save(post);
 
-        List<PostTag> postTagList = postTagRepository.findByPostId(postDto.getId());
-        List<MemberScrap> memberScrapList = memberScrapRepository.findByPostId(post.getPostId());
-        List<PostLike> postLikeList = postLikeRepository.findAllByPostId(post.getPostId());
-        List<Comment> commentList = commentRepository.findByPostId(post.getPostId());
-
-        Long likeCount = (long) postLikeList.size();
-        Long scrapCount = (long) memberScrapList.size();
-        Long commentCount = (long) commentList.size();
-
-        return PostResponseDto.of(post,member.getMemberName(),
-                likeCount,scrapCount,commentCount,postTagList);
+        return PostEditResponseDto.of(post);
     }
 
     /**
@@ -196,12 +182,8 @@ public class PostServiceImpl implements PostService {
             List<PostLike> postLikeList = postLikeRepository.findAllByPostId(post.getPostId());
             List<Comment> commentList = commentRepository.findByPostId(post.getPostId());
 
-            Long likeCount = (long) postLikeList.size();
-            Long scrapCount = (long) memberScrapList.size();
-            Long commentCount = (long) commentList.size();
-
             PostResponseDto responseDto = PostResponseDto.of(post, member.getMemberName(),
-                    likeCount,scrapCount,commentCount,postTagList);
+                    postLikeList,memberScrapList,commentList,postTagList,memberId);
             responseDtoList.add(responseDto);
         }
 
@@ -256,12 +238,8 @@ public class PostServiceImpl implements PostService {
             List<MemberScrap> memberScrapList =  memberScrapRepository.findByPostId(post.getPostId());
             List<Comment> commentList = commentRepository.findByPostId(post.getPostId());
 
-            Long likeCount = (long) postLikeList.size();
-            Long scrapCount = (long) memberScrapList.size();
-            Long commentCount = (long) commentList.size();
-
             PostResponseDto responseDto = PostResponseDto.of(post,member.getMemberName(),
-                    likeCount,scrapCount,commentCount,postTagList);
+                    postLikeList,memberScrapList,commentList,postTagList,memberId);
             responseDtoList.add(responseDto);
         }
 
@@ -296,6 +274,8 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public List<PostResponseDto> findPostByTagName(String tagName) {
+        Long memberId = JwtUtil.getMemberId();
+
         List<PostResponseDto> responseDtoList = new ArrayList<>();
         List<PostTag> postTagList = postTagRepository.findByTagName(tagName);
 
@@ -312,7 +292,7 @@ public class PostServiceImpl implements PostService {
             List<Comment> commentList = commentRepository.findByPostId(post.getPostId());
 
             PostResponseDto responseDto = PostResponseDto.of(post,member.getMemberName(),
-                                        (long) postLikeList.size(),(long) scrapList.size(),(long) commentList.size(),postTags);
+                    postLikeList,scrapList,commentList,postTags,memberId);
 
             responseDtoList.add(responseDto);
         }

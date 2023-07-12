@@ -10,10 +10,10 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class PostPageResponseDto {
-    private Long totalPages;
+    private Integer totalPages;
     List<PostResponseDto> postDtoList;
 
-    public static PostPageResponseDto of(Long totalPages,List<PostResponseDto> postDtoList) {
+    public static PostPageResponseDto of(Integer totalPages,List<PostResponseDto> postDtoList) {
         return PostPageResponseDto.builder()
                 .totalPages(totalPages)
                 .postDtoList(postDtoList)

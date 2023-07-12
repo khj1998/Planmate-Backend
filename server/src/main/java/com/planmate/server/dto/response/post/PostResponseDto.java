@@ -1,12 +1,8 @@
 package com.planmate.server.dto.response.post;
 
-import com.planmate.server.domain.Post;
-import com.planmate.server.domain.PostTag;
+import com.planmate.server.domain.*;
 import com.planmate.server.dto.request.post.PostDto;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,7 +14,8 @@ import java.util.Locale;
  * 게시물 응답시 사용되는 Dto 객체입니다.
  * @author kimhojin98@naver.com
  */
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -32,13 +29,32 @@ public class PostResponseDto {
     private Long likeCount;
     private Long scrapCount;
     private Long commentCount;
+    private Boolean isMyHearted;
+    private Boolean isMyScraped;
 
-    public static PostResponseDto of(Post post,String nickname,Long likeCount,
-                                     Long scrapCount,Long commentCount,List<PostTag> postTagList) {
+    public static PostResponseDto of(Post post, String nickname, List<PostLike> postLikeList,
+                                     List<MemberScrap> scrapList, List<Comment> commentList,
+                                     List<PostTag> postTagList,Long memberId) {
+        Boolean isMyHearted = false;
+        Boolean isMyScraped = false;
         List<String> tagList = new ArrayList<>();
 
         for (PostTag tag : postTagList) {
             tagList.add(tag.getTagName());
+        }
+
+        for (PostLike postLike : postLikeList) {
+            if (postLike.getMemberId() == memberId) {
+                isMyHearted = true;
+                break;
+            }
+        }
+
+        for (MemberScrap memberScrap : scrapList) {
+            if (memberScrap.getMemberId() == memberId) {
+                isMyScraped = true;
+                break;
+            }
         }
 
         return PostResponseDto.builder()
@@ -47,10 +63,35 @@ public class PostResponseDto {
                 .title(post.getTitle())
                 .content(post.getContent())
                 .postTagList(tagList)
-                .likeCount(likeCount)
-                .scrapCount(scrapCount)
-                .commentCount(commentCount)
+                .likeCount((long) postLikeList.size())
+                .scrapCount((long) scrapList.size())
+                .commentCount((long) commentList.size())
                 .updatedAt(post.getUpdatedAt())
+                .isMyHearted(isMyHearted)
+                .isMyScraped(isMyScraped)
+                .build();
+    }
+
+    public static PostResponseDto of(Post post,String nickname,List<PostLike> postLikeList,
+                                     List<MemberScrap> scrapList, List<Comment> commentList,Long memberId) {
+        Boolean isMyHearted = false;
+
+        for (PostLike postLike : postLikeList) {
+            if (postLike.getMemberId() == memberId) {
+                isMyHearted = true;
+                break;
+            }
+        }
+
+        return PostResponseDto.builder()
+                .postId(post.getPostId())
+                .title(post.getTitle())
+                .nickname(nickname)
+                .likeCount((long) postLikeList.size())
+                .scrapCount((long) scrapList.size())
+                .commentCount((long) commentList.size())
+                .updatedAt(post.getUpdatedAt())
+                .isMyHearted(isMyHearted)
                 .build();
     }
 }

@@ -4,6 +4,8 @@ import com.planmate.server.domain.Post;
 import com.planmate.server.dto.request.post.PostDto;
 import com.planmate.server.dto.request.post.PostLikeDto;
 import com.planmate.server.dto.request.post.ScrapDto;
+import com.planmate.server.dto.response.post.PostCreateResponseDto;
+import com.planmate.server.dto.response.post.PostEditResponseDto;
 import com.planmate.server.dto.response.post.PostPageResponseDto;
 import com.planmate.server.dto.response.post.PostResponseDto;
 import com.planmate.server.service.post.PostService;
@@ -51,7 +53,7 @@ public class PostController {
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "새 게시물 생성 성공")
     })
-    public ResponseEntity<PostResponseDto> createPost(@RequestBody PostDto postDto) {
+    public ResponseEntity<PostCreateResponseDto> createPost(@RequestBody PostDto postDto) {
         return ResponseEntity.ok(postService.createPost(postDto));
     }
 
@@ -126,7 +128,7 @@ public class PostController {
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "게시물 수정 성공")
     })
-    public ResponseEntity<PostResponseDto> editPost(@RequestBody PostDto postDto) {
+    public ResponseEntity<PostEditResponseDto> editPost(@RequestBody PostDto postDto) {
         return ResponseEntity.ok(postService.editPost(postDto));
     }
 

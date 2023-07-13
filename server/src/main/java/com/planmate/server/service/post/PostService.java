@@ -13,7 +13,6 @@ public interface PostService {
     PostCreateResponseDto createPost(PostDto postDto);
     PostResponseDto findByPostId(Long postId);
     void deletePost(Long postId);
-    void deleteScrapById(Long postId);
     PostPageResponseDto findRecentPost(Integer pages);
     List<PostResponseDto> findMyPost();
     PostEditResponseDto editPost(PostDto postDto);

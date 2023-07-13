@@ -51,7 +51,10 @@ public class PostController {
     @PostMapping("/create")
     @ApiOperation("새 게시물을 생성")
     @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "새 게시물 생성 성공")
+            @ApiResponse(responseCode = "200",description = "새 게시물 생성 성공"),
+            @ApiResponse(responseCode = "401",description = "해당 사용자가 인증되지 않음 | 토큰 만료"),
+            @ApiResponse(responseCode = "403",description = "해당 사용자가 Member 권한이 아님"),
+            @ApiResponse(responseCode = "404",description = "새 게시물 생성에 실패함")
     })
     public ResponseEntity<PostCreateResponseDto> createPost(@RequestBody PostDto postDto) {
         return ResponseEntity.ok(postService.createPost(postDto));
@@ -66,7 +69,10 @@ public class PostController {
     @GetMapping("/find/with")
     @ApiOperation("태그로 게시물 조회")
     @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "태그로 게시물 조회 성공")
+            @ApiResponse(responseCode = "200",description = "태그로 게시물 조회 성공"),
+            @ApiResponse(responseCode = "401",description = "해당 사용자가 인증되지 않음 | 토큰 만료"),
+            @ApiResponse(responseCode = "403",description = "해당 사용자가 Member 권한이 아님"),
+            @ApiResponse(responseCode = "404",description = "태그로 게시물 조회 실패함")
     })
     public ResponseEntity<List<PostResponseDto>> findPostByTagName(@RequestParam("tagName") String tagName) {
         return ResponseEntity.ok(postService.findPostByTagName(tagName));
@@ -81,7 +87,10 @@ public class PostController {
     @GetMapping("/check")
     @ApiOperation("Id로 게시물 조회")
     @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "게시물 정상 조회")
+            @ApiResponse(responseCode = "200",description = "게시물 정상 조회"),
+            @ApiResponse(responseCode = "401",description = "해당 사용자가 인증되지 않음 | 토큰 만료"),
+            @ApiResponse(responseCode = "403",description = "해당 사용자가 Member 권한이 아님"),
+            @ApiResponse(responseCode = "404",description = "게시물 조회에 실패함")
     })
     public ResponseEntity<PostResponseDto> findPostById(@RequestParam("postId") Long postId) {
         return ResponseEntity.ok(postService.findByPostId(postId));
@@ -96,7 +105,10 @@ public class PostController {
     @DeleteMapping("/remove")
     @ApiOperation("Id로 게시물 삭제")
     @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "게시물 정상 삭제")
+            @ApiResponse(responseCode = "200",description = "게시물 정상 삭제"),
+            @ApiResponse(responseCode = "401",description = "해당 사용자가 인증되지 않음 | 토큰 만료"),
+            @ApiResponse(responseCode = "403",description = "해당 사용자가 Member 권한이 아님"),
+            @ApiResponse(responseCode = "404",description = "게시물 삭제에 실패함")
     })
     public ResponseEntity deletePost(@RequestParam("postId") Long postId) {
         postService.deletePost(postId);
@@ -111,7 +123,10 @@ public class PostController {
     @GetMapping("/find")
     @ApiOperation("내 게시물 조회")
     @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "나의 게시물 정상 조회")
+            @ApiResponse(responseCode = "200",description = "나의 게시물 정상 조회"),
+            @ApiResponse(responseCode = "401",description = "해당 사용자가 인증되지 않음 | 토큰 만료"),
+            @ApiResponse(responseCode = "403",description = "해당 사용자가 Member 권한이 아님"),
+            @ApiResponse(responseCode = "404",description = "내 게시물 조회에 실패함")
     })
     public ResponseEntity<List<PostResponseDto>> findMyPost() {
         return ResponseEntity.ok(postService.findMyPost());
@@ -126,7 +141,10 @@ public class PostController {
     @PostMapping("/edit")
     @ApiOperation("게시물 수정")
     @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "게시물 수정 성공")
+            @ApiResponse(responseCode = "200",description = "게시물 수정 성공"),
+            @ApiResponse(responseCode = "401",description = "해당 사용자가 인증되지 않음 | 토큰 만료"),
+            @ApiResponse(responseCode = "403",description = "해당 사용자가 Member 권한이 아님"),
+            @ApiResponse(responseCode = "404",description = "게시물 수정에 실패함")
     })
     public ResponseEntity<PostEditResponseDto> editPost(@RequestBody PostDto postDto) {
         return ResponseEntity.ok(postService.editPost(postDto));
@@ -139,9 +157,12 @@ public class PostController {
      * @return ResponseEntity<PostResponseDto> 수정된 게시물 Dto를 Body에 포함해 반환합니다.
      */
     @PostMapping("/scrap")
-    @ApiOperation("게시물 스크랩")
+    @ApiOperation("게시물 스크랩 추가/취소")
     @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "게시물 스크랩 성공")
+            @ApiResponse(responseCode = "200",description = "게시물 스크랩 추가/취소 성공"),
+            @ApiResponse(responseCode = "401",description = "해당 사용자가 인증되지 않음 | 토큰 만료"),
+            @ApiResponse(responseCode = "403",description = "해당 사용자가 Member 권한이 아님"),
+            @ApiResponse(responseCode = "404",description = "게시물 스크랩 추가/취소에 실패함")
     })
     public ResponseEntity<Boolean> scrapPost(@RequestBody ScrapDto scrapDto) {
         return ResponseEntity.ok(postService.scrapPost(scrapDto));
@@ -155,26 +176,13 @@ public class PostController {
     @GetMapping("/find/scrap")
     @ApiOperation("스크랩한 게시물 조회")
     @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "스크랩한 게시물 조회 성공")
+            @ApiResponse(responseCode = "200",description = "스크랩한 게시물 조회 성공"),
+            @ApiResponse(responseCode = "401",description = "해당 사용자가 인증되지 않음 | 토큰 만료"),
+            @ApiResponse(responseCode = "403",description = "해당 사용자가 Member 권한이 아님"),
+            @ApiResponse(responseCode = "404",description = "스크랩한 게시물 조회에 실패함")
     })
     public ResponseEntity<List<PostResponseDto>> findScrapPost() {
         return ResponseEntity.ok(postService.findScrapPost());
-    }
-
-    /**
-     * 게시물 스크랩 취소 요청을 받습니다.
-     * @author kimhojin98@naver.com
-     * @param postId 쿼리 파라미터를 통해 전달되는 게시물 Id입니다.
-     * @return ResponseEntity 스크랩 삭제 성공시 반환됩니다.
-     */
-    @DeleteMapping("/remove/scrap")
-    @ApiOperation("게시물 스크랩 취소")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "게시물 스크랩 취소 성공")
-    })
-    public ResponseEntity removeScrap(@RequestParam("postId") Long postId) {
-        postService.deleteScrapById(postId);
-        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/like")

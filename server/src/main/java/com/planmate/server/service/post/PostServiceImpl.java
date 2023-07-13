@@ -201,14 +201,15 @@ public class PostServiceImpl implements PostService {
     public Boolean scrapPost(ScrapDto scrapDto) {
         Long memberId = JwtUtil.getMemberId();
 
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(memberId));
+        Boolean isScraped = memberScrapRepository.findMemberScrap(memberId,scrapDto.getPostId()).isPresent();
 
-        Post post = postRepository.findById(scrapDto.getPostId())
-                .orElseThrow(() -> new PostNotFoundException(scrapDto.getPostId()));
-
-        MemberScrap memberScrap = MemberScrap.of(member.getMemberId(),post.getPostId());
-        memberScrapRepository.save(memberScrap);
+        if (isScraped) {
+            MemberScrap memberScrap = memberScrapRepository.findMemberScrap(memberId,scrapDto.getPostId()).get();
+            memberScrapRepository.delete(memberScrap);
+        } else {
+            MemberScrap memberScrap = MemberScrap.of(memberId,scrapDto.getPostId());
+            memberScrapRepository.save(memberScrap);
+        }
 
         return true;
     }
@@ -244,25 +245,6 @@ public class PostServiceImpl implements PostService {
         }
 
         return responseDtoList;
-    }
-
-    /**
-     * 게시물 스크랩을 취소합니다.
-     * @author kimhojin98@naver.com
-     * @param postId 쿼리 파라미터로 받은 게시물의 Id 값입니다.
-     * @throws ScrapNotFoundException memberId와 postId에 해당하는 스크랩을 찾지 못했을 때 발생하는 예외입니다.
-     */
-    @Override
-    @Transactional
-    public void deleteScrapById(Long postId) {
-        Long memberId = JwtUtil.getMemberId();
-        MemberScrap scrap = memberScrapRepository.findMemberScrap(memberId,postId);
-
-        if (scrap == null) {
-            throw new ScrapNotFoundException(postId);
-        }
-
-        memberScrapRepository.delete(scrap);
     }
 
     /**
@@ -304,13 +286,14 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public Boolean setPostLike(Long postId) {
         Long memberId = JwtUtil.getMemberId();
-        PostLike postLike = postLikeRepository.findByPost(memberId,postId);
+        Boolean isPostLikeExist = postLikeRepository.findByPost(memberId,postId).isPresent();
 
-        if (postLike == null) {
-            postLike = PostLike.of(memberId,postId);
-            postLikeRepository.save(postLike);
-        } else {
+        if (isPostLikeExist) {
+            PostLike postLike = postLikeRepository.findByPost(memberId,postId).get();
             postLikeRepository.delete(postLike);
+        } else {
+            PostLike postLike = PostLike.of(memberId,postId);
+            postLikeRepository.save(postLike);
         }
 
         return true;

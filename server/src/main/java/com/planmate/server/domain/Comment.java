@@ -5,6 +5,7 @@ import com.planmate.server.dto.request.comment.CommentCreateRequestDto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -38,8 +39,12 @@ public class Comment {
     @Column(name = "parent_comment",columnDefinition = "int")
     private Long parentCommentId;
 
+    @CreationTimestamp
+    @Column(name = "started_at",columnDefinition = "datetime")
+    private LocalDateTime startedAt;
+
     @UpdateTimestamp
-    @Column(name = "updatedAt",nullable = false,columnDefinition = "datetime")
+    @Column(name = "updated_at",nullable = false,columnDefinition = "datetime")
     private LocalDateTime updatedAt;
 
     public static Comment of(CommentCreateRequestDto commentCreateRequestDto,Long memberId){

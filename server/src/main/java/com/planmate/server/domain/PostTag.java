@@ -3,8 +3,12 @@ package com.planmate.server.domain;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.apache.tomcat.jni.Local;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 /**
  * 게시물 태그 테이블입니다. 게시물 외래키를 관리합니다.
@@ -31,6 +35,14 @@ public class PostTag {
     @Column(name = "post_id",nullable = false,columnDefinition = "int")
     @ApiModelProperty(example = "게시물 참조 외래키")
     private Long postId;
+
+    @CreationTimestamp
+    @Column(name = "started_at",columnDefinition = "datetime")
+    private LocalDateTime startedAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at",nullable = false,columnDefinition = "datetime")
+    private LocalDateTime updatedAt;
 
     public static PostTag of(String tagName,Long postId) {
         return PostTag.builder()

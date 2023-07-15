@@ -1,14 +1,12 @@
 package com.planmate.server.dto.response.post;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.planmate.server.domain.*;
-import com.planmate.server.dto.request.post.PostDto;
 import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * 게시물 응답시 사용되는 Dto 객체입니다.
@@ -75,10 +73,18 @@ public class PostResponseDto {
     public static PostResponseDto of(Post post,String nickname,List<PostLike> postLikeList,
                                      List<MemberScrap> scrapList, List<Comment> commentList,Long memberId) {
         Boolean isMyHearted = false;
+        Boolean isMyScraped = false;
 
         for (PostLike postLike : postLikeList) {
             if (postLike.getMemberId() == memberId) {
                 isMyHearted = true;
+                break;
+            }
+        }
+
+        for (MemberScrap memberScrap : scrapList) {
+            if (memberScrap.getMemberId() == memberId) {
+                isMyScraped = true;
                 break;
             }
         }
@@ -92,6 +98,7 @@ public class PostResponseDto {
                 .commentCount((long) commentList.size())
                 .updatedAt(post.getUpdatedAt())
                 .isMyHearted(isMyHearted)
+                .isMyScraped(isMyScraped)
                 .build();
     }
 }

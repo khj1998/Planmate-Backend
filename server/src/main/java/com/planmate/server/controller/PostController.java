@@ -10,6 +10,7 @@ import com.planmate.server.dto.response.post.PostPageResponseDto;
 import com.planmate.server.dto.response.post.PostResponseDto;
 import com.planmate.server.service.post.PostService;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.models.auth.In;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
@@ -74,8 +75,8 @@ public class PostController {
             @ApiResponse(responseCode = "403",description = "해당 사용자가 Member 권한이 아님"),
             @ApiResponse(responseCode = "404",description = "태그로 게시물 조회 실패함")
     })
-    public ResponseEntity<List<PostResponseDto>> findPostByTagName(@RequestParam("tagName") String tagName) {
-        return ResponseEntity.ok(postService.findPostByTagName(tagName));
+    public ResponseEntity<PostPageResponseDto> findPostByTagName(@RequestParam("tagName") String tagName,@RequestParam("pages") Integer pages) {
+        return ResponseEntity.ok(postService.findPostByTagName(tagName,pages));
     }
 
     /**
@@ -128,8 +129,8 @@ public class PostController {
             @ApiResponse(responseCode = "403",description = "해당 사용자가 Member 권한이 아님"),
             @ApiResponse(responseCode = "404",description = "내 게시물 조회에 실패함")
     })
-    public ResponseEntity<List<PostResponseDto>> findMyPost() {
-        return ResponseEntity.ok(postService.findMyPost());
+    public ResponseEntity<PostPageResponseDto> findMyPost(@RequestParam Integer pages) {
+        return ResponseEntity.ok(postService.findMyPost(pages));
     }
 
     /**
@@ -181,8 +182,8 @@ public class PostController {
             @ApiResponse(responseCode = "403",description = "해당 사용자가 Member 권한이 아님"),
             @ApiResponse(responseCode = "404",description = "스크랩한 게시물 조회에 실패함")
     })
-    public ResponseEntity<List<PostResponseDto>> findScrapPost() {
-        return ResponseEntity.ok(postService.findScrapPost());
+    public ResponseEntity<PostPageResponseDto> findScrapPost(@RequestParam Integer pages) {
+        return ResponseEntity.ok(postService.findScrapPost(pages));
     }
 
     @PostMapping("/like")

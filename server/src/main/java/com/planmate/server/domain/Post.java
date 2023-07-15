@@ -4,6 +4,7 @@ import com.planmate.server.dto.request.post.PostDto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -43,6 +44,10 @@ public class Post {
     @Column(name = "content",columnDefinition = "longtext")
     @ApiModelProperty(example = "본문 내용")
     private String content;
+
+    @CreationTimestamp
+    @Column(name = "started_at",columnDefinition = "datetime")
+    private LocalDateTime startedAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at",columnDefinition = "datetime")

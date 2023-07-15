@@ -6,6 +6,7 @@ import com.planmate.server.dto.request.comment.CommentCreateRequestDto;
 import com.planmate.server.dto.request.comment.CommentEditRequestDto;
 import com.planmate.server.dto.request.comment.CommentRequestDto;
 import com.planmate.server.dto.response.comment.CommentCreateResponseDto;
+import com.planmate.server.dto.response.comment.CommentEditResponseDto;
 import com.planmate.server.dto.response.comment.CommentPageResponseDto;
 import com.planmate.server.dto.response.comment.CommentResponseDto;
 import com.planmate.server.service.comment.CommentService;
@@ -39,9 +40,9 @@ public class CommentController {
             @ApiResponse(responseCode = "403",description = "유저가 맴버 | admin 권한이 아님"),
             @ApiResponse(responseCode = "404",description = "자신의 댓글 조회 실패")
     })
-    public ResponseEntity<List<CommentResponseDto>> findComment() {
-        List<CommentResponseDto> responseDtoList = commentService.findMyComment();
-        return ResponseEntity.ok(responseDtoList);
+    public ResponseEntity<CommentPageResponseDto> findComment(@RequestParam("pages") Integer pages) {
+        CommentPageResponseDto responseDto = commentService.findMyComment(pages);
+        return ResponseEntity.ok(responseDto);
     }
 
     @PostMapping("/find/all")
@@ -103,8 +104,8 @@ public class CommentController {
             @ApiResponse(responseCode = "403",description = "유저가 맴버 | admin 권한이 아님"),
             @ApiResponse(responseCode = "404",description = "댓글 수정 실패")
     })
-    public ResponseEntity<CommentResponseDto> editComment(@RequestBody CommentEditRequestDto commentEditRequestDto) {
-        CommentResponseDto responseDto = commentService.editComment(commentEditRequestDto);
+    public ResponseEntity<CommentEditResponseDto> editComment(@RequestBody CommentEditRequestDto commentEditRequestDto) {
+        CommentEditResponseDto responseDto = commentService.editComment(commentEditRequestDto);
         return ResponseEntity.ok(responseDto);
     }
 

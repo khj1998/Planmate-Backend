@@ -11,17 +11,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class PostEditResponseDto {
-    private Long postId;
-    private String title;
-    private String content;
-    private LocalDateTime updatedAt;
+    private Boolean isSuccess;
 
-    public static PostEditResponseDto of(Post post) {
+    public static PostEditResponseDto of() {
         return PostEditResponseDto.builder()
-                .postId(post.getPostId())
-                .title(post.getTitle())
-                .content(post.getContent())
-                .updatedAt(post.getUpdatedAt())
+                .isSuccess(true)
                 .build();
     }
 }

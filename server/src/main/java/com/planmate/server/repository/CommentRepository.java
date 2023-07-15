@@ -21,5 +21,5 @@ public interface CommentRepository extends JpaRepository<Comment,Long> {
     Page<Comment> findRecentComment(@Param("postId") Long postId, Pageable pageable);
 
     List<Comment> findByPostId(Long postId);
-    List<Comment> findAllByMemberId(Long memberId);
+    Page<Comment> findAllByMemberId(Long memberId,Pageable pageable);
 }

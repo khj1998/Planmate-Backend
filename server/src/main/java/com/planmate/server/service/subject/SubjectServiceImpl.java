@@ -6,6 +6,7 @@ import com.planmate.server.dto.request.subject.SubjectEditRequestDto;
 import com.planmate.server.dto.request.subject.SubjectTimeRequest;
 import com.planmate.server.dto.response.subject.SubjectCreateResponse;
 import com.planmate.server.dto.response.subject.SubjectResponse;
+import com.planmate.server.dto.response.subject.SubjectStudyTimeResponse;
 import com.planmate.server.dto.response.subject.SubjectTimeResponse;
 import com.planmate.server.exception.subject.SubjectDuplicatedException;
 import com.planmate.server.exception.subject.SubjectNotFoundException;
@@ -23,6 +24,21 @@ public class SubjectServiceImpl implements SubjectService {
 
     public SubjectServiceImpl(SubjectRepository subjectRepository) {
         this.subjectRepository = subjectRepository;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<SubjectStudyTimeResponse> findSubjectTime() {
+        List<SubjectStudyTimeResponse> responseDtoList = new ArrayList<>();
+        Long memberId = JwtUtil.getMemberId();
+        List<Subject> subjectList = subjectRepository.findByMemberId(memberId);
+
+        for (Subject subject : subjectList) {
+            SubjectStudyTimeResponse responseDto = SubjectStudyTimeResponse.of(subject);
+            responseDtoList.add(responseDto);
+        }
+
+        return responseDtoList;
     }
 
     @Override

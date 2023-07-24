@@ -6,6 +6,7 @@ import com.planmate.server.dto.request.subject.SubjectEditRequestDto;
 import com.planmate.server.dto.request.subject.SubjectTimeRequest;
 import com.planmate.server.dto.response.subject.SubjectCreateResponse;
 import com.planmate.server.dto.response.subject.SubjectResponse;
+import com.planmate.server.dto.response.subject.SubjectStudyTimeResponse;
 import com.planmate.server.dto.response.subject.SubjectTimeResponse;
 import com.planmate.server.service.subject.SubjectService;
 import io.swagger.annotations.Api;
@@ -29,6 +30,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SubjectController {
     private final SubjectService subjectService;
+
+    @GetMapping("/studytime")
+    @ApiOperation("자신의 각 과목 공부시간 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200",description = "자신의 각 과목 공부시간 조회 성공"),
+            @ApiResponse(responseCode = "401",description = "해당 사용자가 인증되지 않음 | 토큰 만료"),
+            @ApiResponse(responseCode = "403",description = "해당 사용자가 Member 권한이 아님"),
+            @ApiResponse(responseCode = "404",description = "자신의 각 과목 공부시간 조회 실패")
+    })
+    public ResponseEntity<List<SubjectStudyTimeResponse>> findSubjectTime() {
+        List<SubjectStudyTimeResponse> responseDtoList = subjectService.findSubjectTime();
+        return ResponseEntity.ok(responseDtoList);
+    }
 
     @GetMapping("/find")
     @ApiOperation("자신의 공부/운동 목록 조회")

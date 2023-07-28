@@ -43,7 +43,7 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<SubjectResponse> findSubject(Long subjectId) {
+    public List<SubjectResponse> findSubject() {
         List<SubjectResponse> responseList = new ArrayList<>();
         Long memberId = JwtUtil.getMemberId();
         List<Subject> subjectList = subjectRepository.findByMemberId(memberId);
@@ -58,7 +58,7 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     @Transactional
-    public SubjectCreateResponse createSubject(SubjectCreateRequestDto subjectCreateRequestDto) {
+    public void createSubject(SubjectCreateRequestDto subjectCreateRequestDto) {
         Long memberId = JwtUtil.getMemberId();
         String subjectName = subjectCreateRequestDto.getName().replace(" ","");
 
@@ -70,13 +70,11 @@ public class SubjectServiceImpl implements SubjectService {
 
         Subject subject = Subject.of(subjectCreateRequestDto,memberId);
         subjectRepository.save(subject);
-
-        return SubjectCreateResponse.of(subject);
     }
 
     @Override
     @Transactional
-    public Boolean initTime() {
+    public void initTime() {
         Long memberId = JwtUtil.getMemberId();
         List<Subject> subjectList = subjectRepository.findByMemberId(memberId);
 
@@ -84,13 +82,11 @@ public class SubjectServiceImpl implements SubjectService {
             subject.initTime();
         }
         subjectRepository.saveAll(subjectList);
-
-        return true;
     }
 
     @Override
     @Transactional
-    public SubjectTimeResponse updateSubjectTime(SubjectTimeRequest subjectTimeRequest) {
+    public void updateSubjectTime(SubjectTimeRequest subjectTimeRequest) {
         Long memberId = JwtUtil.getMemberId();
         Subject subject = subjectRepository.findSubject(memberId, subjectTimeRequest.getSubjectId())
                 .orElseThrow(() -> new SubjectNotFoundException(subjectTimeRequest.getSubjectId()));
@@ -99,8 +95,6 @@ public class SubjectServiceImpl implements SubjectService {
         subject.updateRestTime(subjectTimeRequest.getStartAt());
         subject.updateStartEndTime(subjectTimeRequest);
         subjectRepository.save(subject);
-
-        return SubjectTimeResponse.of(subject);
     }
 
     /**
@@ -109,7 +103,7 @@ public class SubjectServiceImpl implements SubjectService {
      */
     @Override
     @Transactional
-    public Subject editSubject(SubjectEditRequestDto subjectEditRequestDto) {
+    public void editSubject(SubjectEditRequestDto subjectEditRequestDto) {
         Long memberId = JwtUtil.getMemberId();
         Long subjectId = subjectEditRequestDto.getSubjectId();
 
@@ -118,8 +112,6 @@ public class SubjectServiceImpl implements SubjectService {
         subject.setName(subjectEditRequestDto.getName());
         subject.setColorHex(subjectEditRequestDto.getColorHex());
         subjectRepository.save(subject);
-
-        return subject;
     }
 
     @Override

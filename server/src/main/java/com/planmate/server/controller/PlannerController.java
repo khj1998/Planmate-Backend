@@ -43,9 +43,9 @@ public class PlannerController {
             @ApiResponse(responseCode = "404",description = "시간표 추가 실패")
     })
     @PostMapping("/add")
-    public ResponseEntity<PlannerResponseDto> addPlan(@RequestBody PlannerRequestDto plannerRequestDto) {
-        PlannerResponseDto responseDto = plannerService.createPlan(plannerRequestDto);
-        return ResponseEntity.ok(responseDto);
+    public ResponseEntity<Boolean> addPlan(@RequestBody PlannerRequestDto plannerRequestDto) {
+        plannerService.createPlan(plannerRequestDto);
+        return ResponseEntity.ok(true);
     }
 
     @ApiOperation("시간표 수정")
@@ -56,9 +56,9 @@ public class PlannerController {
             @ApiResponse(responseCode = "404",description = "시간표 수정 실패")
     })
     @PostMapping("/edit")
-    public ResponseEntity<PlannerResponseDto> editPlan(@RequestBody PlannerRequestDto plannerRequestDto) {
-        PlannerResponseDto responseDto = plannerService.editPlan(plannerRequestDto);
-        return ResponseEntity.ok(responseDto);
+    public ResponseEntity<Boolean> editPlan(@RequestBody PlannerRequestDto plannerRequestDto) {
+        plannerService.editPlan(plannerRequestDto);
+        return ResponseEntity.ok(true);
     }
 
     @ApiOperation("시간표 삭제")

@@ -11,5 +11,7 @@ import java.sql.Time;
 @Builder
 public class StudyTime {
     private String name;
-    private Time studyTime;
+    private Long studyTimeHours;
+    private Long studyTimeMinutes;
+    private Long studyTimeSeconds;
 }

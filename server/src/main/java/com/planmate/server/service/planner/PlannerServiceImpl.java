@@ -37,19 +37,15 @@ public class PlannerServiceImpl implements PlannerService {
 
     @Override
     @Transactional
-    public PlannerResponseDto createPlan(PlannerRequestDto plannerRequestDto) {
+    public void createPlan(PlannerRequestDto plannerRequestDto) {
         Long memberId = JwtUtil.getMemberId();
         Planner planner = Planner.of(plannerRequestDto,memberId);
         plannerRepository.save(planner);
-
-        return PlannerResponseDto.of(planner);
     }
 
     @Override
     @Transactional
-    public PlannerResponseDto editPlan(PlannerRequestDto plannerRequestDto) {
-        return null;
-    }
+    public void editPlan(PlannerRequestDto plannerRequestDto) {}
 
     @Override
     @Transactional

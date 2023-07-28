@@ -12,11 +12,11 @@ import com.planmate.server.dto.response.subject.SubjectTimeResponse;
 import java.util.List;
 
 public interface SubjectService {
-    List<SubjectResponse> findSubject(Long subjectId);
+    List<SubjectResponse> findSubject();
     List<SubjectStudyTimeResponse> findSubjectTime();
-    SubjectCreateResponse createSubject(SubjectCreateRequestDto subjectCreateRequestDto);
-    SubjectTimeResponse updateSubjectTime(SubjectTimeRequest subjectTimeRequest);
-    Subject editSubject(SubjectEditRequestDto subjectEditRequestDto);
+    void createSubject(SubjectCreateRequestDto subjectCreateRequestDto);
+    void updateSubjectTime(SubjectTimeRequest subjectTimeRequest);
+    void editSubject(SubjectEditRequestDto subjectEditRequestDto);
     void deleteSubject(Long subjectId);
-    Boolean initTime();
+    void initTime();
 }

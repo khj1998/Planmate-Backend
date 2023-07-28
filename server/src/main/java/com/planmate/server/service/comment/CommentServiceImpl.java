@@ -8,8 +8,6 @@ import com.planmate.server.dto.request.comment.ChildCommentRequestDto;
 import com.planmate.server.dto.request.comment.CommentCreateRequestDto;
 import com.planmate.server.dto.request.comment.CommentEditRequestDto;
 import com.planmate.server.dto.request.comment.CommentRequestDto;
-import com.planmate.server.dto.response.comment.CommentCreateResponseDto;
-import com.planmate.server.dto.response.comment.CommentEditResponseDto;
 import com.planmate.server.dto.response.comment.CommentPageResponseDto;
 import com.planmate.server.dto.response.comment.CommentResponseDto;
 import com.planmate.server.exception.comment.CommentNotFoundException;
@@ -68,7 +66,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public CommentCreateResponseDto createComment(CommentCreateRequestDto commentCreateRequestDto) {
+    public void createComment(CommentCreateRequestDto commentCreateRequestDto) {
         Long memberId = JwtUtil.getMemberId();
 
         Member member = memberRepository.findById(memberId)
@@ -76,13 +74,11 @@ public class CommentServiceImpl implements CommentService {
 
         Comment comment = Comment.of(commentCreateRequestDto,memberId);
         commentRepository.save(comment);
-
-        return CommentCreateResponseDto.of(comment,member.getMemberName());
     }
 
     @Override
     @Transactional
-    public CommentCreateResponseDto createChildComment(ChildCommentRequestDto childCommentRequestDto) {
+    public void createChildComment(ChildCommentRequestDto childCommentRequestDto) {
         Long memberId = JwtUtil.getMemberId();
         Comment parentComment = commentRepository.findById(childCommentRequestDto.getParentCommentId())
                 .orElseThrow(() -> new CommentNotFoundException(childCommentRequestDto.getParentCommentId()));
@@ -92,26 +88,22 @@ public class CommentServiceImpl implements CommentService {
 
         Comment childComment = Comment.of(childCommentRequestDto,memberId);
         commentRepository.save(childComment);
-
-        return CommentCreateResponseDto.of(childComment,member.getMemberName());
     }
 
     @Override
     @Transactional
-    public CommentEditResponseDto editComment(CommentEditRequestDto commentEditRequestDto) {
+    public void editComment(CommentEditRequestDto commentEditRequestDto) {
         Long memberId = JwtUtil.getMemberId();
         Comment comment = commentRepository.findComment(memberId,commentEditRequestDto.getCommentId())
               .orElseThrow(() -> new CommentNotFoundException(commentEditRequestDto.getCommentId()));
 
         comment.setContent(commentEditRequestDto.getContent());
         commentRepository.save(comment);
-
-        return CommentEditResponseDto.of();
     }
 
     @Override
     @Transactional
-    public Boolean setCommentLike(Long commentId) {
+    public void setCommentLike(Long commentId) {
         Long userId = JwtUtil.getMemberId();
 
         CommentLike commentLike = commentLikeRepository.findCommentLike(userId,commentId);
@@ -125,8 +117,6 @@ public class CommentServiceImpl implements CommentService {
         } else {
             commentLikeRepository.delete(commentLike);
         }
-
-        return true;
     }
 
     @Override

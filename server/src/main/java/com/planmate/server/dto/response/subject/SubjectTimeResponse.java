@@ -13,19 +13,15 @@ import java.sql.Time;
 @Builder
 public class SubjectTimeResponse {
     private Long subjectId;
-    private String type;
     private String name;
     private Time maxStudyTime;
     private Time studyTime;
     private Time restTime;
 
     public static SubjectTimeResponse of(Subject subject) {
-        Long inputValue = subject.getType() ? 0L:1L;
-        String type = SubjectTypeConverter.getTypeName(inputValue);
 
         return SubjectTimeResponse.builder()
                 .subjectId(subject.getId())
-                .type(type)
                 .name(subject.getName())
                 .maxStudyTime(subject.getMaxStudyTime())
                 .studyTime(subject.getStudyTime())

@@ -31,7 +31,9 @@ public class StatisticData {
         for (Subject subject : subjectList) {
             StudyTime studyTime = StudyTime.builder()
                     .name(subject.getName())
-                    .studyTime(subject.getStudyTime())
+                    .studyTimeHours((long) subject.getStudyTime().getHours())
+                    .studyTimeMinutes((long) subject.getStudyTime().getMinutes())
+                    .studyTimeSeconds((long) subject.getStudyTime().getSeconds())
                     .build();
             studyTimeList.add(studyTime);
 

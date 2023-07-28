@@ -13,13 +13,19 @@ import java.sql.Time;
 public class SubjectStudyTimeResponse {
     private Long subjectId;
     private String name;
-    private Time studyTime;
+    private String colorHex;
+    private Long studyTimeHours;
+    private Long studyTimeMinutes;
+    private Long studyTimeSeconds;
 
     public static SubjectStudyTimeResponse of(Subject subject) {
         return SubjectStudyTimeResponse.builder()
                 .subjectId(subject.getId())
                 .name(subject.getName())
-                .studyTime(subject.getStudyTime())
+                .colorHex(subject.getColorHex())
+                .studyTimeHours((long) subject.getStudyTime().getHours())
+                .studyTimeMinutes((long) subject.getStudyTime().getMinutes())
+                .studyTimeSeconds((long) subject.getStudyTime().getSeconds())
                 .build();
     }
 }

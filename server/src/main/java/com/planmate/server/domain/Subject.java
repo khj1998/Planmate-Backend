@@ -32,9 +32,6 @@ public class Subject {
     @Column(name = "name",nullable = false,length = 50,columnDefinition = "varchar")
     private String name;
 
-    @Column(name = "type",nullable = false,columnDefinition = "bit")
-    private Boolean type;
-
     @Column(name = "color_hex",nullable = false,length = 12,columnDefinition = "varchar")
     private String colorHex;
 
@@ -65,7 +62,6 @@ public class Subject {
         return Subject.builder()
                 .memberId(memberId)
                 .name(subjectCreateRequestDto.getName())
-                .type(subjectCreateRequestDto.getType())
                 .maxStudyTime(new Time(0,0,0))
                 .studyTime(new Time(0,0,0))
                 .restTime(new Time(0,0,0))

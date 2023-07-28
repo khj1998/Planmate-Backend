@@ -12,17 +12,13 @@ import lombok.*;
 public class SubjectResponse {
     private Long subjectId;
     private String name;
-    private String type;
     private String colorHex;
 
     public static SubjectResponse of(Subject subject) {
-        Long typeValue = subject.getType() ? 0L:1L;
-        String type = SubjectTypeConverter.getTypeName(typeValue);
 
         return SubjectResponse.builder()
                 .subjectId(subject.getId())
                 .name(subject.getName())
-                .type(type)
                 .colorHex(subject.getColorHex())
                 .build();
     }

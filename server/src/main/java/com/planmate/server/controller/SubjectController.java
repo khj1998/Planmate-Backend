@@ -52,8 +52,8 @@ public class SubjectController {
             @ApiResponse(responseCode = "403",description = "해당 사용자가 Member 권한이 아님"),
             @ApiResponse(responseCode = "404",description = "자신의 공부/운동 목록 조회 실패함")
     })
-    public ResponseEntity<List<SubjectResponse>> findSubject(@RequestParam Long subjectId) {
-        List<SubjectResponse> responseList = subjectService.findSubject(subjectId);
+    public ResponseEntity<List<SubjectResponse>> findSubject() {
+        List<SubjectResponse> responseList = subjectService.findSubject();
         return ResponseEntity.ok(responseList);
     }
 
@@ -65,9 +65,9 @@ public class SubjectController {
             @ApiResponse(responseCode = "403",description = "해당 사용자가 Member 권한이 아님"),
             @ApiResponse(responseCode = "404",description = "새 과목을 생성하는데 실패함")
     })
-    public ResponseEntity<SubjectCreateResponse> addSubject(@RequestBody SubjectCreateRequestDto subjectCreateRequestDto) {
-        SubjectCreateResponse response = subjectService.createSubject(subjectCreateRequestDto);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<Boolean> addSubject(@RequestBody SubjectCreateRequestDto subjectCreateRequestDto) {
+        subjectService.createSubject(subjectCreateRequestDto);
+        return ResponseEntity.ok(true);
     }
 
     @PostMapping("/reset")
@@ -79,7 +79,8 @@ public class SubjectController {
             @ApiResponse(responseCode = "404",description = "공부/운동 시간 업데이트에 실패함")
     })
     public ResponseEntity<Boolean> resetTime() {
-        return ResponseEntity.ok(subjectService.initTime());
+        subjectService.initTime();
+        return ResponseEntity.ok(true);
     }
 
     @PostMapping("/time")
@@ -90,9 +91,9 @@ public class SubjectController {
             @ApiResponse(responseCode = "403",description = "해당 사용자가 Member 권한이 아님"),
             @ApiResponse(responseCode = "404",description = "공부/운동 시간 업데이트에 실패함")
     })
-    public ResponseEntity<SubjectTimeResponse> updateTime(@RequestBody SubjectTimeRequest subjectTimeRequest) {
-        SubjectTimeResponse responseDto = subjectService.updateSubjectTime(subjectTimeRequest);
-        return ResponseEntity.ok(responseDto);
+    public ResponseEntity<Boolean> updateTime(@RequestBody SubjectTimeRequest subjectTimeRequest) {
+        subjectService.updateSubjectTime(subjectTimeRequest);
+        return ResponseEntity.ok(true);
     }
 
     @PostMapping("/edit")
@@ -100,9 +101,9 @@ public class SubjectController {
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "과목 수정 성공")
     })
-    public ResponseEntity<Subject> editSubject(@RequestBody SubjectEditRequestDto subjectEditRequestDto) {
-        Subject subject = subjectService.editSubject(subjectEditRequestDto);
-        return ResponseEntity.ok(subject);
+    public ResponseEntity<Boolean> editSubject(@RequestBody SubjectEditRequestDto subjectEditRequestDto) {
+        subjectService.editSubject(subjectEditRequestDto);
+        return ResponseEntity.ok(true);
     }
     
     @DeleteMapping("/remove")

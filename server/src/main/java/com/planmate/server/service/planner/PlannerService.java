@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface PlannerService {
     List<PlannerResponseDto> findPlan();
-    PlannerResponseDto createPlan(PlannerRequestDto plannerRequestDto);
-    PlannerResponseDto editPlan(PlannerRequestDto plannerRequestDto);
+    void createPlan(PlannerRequestDto plannerRequestDto);
+    void editPlan(PlannerRequestDto plannerRequestDto);
     void deletePlan(Long plannerId);
 }

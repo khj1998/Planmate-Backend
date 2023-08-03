@@ -50,7 +50,7 @@ public class PostServiceImpl implements PostService {
         Long memberId = JwtUtil.getMemberId();
 
         List<PostResponseDto> responseDtoList = new ArrayList<>();
-        Sort sort = Sort.by(Sort.Direction.DESC,"updatedAt");
+        Sort sort = Sort.by(Sort.Direction.DESC,"startedAt");
         Pageable pageable = PageRequest.of(pages,10,sort);
         Page<Post> postList = postRepository.findAll(pageable);
 
@@ -143,7 +143,7 @@ public class PostServiceImpl implements PostService {
         post.setContent(postDto.getContent());
         postRepository.save(post);
 
-        return PostEditResponseDto.of(post);
+        return PostEditResponseDto.of();
     }
 
     /**
@@ -167,14 +167,16 @@ public class PostServiceImpl implements PostService {
      */
     @Override
     @Transactional(readOnly = true)
-    public List<PostResponseDto> findMyPost() {
+    public PostPageResponseDto findMyPost(Integer pages) {
         List<PostResponseDto> responseDtoList = new ArrayList<>();
         Long memberId = JwtUtil.getMemberId();
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(memberId));
 
-        List<Post> postList = postRepository.findByMemberId(member.getMemberId());
+        Sort sort = Sort.by(Sort.Direction.DESC,"startedAt");
+        Pageable pageable = PageRequest.of(pages,10,sort);
+        Page<Post> postList = postRepository.findByMemberId(member.getMemberId(),pageable);
 
         for (Post post : postList) {
             List<PostTag> postTagList = postTagRepository.findByPostId(post.getPostId());
@@ -187,7 +189,7 @@ public class PostServiceImpl implements PostService {
             responseDtoList.add(responseDto);
         }
 
-        return responseDtoList;
+        return PostPageResponseDto.of(postList.getTotalPages(),responseDtoList);
     }
 
     /**
@@ -221,14 +223,16 @@ public class PostServiceImpl implements PostService {
      */
     @Override
     @Transactional(readOnly = true)
-    public List<PostResponseDto> findScrapPost() {
+    public PostPageResponseDto findScrapPost(Integer pages) {
         List<PostResponseDto> responseDtoList = new ArrayList<>();
         Long memberId = JwtUtil.getMemberId();
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(memberId));
 
-        List<MemberScrap> scrapList = memberScrapRepository.findByMemberId(memberId);
+        Sort sort = Sort.by(Sort.Direction.DESC,"startedAt");
+        Pageable pageable = PageRequest.of(pages,10,sort);
+        Page<MemberScrap> scrapList = memberScrapRepository.findByMemberId(memberId,pageable);
 
         for (MemberScrap memberScrap : scrapList) {
             Post post = postRepository.findById(memberScrap.getPostId())
@@ -244,7 +248,7 @@ public class PostServiceImpl implements PostService {
             responseDtoList.add(responseDto);
         }
 
-        return responseDtoList;
+        return PostPageResponseDto.of(scrapList.getTotalPages(),responseDtoList);
     }
 
     /**
@@ -255,11 +259,14 @@ public class PostServiceImpl implements PostService {
      */
     @Override
     @Transactional(readOnly = true)
-    public List<PostResponseDto> findPostByTagName(String tagName) {
+    public PostPageResponseDto findPostByTagName(String tagName,Integer pages) {
         Long memberId = JwtUtil.getMemberId();
 
         List<PostResponseDto> responseDtoList = new ArrayList<>();
-        List<PostTag> postTagList = postTagRepository.findByTagName(tagName);
+
+        Sort sort = Sort.by(Sort.Direction.DESC,"startedAt");
+        Pageable pageable = PageRequest.of(pages,10,sort);
+        Page<PostTag> postTagList = postTagRepository.findByTagName(tagName,pageable);
 
         for (PostTag postTag : postTagList) {
             Post post = postRepository.findById(postTag.getPostId())
@@ -279,7 +286,7 @@ public class PostServiceImpl implements PostService {
             responseDtoList.add(responseDto);
         }
 
-        return responseDtoList;
+        return PostPageResponseDto.of(postTagList.getTotalPages(),responseDtoList);
     }
 
     @Override

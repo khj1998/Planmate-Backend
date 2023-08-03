@@ -14,20 +14,51 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class StatisticResponse {
-    private Time totalStudyTime;
-    private Time restTime;
-    private Time maxStudyTime;
-    private Time startAt;
-    private Time endAt;
+    private Long totalStudyTimeHours;
+    private Long totalStudyTimeMinutes;
+    private Long totalStudyTimeSeconds;
+
+    private Long restTimeHours;
+    private Long restTimeMinutes;
+    private Long restTimeSeconds;
+
+    private Long maxStudyTimeHours;
+    private Long maxStudyTimeMinutes;
+    private Long maxStudyTimeSeconds;
+
+    private Long startAtHours;
+    private Long startAtMinutes;
+
+    private Long endAtHours;
+    private Long endAtMinutes;
+
     private List<StudyTime> studyTimeList;
 
     public static StatisticResponse of(StatisticData statisticData) {
+        Time totalStudyTime = statisticData.getTotalStudyTime();
+        Time restTime = statisticData.getRestTime();
+        Time maxStudyTime = statisticData.getMaxStudyTime();
+        Time startAt = statisticData.getStartAt();
+        Time endAt = statisticData.getEndAt();
+
         return StatisticResponse.builder()
-                .totalStudyTime(statisticData.getTotalStudyTime())
-                .restTime(statisticData.getRestTime())
-                .maxStudyTime(statisticData.getMaxStudyTime())
-                .startAt(statisticData.getStartAt())
-                .endAt(statisticData.getEndAt())
+                .totalStudyTimeHours((long) totalStudyTime.getHours())
+                .totalStudyTimeMinutes((long) totalStudyTime.getMinutes())
+                .totalStudyTimeSeconds((long) totalStudyTime.getSeconds())
+
+                .restTimeHours((long) restTime.getHours())
+                .restTimeMinutes((long) restTime.getMinutes())
+                .restTimeSeconds((long) restTime.getSeconds())
+
+                .maxStudyTimeHours((long) maxStudyTime.getHours())
+                .maxStudyTimeMinutes((long) maxStudyTime.getMinutes())
+                .maxStudyTimeSeconds((long) maxStudyTime.getSeconds())
+
+                .startAtHours((long) startAt.getHours())
+                .startAtMinutes((long) startAt.getMinutes())
+
+                .endAtHours((long) endAt.getHours())
+                .endAtMinutes((long) endAt.getMinutes())
                 .studyTimeList(statisticData.getStudyTimeList())
                 .build();
     }

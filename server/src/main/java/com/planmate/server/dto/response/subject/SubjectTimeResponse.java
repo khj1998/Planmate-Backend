@@ -13,7 +13,6 @@ import java.sql.Time;
 @Builder
 public class SubjectTimeResponse {
     private Long subjectId;
-    private String type;
     private String name;
     private Time maxStudyTime;
     private Time studyTime;

@@ -21,11 +21,9 @@ public class PlannerResponseDto {
     private String endAt;
 
     public static PlannerResponseDto of(Planner planner) {
-        String type = SubjectTypeConverter.getTypeName(planner.getType());
 
         return PlannerResponseDto.builder()
                 .plannerId(planner.getPlannerId())
-                .type(type)
                 .scheduleName(planner.getScheduleName())
                 .colorHex(planner.getColorHex())
                 .day(planner.getDay())

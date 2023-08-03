@@ -14,10 +14,10 @@ public interface PostService {
     PostResponseDto findByPostId(Long postId);
     void deletePost(Long postId);
     PostPageResponseDto findRecentPost(Integer pages);
-    List<PostResponseDto> findMyPost();
+    PostPageResponseDto findPostByTagName(String tagName,Integer pages);
+    PostPageResponseDto findMyPost(Integer pages);
     PostEditResponseDto editPost(PostDto postDto);
     Boolean scrapPost(ScrapDto scrapDto);
-    List<PostResponseDto> findScrapPost();
-    List<PostResponseDto> findPostByTagName(String tagName);
+    PostPageResponseDto findScrapPost(Integer pages);
     Boolean setPostLike(Long postId);
 }

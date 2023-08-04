@@ -33,7 +33,7 @@ public class Post {
     @ApiModelProperty(example = "게시물 고유 식별자")
     private Long postId;
 
-    @Column(name = "owner_id",nullable = false,columnDefinition = "int")
+    @Column(name = "member_id",nullable = false,columnDefinition = "int")
     @ApiModelProperty(example = "게시물 소유 맴버와 매핑")
     private Long memberId;
 

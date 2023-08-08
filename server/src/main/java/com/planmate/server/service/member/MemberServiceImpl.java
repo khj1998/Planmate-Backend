@@ -7,6 +7,7 @@ import com.planmate.server.domain.Member;
 import com.planmate.server.domain.Token;
 import com.planmate.server.dto.response.login.LoginResponseDto;
 import com.planmate.server.exception.member.MemberNotFoundException;
+import com.planmate.server.exception.token.TokenNotFoundException;
 import com.planmate.server.repository.MemberRepository;
 import com.planmate.server.repository.TokenRepository;
 import com.planmate.server.util.JwtUtil;
@@ -34,12 +35,19 @@ public class MemberServiceImpl implements MemberService {
         this.tokenRepository = tokenRepository;
     }
 
+    @Override
+    @Transactional
+    public Optional<Member> checkDuplicated(String email) {
+        return memberRepository.findByEmail(email);
+    }
+
     /**
      * @author 지승언
      * @param id
      * @return id와 일치하는 Member 객체를 반환한다.
      * */
     @Override
+    @Transactional
     public Optional<Member> findMemberById(final Long id) {
         log.info("called member service");
         return memberRepository.findById(id);
@@ -52,7 +60,8 @@ public class MemberServiceImpl implements MemberService {
      * @return 저장된 member 객체
      * */
     @Override
-    public Member signUp(final String idToken) {
+    @Transactional
+    public void signUp(final String idToken) {
         final GoogleIdTokenVo googleIdTokenVo = convertToGoogleIdTokenVo(decryptIdToken(idToken.split("\\.")[1]));
 
         Authority authority = Authority.builder()
@@ -66,8 +75,17 @@ public class MemberServiceImpl implements MemberService {
                 .authorities(Arrays.asList(authority))
                 .loginType(0L)
                 .build();
+    }
 
-        return memberRepository.save(build);
+    @Override
+    @Transactional
+    public void signIn(Member member) {
+        Token token = tokenRepository.findByMemberId(member.getMemberId())
+                .orElseThrow(() -> new TokenNotFoundException(member.getMemberId()));
+
+        token.setAccessToken(JwtUtil.createJwt(member));
+        token.setRefreshToken(JwtUtil.createRefreshToken());
+        tokenRepository.save(token);
     }
 
     /**
@@ -77,6 +95,7 @@ public class MemberServiceImpl implements MemberService {
      * @return 회원가입한 멤버에 대한 access token, refresh token 각 토큰의 만료일, member info를 반환
      * */
     @Override
+    @Transactional
     public LoginResponseDto registerMember(Member member) {
         Token token = Token.builder()
                 .memberId(member.getMemberId())
@@ -92,6 +111,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public List<Authority> getAuthorities() {
         log.info("called");
         return memberRepository.findById(JwtUtil.getMemberId()).orElseThrow(
@@ -100,6 +120,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public Member getInfo() {
         return memberRepository.findById(JwtUtil.getMemberId()).orElseThrow(
                 () -> new MemberNotFoundException(JwtUtil.getMemberId())
@@ -107,6 +128,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public Member getInfo(final Long id) {
         return memberRepository.findById(id).orElseThrow(
                 () -> new MemberNotFoundException(JwtUtil.getMemberId())
@@ -125,6 +147,7 @@ public class MemberServiceImpl implements MemberService {
      * TODO: query annotation 써서 alter
      * */
     @Override
+    @Transactional
     public Member modifyName(final String name) {
         Member member = memberRepository.findById(JwtUtil.getMemberId()).orElseThrow(
                 () -> new MemberNotFoundException(JwtUtil.getMemberId())
@@ -136,6 +159,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public Member modifyImg(final String img) {
         Member member = memberRepository.findById(JwtUtil.getMemberId()).orElseThrow(
                 () -> new MemberNotFoundException(JwtUtil.getMemberId())

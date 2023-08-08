@@ -1,5 +1,6 @@
 package com.planmate.server.service.oauth;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.planmate.server.enums.SocialLoginType;
 import lombok.Generated;
 
@@ -16,18 +17,12 @@ public interface SocialOauth {
      * @param code API Server 에서 받아온 code
      * @return API 서버로 부터 응답받은 Json 형태의 결과를 string으로 반
      */
-    String requestAccessToken(String code);
+    String requestAccessToken(String code);;
 
     default SocialLoginType type() {
-        if (this instanceof GithubOauth) {
-            return SocialLoginType.GITHUB;
-        } else if (this instanceof GoogleOauth) {
-            return SocialLoginType.GOOGLE;
-        } else if (this instanceof NaverOauth) {
-            return SocialLoginType.NAVER;
-        } else if (this instanceof KakaoOauth) {
-            return SocialLoginType.KAKAO;
-        } else {
+     if (this instanceof GoogleOauth) {
+         return SocialLoginType.GOOGLE;
+     } else {
             return null;
         }
     }

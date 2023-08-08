@@ -18,6 +18,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CommentResponseDto {
     private Long commentId;
+    private Long postId;
     private String memberName;
     private LocalDateTime updatedAt;
     private String content;
@@ -37,6 +38,7 @@ public class CommentResponseDto {
 
         return CommentResponseDto.builder()
                 .commentId(comment.getCommentId())
+                .postId(comment.getPostId())
                 .memberName(member.getMemberName())
                 .content(comment.getContent())
                 .updatedAt(comment.getUpdatedAt())
@@ -58,6 +60,7 @@ public class CommentResponseDto {
 
         return CommentResponseDto.builder()
                 .commentId(comment.getCommentId())
+                .postId(comment.getPostId())
                 .memberName(member.getMemberName())
                 .content(comment.getContent())
                 .updatedAt(comment.getUpdatedAt())
@@ -69,6 +72,7 @@ public class CommentResponseDto {
     public static CommentResponseDto of(Comment comment) {
         return CommentResponseDto.builder()
                 .commentId(comment.getCommentId())
+                .postId(comment.getPostId())
                 .content(comment.getContent())
                 .updatedAt(comment.getUpdatedAt())
                 .likeCount(0L)

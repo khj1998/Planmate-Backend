@@ -9,8 +9,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MemberService {
+    Optional<Member> checkDuplicated(String email);
     public Optional<Member> findMemberById(Long id);
-    public Member signUp(String idToken);
+    void signUp(String idToken);
+    void signIn(Member member);
     public LoginResponseDto registerMember(Member member);
     public List<Authority> getAuthorities();
     public Member getInfo();

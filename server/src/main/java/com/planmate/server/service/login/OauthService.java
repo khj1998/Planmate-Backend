@@ -2,16 +2,21 @@ package com.planmate.server.service.login;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.planmate.server.dto.response.login.GoogleLoginResponse;
 import com.planmate.server.enums.SocialLoginType;
 import com.planmate.server.service.oauth.SocialOauth;
+import com.planmate.server.vo.GoogleIdTokenVo;
 import lombok.Generated;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Slf4j
@@ -21,6 +26,7 @@ import java.util.List;
 public class OauthService {
     private final List<SocialOauth> socialOauthList;
     private final HttpServletResponse response;
+    private final Gson gson;
 
     /**
      * @author 지승언
@@ -48,6 +54,16 @@ public class OauthService {
         final String response = socialOauth.requestAccessToken(code);
 
         return convertStringToResponse(response);
+    }
+
+    public String getEmailByIdToken(String idToken) throws JsonProcessingException {
+        byte[] decode = Base64.decodeBase64(idToken.split("\\.")[1]);
+        idToken = new String(decode, StandardCharsets.UTF_8);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        GoogleIdTokenVo googleIdTokenVo = objectMapper.readValue(idToken, GoogleIdTokenVo.class);
+
+        return googleIdTokenVo.getEmail();
     }
 
     /**

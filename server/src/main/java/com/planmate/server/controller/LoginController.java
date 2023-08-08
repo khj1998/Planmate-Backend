@@ -1,18 +1,25 @@
 package com.planmate.server.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.planmate.server.domain.Member;
 import com.planmate.server.dto.response.login.GoogleLoginResponse;
 import com.planmate.server.dto.response.login.LoginResponseDto;
 import com.planmate.server.enums.SocialLoginType;
+import com.planmate.server.repository.MemberRepository;
 import com.planmate.server.service.login.OauthService;
 import com.planmate.server.service.member.MemberService;
+import com.planmate.server.service.token.TokenService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
+
+import java.util.Optional;
 
 @RestController
 @CrossOrigin
@@ -20,6 +27,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/login")
 @Slf4j
 public class LoginController {
+
+    @Value("${FRONT_REDIRECT_URL}")
+    private String redirectURL;
     private final OauthService oauthService;
     private final MemberService memberService;
 
@@ -50,13 +60,21 @@ public class LoginController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "정상 응답")
     })
-    public ResponseEntity<LoginResponseDto> callback(
+    public RedirectView callback(
             @PathVariable(name = "socialLoginType") SocialLoginType socialLoginType,
-            @RequestParam(name = "code") String code) {
+            @RequestParam(name = "code") String code) throws JsonProcessingException {
+
         GoogleLoginResponse googleLoginResponse = oauthService.requestAccessToken(socialLoginType, code);
+        String email = oauthService.getEmailByIdToken(googleLoginResponse.getId_token());
 
-        Member member = memberService.signUp(googleLoginResponse.getId_token());
+        Optional<Member> checkedMember = memberService.checkDuplicated(email);
 
-        return ResponseEntity.ok(memberService.registerMember(member));
+        if (checkedMember.isPresent()) {
+            memberService.signIn(checkedMember.get());
+        }   else {
+            memberService.signUp(googleLoginResponse.getId_token());
+        }
+
+        return new RedirectView(redirectURL);
     }
 }

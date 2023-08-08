@@ -1,5 +1,11 @@
 package com.planmate.server.service.oauth;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.JSONWrappedObject;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.planmate.server.vo.GoogleIdTokenVo;
 import lombok.Generated;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

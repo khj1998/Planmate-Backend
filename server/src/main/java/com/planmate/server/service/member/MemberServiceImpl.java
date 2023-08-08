@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
@@ -178,6 +179,30 @@ public class MemberServiceImpl implements MemberService {
         member.setProfile(img);
 
         return memberRepository.save(member);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public LoginResponseDto getUserInfo(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        String accessToken = null;
+
+        if (cookies != null) {
+            for (Cookie cookie: cookies) {
+                if (cookie.getName().equals("access_token")) {
+                    accessToken = cookie.getValue();
+                    break;
+                }
+            }
+        }
+
+        Token token = tokenRepository.findByAccessToken(accessToken)
+                .orElseThrow(() -> new TokenNotFoundException());
+
+        Member member = memberRepository.findById(token.getMemberId())
+                .orElseThrow(() -> new MemberNotFoundException(token.getMemberId()));
+
+        return LoginResponseDto.of(member,token);
     }
 
     /**

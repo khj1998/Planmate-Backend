@@ -45,7 +45,8 @@ public class SecurityConfig {
                         "/swagger-resources/**",
                         "/health/**",
                         "/login/**",
-                        "/token/**"
+                        "/token/**",
+                        "/info/auth"
                 );
             }
         };

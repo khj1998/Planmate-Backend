@@ -18,4 +18,9 @@ public class TokenNotFoundException extends RuntimeException {
 
         this.message = id.toString();
     }
+
+    public TokenNotFoundException() {
+        super("failed to find token");
+        this.message = "failed to find token";
+    }
 }

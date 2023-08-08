@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
 @RestController
@@ -62,7 +63,8 @@ public class LoginController {
     })
     public RedirectView callback(
             @PathVariable(name = "socialLoginType") SocialLoginType socialLoginType,
-            @RequestParam(name = "code") String code) throws JsonProcessingException {
+            @RequestParam(name = "code") String code,
+            HttpServletResponse response) throws JsonProcessingException {
 
         GoogleLoginResponse googleLoginResponse = oauthService.requestAccessToken(socialLoginType, code);
         String email = oauthService.getEmailByIdToken(googleLoginResponse.getId_token());
@@ -70,11 +72,12 @@ public class LoginController {
         Optional<Member> checkedMember = memberService.checkDuplicated(email);
 
         if (checkedMember.isPresent()) {
-            memberService.signIn(checkedMember.get());
+            memberService.signIn(response,checkedMember.get());
         }   else {
-            memberService.signUp(googleLoginResponse.getId_token());
+            Member member = memberService.signUp(googleLoginResponse.getId_token());
+            memberService.registerMember(response,member);
         }
-
+        
         return new RedirectView(redirectURL);
     }
 }

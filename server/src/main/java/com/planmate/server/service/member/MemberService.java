@@ -5,15 +5,16 @@ import com.planmate.server.domain.Member;
 import com.planmate.server.dto.response.login.LoginResponseDto;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Optional;
 
 public interface MemberService {
     Optional<Member> checkDuplicated(String email);
     public Optional<Member> findMemberById(Long id);
-    void signUp(String idToken);
-    void signIn(Member member);
-    public LoginResponseDto registerMember(Member member);
+    Member signUp(String idToken);
+    void signIn(HttpServletResponse response,Member member);
+    public LoginResponseDto registerMember(HttpServletResponse response,Member member);
     public List<Authority> getAuthorities();
     public Member getInfo();
     public Member getInfo(Long id);

@@ -18,6 +18,8 @@ import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -61,7 +63,7 @@ public class MemberServiceImpl implements MemberService {
      * */
     @Override
     @Transactional
-    public void signUp(final String idToken) {
+    public Member signUp(final String idToken) {
         final GoogleIdTokenVo googleIdTokenVo = convertToGoogleIdTokenVo(decryptIdToken(idToken.split("\\.")[1]));
 
         Authority authority = Authority.builder()
@@ -75,17 +77,23 @@ public class MemberServiceImpl implements MemberService {
                 .authorities(Arrays.asList(authority))
                 .loginType(0L)
                 .build();
+
+        memberRepository.save(build);
+
+        return build;
     }
 
     @Override
     @Transactional
-    public void signIn(Member member) {
+    public void signIn(HttpServletResponse response,Member member) {
         Token token = tokenRepository.findByMemberId(member.getMemberId())
                 .orElseThrow(() -> new TokenNotFoundException(member.getMemberId()));
 
         token.setAccessToken(JwtUtil.createJwt(member));
         token.setRefreshToken(JwtUtil.createRefreshToken());
         tokenRepository.save(token);
+
+        setHttpOnlyCookie(response,token);
     }
 
     /**
@@ -96,7 +104,7 @@ public class MemberServiceImpl implements MemberService {
      * */
     @Override
     @Transactional
-    public LoginResponseDto registerMember(Member member) {
+    public LoginResponseDto registerMember(HttpServletResponse response,Member member) {
         Token token = Token.builder()
                 .memberId(member.getMemberId())
                 .accessToken(JwtUtil.createJwt(member))
@@ -106,6 +114,8 @@ public class MemberServiceImpl implements MemberService {
                 .build();
 
         tokenRepository.save(token);
+
+        setHttpOnlyCookie(response,token);
 
         return LoginResponseDto.of(member, token);
     }
@@ -192,5 +202,22 @@ public class MemberServiceImpl implements MemberService {
         } catch (JsonProcessingException e) {
             throw new RuntimeException("json failed");
         }
+    }
+
+    private void setHttpOnlyCookie(HttpServletResponse response,Token token) {
+        Cookie accessCookie = new Cookie("access_token",token.getAccessToken());
+        accessCookie.setMaxAge(1800);
+        accessCookie.setHttpOnly(true);
+        accessCookie.setSecure(false);
+        accessCookie.setPath("/"); //쿠키가 브라우저에 허용되는 URL 설정
+
+        Cookie refreshCookie = new Cookie("refresh_token",token.getRefreshToken());
+        refreshCookie.setMaxAge(1800);
+        refreshCookie.setHttpOnly(true);
+        refreshCookie.setSecure(false);
+        refreshCookie.setPath("/");
+
+        response.addCookie(accessCookie);
+        response.addCookie(refreshCookie);
     }
 }

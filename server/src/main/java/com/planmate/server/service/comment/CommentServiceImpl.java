@@ -52,7 +52,7 @@ public class CommentServiceImpl implements CommentService {
                 .orElseThrow(() -> new MemberNotFoundException(memberId));
 
         Sort sort = Sort.by(Sort.Direction.DESC,"startedAt");
-        Pageable pageable = PageRequest.of(pages,10,sort);
+        Pageable pageable = PageRequest.of(pages,5,sort);
         Page<Comment> commentList = commentRepository.findAllByMemberId(memberId,pageable);
 
         for (Comment comment : commentList) {
@@ -139,7 +139,7 @@ public class CommentServiceImpl implements CommentService {
                 .orElseThrow(() -> new PostNotFoundException(commentRequestDto.getPostId()));
 
         Sort sort = Sort.by(Sort.Direction.DESC,"startedAt");
-        Pageable pageable = PageRequest.of(commentRequestDto.getPages(),10,sort);
+        Pageable pageable = PageRequest.of(commentRequestDto.getPages(),5,sort);
         Page<Comment> comments = commentRepository.findRecentComment(commentRequestDto.getPostId(), pageable);
 
         for (Comment comment : comments) {

@@ -29,7 +29,7 @@ import java.util.Optional;
 @Slf4j
 public class LoginController {
 
-    @Value("${FRONT_REDIRECT_URL}")
+    @Value("${frontend.redirect.url}")
     private String redirectURL;
     private final OauthService oauthService;
     private final MemberService memberService;
@@ -77,7 +77,7 @@ public class LoginController {
             Member member = memberService.signUp(googleLoginResponse.getId_token());
             memberService.registerMember(response,member);
         }
-        
+
         return new RedirectView(redirectURL);
     }
 }

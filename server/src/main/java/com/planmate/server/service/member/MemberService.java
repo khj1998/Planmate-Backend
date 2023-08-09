@@ -22,5 +22,5 @@ public interface MemberService {
     public void signOut();
     public Member modifyName(String name);
     public Member modifyImg(String img);
-    LoginResponseDto getUserInfo(HttpServletRequest request);
+    LoginResponseDto getUserInfo(String email);
 }

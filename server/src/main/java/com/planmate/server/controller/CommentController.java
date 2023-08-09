@@ -1,10 +1,7 @@
 package com.planmate.server.controller;
 
 import com.planmate.server.domain.Comment;
-import com.planmate.server.dto.request.comment.ChildCommentRequestDto;
-import com.planmate.server.dto.request.comment.CommentCreateRequestDto;
-import com.planmate.server.dto.request.comment.CommentEditRequestDto;
-import com.planmate.server.dto.request.comment.CommentRequestDto;
+import com.planmate.server.dto.request.comment.*;
 import com.planmate.server.dto.response.comment.CommentPageResponseDto;
 import com.planmate.server.dto.response.comment.CommentResponseDto;
 import com.planmate.server.service.comment.CommentService;
@@ -52,6 +49,19 @@ public class CommentController {
             @ApiResponse(responseCode = "404",description = "최근 댓글 N개 조회 실패")
     })
     public ResponseEntity<CommentPageResponseDto> findRecentComment(@RequestBody CommentRequestDto commentRequestDto) {
+        CommentPageResponseDto responseDto = commentService.findRecentComment(commentRequestDto);
+        return ResponseEntity.ok(responseDto);
+    }
+    
+    @PostMapping("/child/recent")
+    @ApiOperation("자식 댓글 N개 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200",description = "자식 댓글 N개 조회 성공"),
+            @ApiResponse(responseCode = "401",description = "인증되지 않은 유저 | 토큰 만료"),
+            @ApiResponse(responseCode = "403",description = "유저가 맴버 | admin 권한이 아님"),
+            @ApiResponse(responseCode = "404",description = "자식 댓글 N개 조회 실패")
+    })
+    public ResponseEntity<CommentPageResponseDto> findChildComment(@RequestBody ChildRecentRequestDto commentRequestDto) {
         CommentPageResponseDto responseDto = commentService.findRecentComment(commentRequestDto);
         return ResponseEntity.ok(responseDto);
     }

@@ -15,6 +15,7 @@ import com.planmate.server.vo.GoogleIdTokenVo;
 import lombok.Generated;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.codec.binary.Base64;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -94,7 +95,7 @@ public class MemberServiceImpl implements MemberService {
         token.setRefreshToken(JwtUtil.createRefreshToken());
         tokenRepository.save(token);
 
-        setHttpOnlyCookie(response,token);
+        setHttpOnlyCookie(response,member.getEMail());
     }
 
     /**
@@ -116,7 +117,7 @@ public class MemberServiceImpl implements MemberService {
 
         tokenRepository.save(token);
 
-        setHttpOnlyCookie(response,token);
+        setHttpOnlyCookie(response,member.getEMail());
 
         return LoginResponseDto.of(member, token);
     }
@@ -183,24 +184,13 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public LoginResponseDto getUserInfo(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        String accessToken = null;
+    public LoginResponseDto getUserInfo(String email) {
 
-        if (cookies != null) {
-            for (Cookie cookie: cookies) {
-                if (cookie.getName().equals("access_token")) {
-                    accessToken = cookie.getValue();
-                    break;
-                }
-            }
-        }
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new MemberNotFoundException(email));
 
-        Token token = tokenRepository.findByAccessToken(accessToken)
-                .orElseThrow(() -> new TokenNotFoundException());
-
-        Member member = memberRepository.findById(token.getMemberId())
-                .orElseThrow(() -> new MemberNotFoundException(token.getMemberId()));
+        Token token = tokenRepository.findByMemberId(member.getMemberId())
+                .orElseThrow(() -> new TokenNotFoundException(member.getMemberId()));
 
         return LoginResponseDto.of(member,token);
     }
@@ -229,20 +219,13 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
-    private void setHttpOnlyCookie(HttpServletResponse response,Token token) {
-        Cookie accessCookie = new Cookie("access_token",token.getAccessToken());
-        accessCookie.setMaxAge(1800);
+    private void setHttpOnlyCookie(HttpServletResponse response,String email) {
+        Cookie accessCookie = new Cookie("email",email);
+        accessCookie.setMaxAge(30);
         accessCookie.setHttpOnly(true);
         accessCookie.setSecure(false);
         accessCookie.setPath("/"); //쿠키가 브라우저에 허용되는 URL 설정
 
-        Cookie refreshCookie = new Cookie("refresh_token",token.getRefreshToken());
-        refreshCookie.setMaxAge(1800);
-        refreshCookie.setHttpOnly(true);
-        refreshCookie.setSecure(false);
-        refreshCookie.setPath("/");
-
         response.addCookie(accessCookie);
-        response.addCookie(refreshCookie);
     }
 }

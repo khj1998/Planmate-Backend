@@ -82,3 +82,6 @@ cloud:
 frontend:
   redirect:
     url: ${FRONT_REDIRECT_URL}
+
+cookie:
+  domain: ${CORS_ORIGIN_DOMAIN}

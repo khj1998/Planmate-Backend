@@ -4,10 +4,7 @@ import com.planmate.server.domain.Comment;
 import com.planmate.server.domain.CommentLike;
 import com.planmate.server.domain.Member;
 import com.planmate.server.domain.Post;
-import com.planmate.server.dto.request.comment.ChildCommentRequestDto;
-import com.planmate.server.dto.request.comment.CommentCreateRequestDto;
-import com.planmate.server.dto.request.comment.CommentEditRequestDto;
-import com.planmate.server.dto.request.comment.CommentRequestDto;
+import com.planmate.server.dto.request.comment.*;
 import com.planmate.server.dto.response.comment.CommentPageResponseDto;
 import com.planmate.server.dto.response.comment.CommentResponseDto;
 import com.planmate.server.exception.comment.CommentNotFoundException;
@@ -141,6 +138,34 @@ public class CommentServiceImpl implements CommentService {
         Sort sort = Sort.by(Sort.Direction.DESC,"startedAt");
         Pageable pageable = PageRequest.of(commentRequestDto.getPages(),5,sort);
         Page<Comment> comments = commentRepository.findRecentComment(commentRequestDto.getPostId(), pageable);
+
+        for (Comment comment : comments) {
+            Member member = memberRepository.findById(comment.getMemberId())
+                    .orElseThrow(() -> new MemberNotFoundException(comment.getMemberId()));
+
+            Boolean isAuthor = comment.getMemberId().equals(post.getMemberId());
+            List<CommentLike> commentLikeList = commentLikeRepository.findAllByCommentId(comment.getCommentId());
+
+            CommentResponseDto responseDto = CommentResponseDto.of(comment,member,commentLikeList,isAuthor,memberId);
+            responseDtoList.add(responseDto);
+        }
+
+        return CommentPageResponseDto.of(comments.getTotalPages(),responseDtoList);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public CommentPageResponseDto findRecentComment(ChildRecentRequestDto commentRequestDto) {
+        Long memberId = JwtUtil.getMemberId();
+        List<CommentResponseDto> responseDtoList = new ArrayList<>();
+
+        Post post = postRepository.findById(commentRequestDto.getPostId())
+                .orElseThrow(() -> new PostNotFoundException(commentRequestDto.getPostId()));
+
+        Sort sort = Sort.by(Sort.Direction.DESC,"startedAt");
+        Pageable pageable = PageRequest.of(commentRequestDto.getPages(),5,sort);
+        Page<Comment> comments = commentRepository.findChildRecent(commentRequestDto.getPostId(),
+                commentRequestDto.getParentCommentId(), pageable);
 
         for (Comment comment : comments) {
             Member member = memberRepository.findById(comment.getMemberId())

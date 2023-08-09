@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Optional;
 
 @RestController
@@ -64,7 +65,7 @@ public class LoginController {
     public RedirectView callback(
             @PathVariable(name = "socialLoginType") SocialLoginType socialLoginType,
             @RequestParam(name = "code") String code,
-            HttpServletResponse response) throws JsonProcessingException {
+            HttpServletResponse response) throws IOException {
 
         GoogleLoginResponse googleLoginResponse = oauthService.requestAccessToken(socialLoginType, code);
         String email = oauthService.getEmailByIdToken(googleLoginResponse.getId_token());

@@ -17,8 +17,13 @@ public interface CommentRepository extends JpaRepository<Comment,Long> {
           +"c.id = :commentId")
     Optional<Comment> findComment(@Param("memberId") Long memberId,@Param("commentId") Long commentId);
 
-    @Query("select c from Comment c where c.postId = :postId")
+    @Query("select c from Comment c where c.postId = :postId and "
+          +"c.parentCommentId = null")
     Page<Comment> findRecentComment(@Param("postId") Long postId, Pageable pageable);
+
+    @Query("select c from Comment c where c.postId = :postId and "
+            +"c.parentCommentId = :parentId")
+    Page<Comment> findChildRecent(@Param("postId") Long postId,@Param("parentId") Long parentId,Pageable pageable);
 
     List<Comment> findByPostId(Long postId);
     Page<Comment> findAllByMemberId(Long memberId,Pageable pageable);

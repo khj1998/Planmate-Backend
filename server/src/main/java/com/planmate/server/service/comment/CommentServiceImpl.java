@@ -23,6 +23,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Slf4j
@@ -155,17 +157,15 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional(readOnly = true)
-    public CommentPageResponseDto findRecentComment(ChildRecentRequestDto commentRequestDto) {
+    public List<CommentResponseDto> findRecentChildComment(ChildRecentRequestDto commentRequestDto) {
         Long memberId = JwtUtil.getMemberId();
         List<CommentResponseDto> responseDtoList = new ArrayList<>();
 
         Post post = postRepository.findById(commentRequestDto.getPostId())
                 .orElseThrow(() -> new PostNotFoundException(commentRequestDto.getPostId()));
 
-        Sort sort = Sort.by(Sort.Direction.DESC,"startedAt");
-        Pageable pageable = PageRequest.of(commentRequestDto.getPages(),5,sort);
-        Page<Comment> comments = commentRepository.findChildRecent(commentRequestDto.getPostId(),
-                commentRequestDto.getParentCommentId(), pageable);
+        List<Comment> comments = commentRepository.findChildRecent(commentRequestDto.getPostId(),
+                commentRequestDto.getParentCommentId());
 
         for (Comment comment : comments) {
             Member member = memberRepository.findById(comment.getMemberId())
@@ -178,6 +178,12 @@ public class CommentServiceImpl implements CommentService {
             responseDtoList.add(responseDto);
         }
 
-        return CommentPageResponseDto.of(comments.getTotalPages(),responseDtoList);
+        if (responseDtoList.size() > 0) {
+            responseDtoList.sort(
+                    Comparator.comparing(CommentResponseDto::getUpdatedAt).reversed()
+            );
+        }
+
+        return responseDtoList;
     }
 }

@@ -18,9 +18,4 @@ public class MemberNotFoundException extends RuntimeException {
 
         this.message = id.toString();
     }
-
-    public MemberNotFoundException(String email) {
-        super(email);
-        this.message = email;
-    }
 }

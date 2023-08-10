@@ -65,7 +65,7 @@ public class MemberServiceImpl implements MemberService {
      * */
     @Override
     @Transactional
-    public Member signUp(final String idToken) {
+    public Optional<Member> signUp(final String idToken) {
         final GoogleIdTokenVo googleIdTokenVo = convertToGoogleIdTokenVo(decryptIdToken(idToken.split("\\.")[1]));
 
         Authority authority = Authority.builder()
@@ -82,20 +82,18 @@ public class MemberServiceImpl implements MemberService {
 
         memberRepository.save(build);
 
-        return build;
+        return Optional.of(build);
     }
 
     @Override
     @Transactional
-    public void signIn(HttpServletResponse response,Member member) {
+    public void signIn(Member member) {
         Token token = tokenRepository.findByMemberId(member.getMemberId())
                 .orElseThrow(() -> new TokenNotFoundException(member.getMemberId()));
 
         token.setAccessToken(JwtUtil.createJwt(member));
         token.setRefreshToken(JwtUtil.createRefreshToken());
         tokenRepository.save(token);
-
-        setHttpOnlyCookie(response,member.getEMail());
     }
 
     /**
@@ -106,7 +104,7 @@ public class MemberServiceImpl implements MemberService {
      * */
     @Override
     @Transactional
-    public LoginResponseDto registerMember(HttpServletResponse response,Member member) {
+    public LoginResponseDto registerMember(Member member) {
         Token token = Token.builder()
                 .memberId(member.getMemberId())
                 .accessToken(JwtUtil.createJwt(member))
@@ -116,8 +114,6 @@ public class MemberServiceImpl implements MemberService {
                 .build();
 
         tokenRepository.save(token);
-
-        setHttpOnlyCookie(response,member.getEMail());
 
         return LoginResponseDto.of(member, token);
     }
@@ -184,10 +180,10 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public LoginResponseDto getUserInfo(String email) {
+    public LoginResponseDto getUserInfo(Long id) {
 
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new MemberNotFoundException(email));
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new MemberNotFoundException(id));
 
         Token token = tokenRepository.findByMemberId(member.getMemberId())
                 .orElseThrow(() -> new TokenNotFoundException(member.getMemberId()));
@@ -217,15 +213,5 @@ public class MemberServiceImpl implements MemberService {
         } catch (JsonProcessingException e) {
             throw new RuntimeException("json failed");
         }
-    }
-
-    private void setHttpOnlyCookie(HttpServletResponse response,String email) {
-        Cookie accessCookie = new Cookie("email",email);
-        accessCookie.setMaxAge(30);
-        accessCookie.setHttpOnly(true);
-        accessCookie.setSecure(false);
-        accessCookie.setPath("/"); //쿠키가 브라우저에 허용되는 URL 설정
-
-        response.addCookie(accessCookie);
     }
 }

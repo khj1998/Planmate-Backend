@@ -13,14 +13,14 @@ import java.util.Optional;
 public interface MemberService {
     Optional<Member> checkDuplicated(String email);
     public Optional<Member> findMemberById(Long id);
-    Member signUp(String idToken);
-    void signIn(HttpServletResponse response,Member member);
-    public LoginResponseDto registerMember(HttpServletResponse response,Member member);
+    Optional<Member> signUp(String idToken);
+    void signIn(Member member);
+    public LoginResponseDto registerMember(Member member);
     public List<Authority> getAuthorities();
     public Member getInfo();
     public Member getInfo(Long id);
     public void signOut();
     public Member modifyName(String name);
     public Member modifyImg(String img);
-    LoginResponseDto getUserInfo(String email);
+    LoginResponseDto getUserInfo(Long id);
 }

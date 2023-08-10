@@ -64,21 +64,20 @@ public class LoginController {
     })
     public RedirectView callback(
             @PathVariable(name = "socialLoginType") SocialLoginType socialLoginType,
-            @RequestParam(name = "code") String code,
-            HttpServletResponse response) throws IOException {
+            @RequestParam(name = "code") String code) throws IOException {
 
         GoogleLoginResponse googleLoginResponse = oauthService.requestAccessToken(socialLoginType, code);
         String email = oauthService.getEmailByIdToken(googleLoginResponse.getId_token());
 
-        Optional<Member> checkedMember = memberService.checkDuplicated(email);
+        Optional<Member> member = memberService.checkDuplicated(email);
 
-        if (checkedMember.isPresent()) {
-            memberService.signIn(response,checkedMember.get());
+        if (member.isPresent()) {
+            memberService.signIn(member.get());
         }   else {
-            Member member = memberService.signUp(googleLoginResponse.getId_token());
-            memberService.registerMember(response,member);
+            member = memberService.signUp(googleLoginResponse.getId_token());
+            memberService.registerMember(member.get());
         }
 
-        return new RedirectView(redirectURL);
+        return new RedirectView(redirectURL+"?id="+member.get().getMemberId());
     }
 }

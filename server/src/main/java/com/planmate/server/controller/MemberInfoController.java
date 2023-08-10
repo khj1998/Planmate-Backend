@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,8 +27,8 @@ public class MemberInfoController {
             @ApiResponse(responseCode = "200", description = "이미지 변경 환료")
     })
     @GetMapping(value = "/auth")
-    public ResponseEntity<LoginResponseDto> getMemberInfo(@RequestParam("email") String email) {
-        LoginResponseDto responseDto = memberService.getUserInfo(email);
+    public ResponseEntity<LoginResponseDto> getMemberInfo(@RequestParam("id") Long id) {
+        LoginResponseDto responseDto = memberService.getUserInfo(id);
 
         return ResponseEntity.ok(responseDto);
     }

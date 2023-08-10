@@ -61,9 +61,9 @@ public class CommentController {
             @ApiResponse(responseCode = "403",description = "유저가 맴버 | admin 권한이 아님"),
             @ApiResponse(responseCode = "404",description = "자식 댓글 N개 조회 실패")
     })
-    public ResponseEntity<CommentPageResponseDto> findChildComment(@RequestBody ChildRecentRequestDto commentRequestDto) {
-        CommentPageResponseDto responseDto = commentService.findRecentComment(commentRequestDto);
-        return ResponseEntity.ok(responseDto);
+    public ResponseEntity<List<CommentResponseDto>> findChildComment(@RequestBody ChildRecentRequestDto commentRequestDto) {
+        List<CommentResponseDto> responseDtoList = commentService.findRecentChildComment(commentRequestDto);
+        return ResponseEntity.ok(responseDtoList);
     }
 
     @PostMapping("/create")

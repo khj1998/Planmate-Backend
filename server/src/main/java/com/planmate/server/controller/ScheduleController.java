@@ -74,4 +74,14 @@ public class ScheduleController {
     public ResponseEntity<ScheduleResponseDto> findMin() {
         return ResponseEntity.ok(scheduleService.findMin());
     }
+
+    @GetMapping("/fix")
+    @ApiOperation(value = "d-day 고정")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "d-day 고정 완료")
+    })
+    public ResponseEntity fixDDay(@RequestParam Long id) {
+        scheduleService.fixDDay(id);
+        return ResponseEntity.ok().build();
+    }
 }

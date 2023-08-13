@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -29,6 +30,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                     .title(addScheduleRequestDto.getTitle())
                     .memberId(JwtUtil.getMemberId())
                     .targetDate(LocalDate.parse(addScheduleRequestDto.getTargetDate(), DateTimeFormatter.ISO_DATE))
+                    .isFixed(false)
                     .build()
         ));
     }
@@ -68,5 +70,39 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Transactional(readOnly = true)
     public ScheduleResponseDto findMin() {
         return ScheduleResponseDto.of(scheduleRepository.findMinSchedule());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ScheduleResponseDto findFixedDDay() {
+        Long memberId = JwtUtil.getMemberId();
+
+        Optional<Schedule> schedule = scheduleRepository.findFixedSchedule(memberId);
+
+        if (schedule.isEmpty()) {
+            return null;
+        }
+
+        return ScheduleResponseDto.of(schedule.get());
+    }
+
+    @Override
+    @Transactional
+    public void fixDDay(Long id) {
+        Long memberId = JwtUtil.getMemberId();
+
+        Optional<Schedule> schedule = scheduleRepository.findFixedSchedule(memberId);
+
+        if (schedule.isPresent()) {
+            Schedule s = schedule.get();
+            s.setIsFixed(false);
+            scheduleRepository.save(s);
+        }
+
+        Schedule fixedSchedule = scheduleRepository.findById(id)
+                .orElseThrow(() -> new ScheduleNotFoundException(id));
+        fixedSchedule.setIsFixed(true);
+
+        scheduleRepository.save(fixedSchedule);
     }
 }

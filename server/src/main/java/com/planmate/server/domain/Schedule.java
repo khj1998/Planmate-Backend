@@ -30,4 +30,7 @@ public class Schedule {
 
     @Column(name = "target_date", columnDefinition = "date")
     private LocalDate targetDate;
+
+    @Column(name = "is_fixed",nullable = false,columnDefinition = "bit")
+    private Boolean isFixed;
 }

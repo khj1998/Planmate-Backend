@@ -13,4 +13,6 @@ public interface ScheduleService {
     public ScheduleResponseDto modifySchedule(ScheduleEditRequestDto editRequestDto);
     public List<Schedule> findAll();
     public ScheduleResponseDto findMin();
+    void fixDDay(Long id);
+    ScheduleResponseDto findFixedDDay();
 }

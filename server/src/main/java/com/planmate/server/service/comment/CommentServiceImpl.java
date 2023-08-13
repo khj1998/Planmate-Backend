@@ -60,7 +60,7 @@ public class CommentServiceImpl implements CommentService {
             responseDtoList.add(responseDto);
         }
 
-        return CommentPageResponseDto.of(commentList.getTotalPages(),responseDtoList);
+        return CommentPageResponseDto.of(commentList.getTotalPages(),commentList.getTotalElements(),responseDtoList);
     }
 
     @Override
@@ -125,6 +125,11 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = commentRepository.findComment(memberId,commentId)
                 .orElseThrow(() -> new CommentNotFoundException(commentId));
 
+        if (comment.getParentCommentId() == null) {
+            List<Comment> childComments = commentRepository.findAllChildComment(comment.getCommentId());
+            commentRepository.deleteAll(childComments);
+        }
+
         commentRepository.delete(comment);
     }
 
@@ -152,7 +157,7 @@ public class CommentServiceImpl implements CommentService {
             responseDtoList.add(responseDto);
         }
 
-        return CommentPageResponseDto.of(comments.getTotalPages(),responseDtoList);
+        return CommentPageResponseDto.of(comments.getTotalPages(),comments.getTotalElements(),responseDtoList);
     }
 
     @Override

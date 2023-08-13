@@ -1,6 +1,8 @@
 package com.planmate.server.domain;
 
+import com.planmate.server.dto.request.notice.NoticeRequestDto;
 import com.planmate.server.dto.request.post.PostDto;
+import com.planmate.server.dto.response.notice.NoticeResponseDto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -37,6 +39,9 @@ public class Post {
     @ApiModelProperty(example = "게시물 소유 맴버와 매핑")
     private Long memberId;
 
+    @Column(name = "type",nullable = false,columnDefinition = "int")
+    private Long type;
+
     @Column(name = "title",columnDefinition = "varchar(100)")
     @ApiModelProperty(example = "게시물 제목")
     private String title;
@@ -46,8 +51,8 @@ public class Post {
     private String content;
 
     @CreationTimestamp
-    @Column(name = "started_at",columnDefinition = "datetime")
-    private LocalDateTime startedAt;
+    @Column(name = "created_at",columnDefinition = "datetime")
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at",columnDefinition = "datetime")
@@ -57,8 +62,18 @@ public class Post {
     public static Post of(PostDto postDto,Long memberId)  {
         return Post.builder()
                 .memberId(memberId)
+                .type(0L)
                 .title(postDto.getTitle())
                 .content(postDto.getContent())
+                .build();
+    }
+
+    public static Post of(NoticeRequestDto noticeRequestDto, Long memberId)  {
+        return Post.builder()
+                .memberId(memberId)
+                .type(1L)
+                .title(noticeRequestDto.getTitle())
+                .content(noticeRequestDto.getContent())
                 .build();
     }
 }

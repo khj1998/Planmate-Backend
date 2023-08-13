@@ -3,6 +3,7 @@ package com.planmate.server.exception;
 import com.planmate.server.exception.comment.CommentNotFoundException;
 import com.planmate.server.exception.converter.InvalidSubjectTypeException;
 import com.planmate.server.exception.member.MemberNotFoundException;
+import com.planmate.server.exception.notice.NoticeNotFoundException;
 import com.planmate.server.exception.planner.PlannerNotFoundException;
 import com.planmate.server.exception.post.PostNotFoundException;
 import com.planmate.server.exception.post.ScrapNotFoundException;
@@ -91,6 +92,12 @@ public class ApiExceptionHandler {
     @ExceptionHandler(PlannerNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleException(PlannerNotFoundException ex) {
         ApiErrorResponse response = new ApiErrorResponse("ERROR-0012","planner not found id : "+ex.getMessage());
+        return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(NoticeNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleException(NoticeNotFoundException ex) {
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0013","notice not found id : "+ex.getMessage());
         return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
     }
 }

@@ -9,7 +9,6 @@ import com.planmate.server.dto.response.post.PostPageResponseDto;
 import com.planmate.server.dto.response.post.PostResponseDto;
 import com.planmate.server.exception.member.MemberNotFoundException;
 import com.planmate.server.exception.post.PostNotFoundException;
-import com.planmate.server.exception.post.ScrapNotFoundException;
 import com.planmate.server.repository.*;
 import com.planmate.server.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -18,10 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
-@Transactional
 public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
@@ -50,9 +47,9 @@ public class PostServiceImpl implements PostService {
         Long memberId = JwtUtil.getMemberId();
 
         List<PostResponseDto> responseDtoList = new ArrayList<>();
-        Sort sort = Sort.by(Sort.Direction.DESC,"startedAt");
+        Sort sort = Sort.by(Sort.Direction.DESC,"createdAt");
         Pageable pageable = PageRequest.of(pages,10,sort);
-        Page<Post> postList = postRepository.findAll(pageable);
+        Page<Post> postList = postRepository.findPostByPage(0L,pageable);
 
         for (Post post : postList) {
             Member member = memberRepository.findById(post.getMemberId())

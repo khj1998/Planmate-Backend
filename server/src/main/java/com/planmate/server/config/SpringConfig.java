@@ -1,6 +1,5 @@
 package com.planmate.server.config;
 
-import com.planmate.server.domain.MemberScrap;
 import com.planmate.server.repository.*;
 import com.planmate.server.service.comment.CommentService;
 import com.planmate.server.service.comment.CommentServiceImpl;
@@ -9,6 +8,8 @@ import com.planmate.server.service.logout.LogOutService;
 import com.planmate.server.service.logout.LogOutServiceImpl;
 import com.planmate.server.service.member.MemberService;
 import com.planmate.server.service.member.MemberServiceImpl;
+import com.planmate.server.service.notice.NoticeService;
+import com.planmate.server.service.notice.NoticeServiceImpl;
 import com.planmate.server.service.planner.PlannerService;
 import com.planmate.server.service.planner.PlannerServiceImpl;
 import com.planmate.server.service.post.PostService;
@@ -64,7 +65,7 @@ public class SpringConfig {
                         final MemberScrapRepository memberScrapRepository, final AmazonS3 amazonS3Client, @Value("${slack.url}") String url, final ScheduleRepository scheduleRepository,
                         final CommentLikeRepository commentLikeRepository,
                         final PostLikeRepository postLikeRepository,
-                        PlannerRepository plannerRepository) {
+                        final PlannerRepository plannerRepository) {
         this.memberRepository = memberRepository;
         this.tokenRepository = tokenRepository;
         this.postRepository = postRepository;
@@ -133,5 +134,10 @@ public class SpringConfig {
     @Bean
     public PlannerService plannerService() {
         return new PlannerServiceImpl(plannerRepository);
+    }
+
+    @Bean
+    public NoticeService noticeService() {
+        return new NoticeServiceImpl(postRepository,memberRepository,memberScrapRepository,postLikeRepository,commentRepository);
     }
 }

@@ -171,7 +171,7 @@ public class PostServiceImpl implements PostService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(memberId));
 
-        Sort sort = Sort.by(Sort.Direction.DESC,"startedAt");
+        Sort sort = Sort.by(Sort.Direction.DESC,"createdAt");
         Pageable pageable = PageRequest.of(pages,10,sort);
         Page<Post> postList = postRepository.findByMemberId(member.getMemberId(),pageable);
 
@@ -227,7 +227,7 @@ public class PostServiceImpl implements PostService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(memberId));
 
-        Sort sort = Sort.by(Sort.Direction.DESC,"startedAt");
+        Sort sort = Sort.by(Sort.Direction.DESC,"createdAt");
         Pageable pageable = PageRequest.of(pages,10,sort);
         Page<MemberScrap> scrapList = memberScrapRepository.findByMemberId(memberId,pageable);
 
@@ -261,7 +261,7 @@ public class PostServiceImpl implements PostService {
 
         List<PostResponseDto> responseDtoList = new ArrayList<>();
 
-        Sort sort = Sort.by(Sort.Direction.DESC,"startedAt");
+        Sort sort = Sort.by(Sort.Direction.DESC,"createdAt");
         Pageable pageable = PageRequest.of(pages,10,sort);
         Page<PostTag> postTagList = postTagRepository.findByTagName(tagName,pageable);
 

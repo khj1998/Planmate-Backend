@@ -50,7 +50,7 @@ public class CommentServiceImpl implements CommentService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(memberId));
 
-        Sort sort = Sort.by(Sort.Direction.DESC,"startedAt");
+        Sort sort = Sort.by(Sort.Direction.DESC,"createdAt");
         Pageable pageable = PageRequest.of(pages,5,sort);
         Page<Comment> commentList = commentRepository.findAllByMemberId(memberId,pageable);
 
@@ -142,7 +142,7 @@ public class CommentServiceImpl implements CommentService {
         Post post = postRepository.findById(commentRequestDto.getPostId())
                 .orElseThrow(() -> new PostNotFoundException(commentRequestDto.getPostId()));
 
-        Sort sort = Sort.by(Sort.Direction.DESC,"startedAt");
+        Sort sort = Sort.by(Sort.Direction.DESC,"createdAt");
         Pageable pageable = PageRequest.of(commentRequestDto.getPages(),5,sort);
         Page<Comment> comments = commentRepository.findRecentComment(commentRequestDto.getPostId(), pageable);
 

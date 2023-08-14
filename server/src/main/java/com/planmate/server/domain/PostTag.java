@@ -37,8 +37,8 @@ public class PostTag {
     private Long postId;
 
     @CreationTimestamp
-    @Column(name = "started_at",columnDefinition = "datetime")
-    private LocalDateTime startedAt;
+    @Column(name = "created_at",columnDefinition = "datetime")
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at",nullable = false,columnDefinition = "datetime")

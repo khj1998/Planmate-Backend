@@ -33,8 +33,8 @@ public class MemberScrap {
     private Long postId;
 
     @CreationTimestamp
-    @Column(name = "started_at",columnDefinition = "datetime")
-    private LocalDateTime startedAt;
+    @Column(name = "created_at",columnDefinition = "datetime")
+    private LocalDateTime createdAt;
 
     public static MemberScrap of(Long memberId,Long postId) {
         return MemberScrap.builder()

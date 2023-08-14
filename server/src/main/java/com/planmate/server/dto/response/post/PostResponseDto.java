@@ -24,7 +24,7 @@ public class PostResponseDto {
     private String title;
     private String content;
     private List<String> postTagList;
-    private LocalDateTime updatedAt;
+    private LocalDateTime createdAt;
     private Long likeCount;
     private Long scrapCount;
     private Long commentCount;
@@ -65,7 +65,7 @@ public class PostResponseDto {
                 .likeCount((long) postLikeList.size())
                 .scrapCount((long) scrapList.size())
                 .commentCount((long) commentList.size())
-                .updatedAt(post.getUpdatedAt())
+                .createdAt(post.getCreatedAt())
                 .isMyHearted(isMyHearted)
                 .isMyScraped(isMyScraped)
                 .build();
@@ -97,7 +97,7 @@ public class PostResponseDto {
                 .likeCount((long) postLikeList.size())
                 .scrapCount((long) scrapList.size())
                 .commentCount((long) commentList.size())
-                .updatedAt(post.getUpdatedAt())
+                .createdAt(post.getCreatedAt())
                 .isMyHearted(isMyHearted)
                 .isMyScraped(isMyScraped)
                 .build();

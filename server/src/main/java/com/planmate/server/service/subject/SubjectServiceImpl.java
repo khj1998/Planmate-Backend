@@ -75,12 +75,12 @@ public class SubjectServiceImpl implements SubjectService {
     @Override
     @Transactional
     public void initTime() {
-        Long memberId = JwtUtil.getMemberId();
-        List<Subject> subjectList = subjectRepository.findByMemberId(memberId);
+        List<Subject> subjectList = subjectRepository.findAll();
 
         for (Subject subject : subjectList) {
             subject.initTime();
         }
+
         subjectRepository.saveAll(subjectList);
     }
 

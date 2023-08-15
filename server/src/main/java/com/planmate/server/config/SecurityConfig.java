@@ -47,7 +47,8 @@ public class SecurityConfig {
                         "/login/**",
                         "/token/**",
                         "/info/auth",
-                        "/health/**"
+                        "/health/**",
+                        "/time/**"
                 );
             }
         };

@@ -97,12 +97,12 @@ public class ScheduleServiceImpl implements ScheduleService {
             Schedule s = schedule.get();
             s.setIsFixed(false);
             scheduleRepository.save(s);
+        } else {
+            Schedule fixedSchedule = scheduleRepository.findByUserIdAndId(memberId,id)
+                    .orElseThrow(() -> new ScheduleNotFoundException(id));
+            fixedSchedule.setIsFixed(true);
+
+            scheduleRepository.save(fixedSchedule);
         }
-
-        Schedule fixedSchedule = scheduleRepository.findById(id)
-                .orElseThrow(() -> new ScheduleNotFoundException(id));
-        fixedSchedule.setIsFixed(true);
-
-        scheduleRepository.save(fixedSchedule);
     }
 }

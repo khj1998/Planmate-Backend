@@ -18,4 +18,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     @Query("select s from Schedule s where s.memberId = :memberId and "+
             "s.isFixed = true")
     Optional<Schedule> findFixedSchedule(@Param("memberId") Long memberId);
+
+    @Query("select s from Schedule s where s.memberId = :memberId and s.id = :id")
+    Optional<Schedule> findByUserIdAndId(@Param("memberId") Long memberId, @Param("id") Long id);
 }

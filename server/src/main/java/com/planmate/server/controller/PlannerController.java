@@ -24,7 +24,6 @@ import java.util.List;
 @RequestMapping("/planner")
 public class PlannerController {
     private final PlannerService plannerService;
-    private final ScheduleService scheduleService;
 
     @ApiOperation("자신의 시간표 조회")
     @ApiResponses({
@@ -76,18 +75,5 @@ public class PlannerController {
     public ResponseEntity<Boolean> removePlan(@RequestParam Long plannerId) {
         plannerService.deletePlan(plannerId);
         return ResponseEntity.ok(true);
-    }
-    
-    @ApiOperation("고정된 디데이 조회")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "고정된 디데이 조회 성공"),
-            @ApiResponse(responseCode = "401",description = "유저가 인증되지 않음"),
-            @ApiResponse(responseCode = "403",description = "유저가 맴버 | Admin 권한이 아님"),
-            @ApiResponse(responseCode = "404",description = "고정된 디데이 조회 실패")
-    })
-    @GetMapping("/fixed-dday")
-    public ResponseEntity<ScheduleResponseDto> findFixedDDay() {
-        ScheduleResponseDto responseDto = scheduleService.findFixedDDay();
-        return ResponseEntity.ok(responseDto);
     }
 }

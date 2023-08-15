@@ -1,5 +1,6 @@
 package com.planmate.server.controller;
 
+import com.planmate.server.dto.request.schedule.ScheduleFixRequestDto;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,22 +67,23 @@ public class ScheduleController {
         return ResponseEntity.ok(scheduleService.findAll());
     }
 
-    @GetMapping("/min")
-    @ApiOperation(value = "d-day 가장 적은거 조회")
+    @ApiOperation("고정된 디데이 조회")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "조회 환료")
+            @ApiResponse(responseCode = "200",description = "고정된 디데이 조회 성공")
     })
-    public ResponseEntity<ScheduleResponseDto> findMin() {
-        return ResponseEntity.ok(scheduleService.findMin());
+    @GetMapping("/fix")
+    public ResponseEntity<ScheduleResponseDto> findFixedDDay() {
+        ScheduleResponseDto responseDto = scheduleService.findFixedDDay();
+        return ResponseEntity.ok(responseDto);
     }
 
-    @GetMapping("/fix")
+    @PostMapping("/fix")
     @ApiOperation(value = "d-day 고정")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "d-day 고정 완료")
     })
-    public ResponseEntity fixDDay(@RequestParam Long id) {
-        scheduleService.fixDDay(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Boolean> fixDDay(@RequestBody ScheduleFixRequestDto scheduleFixRequestDto) {
+        scheduleService.fixDDay(scheduleFixRequestDto.getId());
+        return ResponseEntity.ok(true);
     }
 }

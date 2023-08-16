@@ -54,6 +54,7 @@ public class SpringConfig {
     private final CommentLikeRepository commentLikeRepository;
     private final PostLikeRepository postLikeRepository;
     private final PlannerRepository plannerRepository;
+    private final StudyBackUpRepository studyBackUpRepository;
 
     @Autowired
     public SpringConfig(final MemberRepository memberRepository,
@@ -65,7 +66,8 @@ public class SpringConfig {
                         final MemberScrapRepository memberScrapRepository, final AmazonS3 amazonS3Client, @Value("${slack.url}") String url, final ScheduleRepository scheduleRepository,
                         final CommentLikeRepository commentLikeRepository,
                         final PostLikeRepository postLikeRepository,
-                        final PlannerRepository plannerRepository) {
+                        final PlannerRepository plannerRepository,
+                        final StudyBackUpRepository studyBackUpRepository) {
         this.memberRepository = memberRepository;
         this.tokenRepository = tokenRepository;
         this.postRepository = postRepository;
@@ -79,6 +81,7 @@ public class SpringConfig {
         this.commentLikeRepository = commentLikeRepository;
         this.postLikeRepository = postLikeRepository;
         this.plannerRepository = plannerRepository;
+        this.studyBackUpRepository = studyBackUpRepository;
     }
 
     @Bean
@@ -98,7 +101,7 @@ public class SpringConfig {
 
     @Bean
     public SubjectService subjectService() {
-        return new SubjectServiceImpl(subjectRepository);
+        return new SubjectServiceImpl(subjectRepository,studyBackUpRepository);
     }
 
     @Bean
@@ -128,7 +131,7 @@ public class SpringConfig {
 
     @Bean
     public StatisticService statisticService() {
-        return new StatisticServiceImpl(subjectRepository);
+        return new StatisticServiceImpl(subjectRepository, studyBackUpRepository);
     }
 
     @Bean

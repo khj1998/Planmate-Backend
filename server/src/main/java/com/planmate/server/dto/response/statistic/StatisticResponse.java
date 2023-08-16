@@ -1,5 +1,7 @@
 package com.planmate.server.dto.response.statistic;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.planmate.server.domain.StudyBackUp;
 import com.planmate.server.domain.Subject;
 import com.planmate.server.vo.StatisticData;
 import com.planmate.server.vo.StudyTime;
@@ -13,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class StatisticResponse {
     private Long totalStudyTimeHours;
     private Long totalStudyTimeMinutes;

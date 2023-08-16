@@ -1,5 +1,6 @@
 package com.planmate.server.service.subject;
 
+import com.planmate.server.domain.StudyBackUp;
 import com.planmate.server.domain.Subject;
 import com.planmate.server.dto.request.subject.SubjectCreateRequestDto;
 import com.planmate.server.dto.request.subject.SubjectEditRequestDto;
@@ -10,6 +11,7 @@ import com.planmate.server.dto.response.subject.SubjectStudyTimeResponse;
 import com.planmate.server.dto.response.subject.SubjectTimeResponse;
 import com.planmate.server.exception.subject.SubjectDuplicatedException;
 import com.planmate.server.exception.subject.SubjectNotFoundException;
+import com.planmate.server.repository.StudyBackUpRepository;
 import com.planmate.server.repository.SubjectRepository;
 import com.planmate.server.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -21,9 +23,12 @@ import java.util.List;
 @Slf4j
 public class SubjectServiceImpl implements SubjectService {
     private final SubjectRepository subjectRepository;
+    private final StudyBackUpRepository studyBackUpRepository;
 
-    public SubjectServiceImpl(SubjectRepository subjectRepository) {
+    public SubjectServiceImpl(SubjectRepository subjectRepository,
+                              StudyBackUpRepository studyBackUpRepository) {
         this.subjectRepository = subjectRepository;
+        this.studyBackUpRepository = studyBackUpRepository;
     }
 
     @Override
@@ -74,13 +79,17 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     @Transactional
-    public void initTime() {
+    public void backUpAndInit() {
         List<Subject> subjectList = subjectRepository.findAll();
+        List<StudyBackUp> studyBackUpList = new ArrayList<>();
 
         for (Subject subject : subjectList) {
+            StudyBackUp studyBackUp = StudyBackUp.of(subject);
+            studyBackUpList.add(studyBackUp);
             subject.initTime();
         }
 
+        studyBackUpRepository.saveAll(studyBackUpList);
         subjectRepository.saveAll(subjectList);
     }
 

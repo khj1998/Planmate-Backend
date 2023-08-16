@@ -1,5 +1,6 @@
 package com.planmate.server.vo;
 
+import com.planmate.server.domain.StudyBackUp;
 import com.planmate.server.domain.Subject;
 import lombok.*;
 
@@ -29,6 +30,44 @@ public class StatisticData {
         Integer endAtSecond = 0;
 
         for (Subject subject : subjectList) {
+            StudyTime studyTime = StudyTime.builder()
+                    .name(subject.getName())
+                    .studyTimeHours((long) subject.getStudyTime().getHours())
+                    .studyTimeMinutes((long) subject.getStudyTime().getMinutes())
+                    .studyTimeSeconds((long) subject.getStudyTime().getSeconds())
+                    .build();
+            studyTimeList.add(studyTime);
+
+            totalStudySecond += getSecond(subject.getStudyTime());
+            restSecond += getSecond(subject.getRestTime());
+            maxStudySecond = getMaxSecond(subject.getMaxStudyTime(),maxStudySecond);
+            startAtSecond = getMinSecond(subject.getStartAt(),subject.getEndAt(),startAtSecond);
+            endAtSecond = getMaxSecond(subject.getEndAt(),endAtSecond);
+        }
+
+        if (startAtSecond == Integer.MAX_VALUE) {
+            startAtSecond = 3600*5;
+        }
+
+        return StatisticData.builder()
+                .studyTimeList(studyTimeList)
+                .totalStudyTime(getTime(totalStudySecond))
+                .restTime(getTime(restSecond))
+                .maxStudyTime(getTime(maxStudySecond))
+                .startAt(getTime(startAtSecond))
+                .endAt(getTime(endAtSecond))
+                .build();
+    }
+
+    public static StatisticData backUp(List<StudyBackUp> backUpList) {
+        List<StudyTime> studyTimeList = new ArrayList<>();
+        Integer totalStudySecond = 0;
+        Integer restSecond = 0;
+        Integer maxStudySecond = 0;
+        Integer startAtSecond = Integer.MAX_VALUE;
+        Integer endAtSecond = 0;
+
+        for (StudyBackUp subject : backUpList) {
             StudyTime studyTime = StudyTime.builder()
                     .name(subject.getName())
                     .studyTimeHours((long) subject.getStudyTime().getHours())

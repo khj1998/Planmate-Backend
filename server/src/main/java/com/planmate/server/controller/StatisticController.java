@@ -9,10 +9,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @Slf4j
 @CrossOrigin
@@ -33,6 +32,16 @@ public class StatisticController {
     @GetMapping
     public ResponseEntity<StatisticResponse> getStatistic() {
         StatisticResponse responseDto = statisticService.getStatisticData();
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @ApiOperation("M월 N일 통계 api")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200",description = "공부 통계 데이터 조회 api"),
+    })
+    @GetMapping("/day")
+    public ResponseEntity<StatisticResponse> getDayStatistic(@RequestParam LocalDate studyDate) {
+        StatisticResponse responseDto = statisticService.getDayStatisticData(studyDate);
         return ResponseEntity.ok(responseDto);
     }
 }

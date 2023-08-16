@@ -25,9 +25,6 @@ public class Planner {
     @Column(name = "member_id",nullable = false,columnDefinition = "int")
     private Long memberId;
 
-    @Column(name = "type",nullable = false,columnDefinition = "int")
-    private Long type;
-
     @Column(name = "schedule_name",nullable = false,length = 64,columnDefinition = "varchar")
     private String scheduleName;
 
@@ -44,11 +41,8 @@ public class Planner {
     private String endTime;
 
     public static Planner of(PlannerRequestDto plannerRequestDto,Long memberId) {
-        Long typeValue = SubjectTypeConverter.getTypeValue(plannerRequestDto.getType());
-
         return Planner.builder()
                 .memberId(memberId)
-                .type(typeValue)
                 .scheduleName(plannerRequestDto.getScheduleName())
                 .colorHex(plannerRequestDto.getColorHex())
                 .day(plannerRequestDto.getDay())

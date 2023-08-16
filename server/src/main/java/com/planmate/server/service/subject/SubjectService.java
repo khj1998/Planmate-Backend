@@ -18,5 +18,5 @@ public interface SubjectService {
     void updateSubjectTime(SubjectTimeRequest subjectTimeRequest);
     void editSubject(SubjectEditRequestDto subjectEditRequestDto);
     void deleteSubject(Long subjectId);
-    void initTime();
+    void backUpAndInit();
 }

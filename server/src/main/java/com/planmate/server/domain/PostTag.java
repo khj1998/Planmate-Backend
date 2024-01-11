@@ -23,16 +23,16 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class PostTag {
     @Id
-    @Column(name = "tag_id",columnDefinition = "int")
+    @Column(name = "tag_id",columnDefinition = "bigint")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ApiModelProperty(name = "게시물 태그 식별자")
     private Long tagId;
 
-    @Column(name = "tag_name",nullable = false,columnDefinition = "varchar(15)")
+    @Column(name = "tag_name",nullable = false,length = 15,columnDefinition = "varchar")
     @ApiModelProperty(example = "태그 이름")
     private String tagName;
 
-    @Column(name = "post_id",nullable = false,columnDefinition = "int")
+    @Column(name = "post_id",nullable = false,columnDefinition = "bigint")
     @ApiModelProperty(example = "게시물 참조 외래키")
     private Long postId;
 

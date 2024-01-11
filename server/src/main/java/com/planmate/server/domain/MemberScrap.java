@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class MemberScrap {
     @Id
-    @Column(name = "scrap_id",columnDefinition = "int")
+    @Column(name = "scrap_id",columnDefinition = "bigint")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ApiModelProperty(example = "스크랩 식별자")
     private Long id;
@@ -28,7 +28,7 @@ public class MemberScrap {
     @ApiModelProperty(example = "맴버 참조 외래키")
     private Long memberId;
 
-    @Column(name = "post_id",nullable = false,columnDefinition = "int")
+    @Column(name = "post_id",nullable = false,columnDefinition = "bigint")
     @ApiModelProperty(example = "게시물 참조 외래키")
     private Long postId;
 

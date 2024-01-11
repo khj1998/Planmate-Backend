@@ -19,4 +19,5 @@ public interface SubjectService {
     void editSubject(SubjectEditRequestDto subjectEditRequestDto);
     void deleteSubject(Long subjectId);
     void backUpAndInit();
+    Integer checkBackUpData();
 }

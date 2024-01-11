@@ -20,7 +20,7 @@ public class AlertServiceImpl implements AlertService {
     public void alert(final AlertRequestDto alertRequestDto) {
         Map<String, Object> request = new HashMap<>();
         request.put("username", "spring-bot");
-        request.put("text", alertRequestDto.toString()); //전송할 메세지
+        request.put("text", alertRequestDto.toString());
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<Map<String, Object>>(request);
 

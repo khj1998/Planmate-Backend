@@ -24,7 +24,7 @@ public class PostLike {
     @Column(name = "member_id",nullable = false,columnDefinition = "int")
     private Long memberId;
 
-    @Column(name = "post_id",nullable = false,columnDefinition = "int")
+    @Column(name = "post_id",nullable = false,columnDefinition = "bigint")
     private Long postId;
 
     public static PostLike of(Long memberId,Long postId) {

@@ -21,15 +21,15 @@ public class CommentLike {
     @ApiModelProperty(example = "고유 식별자")
     private Long id;
 
-    @Column(name = "user_id",nullable = false,columnDefinition = "int")
-    private Long userId;
+    @Column(name = "member_id",nullable = false,columnDefinition = "int")
+    private Long memberId;
 
     @Column(name = "comment_id",nullable = false,columnDefinition = "int")
     private Long commentId;
 
     public static CommentLike of(Long userId, Long commentId) {
         return CommentLike.builder()
-                .userId(userId)
+                .memberId(userId)
                 .commentId(commentId)
                 .build();
     }

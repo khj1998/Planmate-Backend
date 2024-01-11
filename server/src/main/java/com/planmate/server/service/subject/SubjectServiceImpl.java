@@ -106,10 +106,6 @@ public class SubjectServiceImpl implements SubjectService {
         subjectRepository.save(subject);
     }
 
-    /**
-     * TODO
-     * Query 어노테이션으로 수정 예정 (alter table)
-     */
     @Override
     @Transactional
     public void editSubject(SubjectEditRequestDto subjectEditRequestDto) {
@@ -132,5 +128,11 @@ public class SubjectServiceImpl implements SubjectService {
                 .orElseThrow(() -> new SubjectNotFoundException(subjectId));
 
         subjectRepository.delete(subject);
+    }
+
+    @Override
+    @Transactional
+    public Integer checkBackUpData() {
+        return studyBackUpRepository.findAll().size();
     }
 }

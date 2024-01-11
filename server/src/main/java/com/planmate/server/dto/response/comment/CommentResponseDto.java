@@ -30,7 +30,7 @@ public class CommentResponseDto {
         Boolean isMyHearted = false;
 
         for (CommentLike commentLike : commentLikeList) {
-            if (commentLike.getUserId() == memberId) {
+            if (commentLike.getMemberId() == memberId) {
                 isMyHearted = true;
                 break;
             }
@@ -52,7 +52,7 @@ public class CommentResponseDto {
         Boolean isMyHearted = false;
 
         for (CommentLike commentLike : commentLikeList) {
-            if (commentLike.getUserId() == memberId) {
+            if (commentLike.getMemberId() == memberId) {
                 isMyHearted = true;
                 break;
             }

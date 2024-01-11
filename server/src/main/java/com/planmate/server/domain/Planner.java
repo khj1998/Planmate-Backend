@@ -18,7 +18,7 @@ import javax.persistence.*;
 @Builder
 public class Planner {
     @Id
-    @Column(name = "planner_id",columnDefinition = "int")
+    @Column(name = "planner_id",columnDefinition = "bigint")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long plannerId;
 

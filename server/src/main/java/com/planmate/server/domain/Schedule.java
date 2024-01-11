@@ -17,7 +17,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class Schedule {
     @Id
-    @Column(name = "id",columnDefinition = "int")
+    @Column(name = "id",columnDefinition = "bigint")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ApiModelProperty(example = "디데이 고유 식별자")
     private Long id;
@@ -25,10 +25,10 @@ public class Schedule {
     @Column(name = "member_id", columnDefinition = "int")
     private Long memberId;
 
-    @Column(name = "title", columnDefinition = "varchar(30)")
+    @Column(name = "title",nullable = false ,length = 30,columnDefinition = "varchar")
     private String title;
 
-    @Column(name = "target_date", columnDefinition = "date")
+    @Column(name = "target_date",nullable = false, columnDefinition = "date")
     private LocalDate targetDate;
 
     @Column(name = "is_fixed",nullable = false,columnDefinition = "bit")

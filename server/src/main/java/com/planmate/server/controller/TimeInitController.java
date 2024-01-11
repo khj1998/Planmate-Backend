@@ -30,4 +30,13 @@ public class TimeInitController {
         subjectService.backUpAndInit();
         return ResponseEntity.ok(true);
     }
+
+    @GetMapping("/check")
+    @ApiOperation("백업 데이터 확인")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200" , description = "확인 성공")
+    })
+    public ResponseEntity<Integer> checkData() {
+        return ResponseEntity.ok(subjectService.checkBackUpData());
+    }
 }

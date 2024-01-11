@@ -22,15 +22,15 @@ public class Token {
     @Column(name = "member_id", columnDefinition = "int")
     private Long memberId;
 
-    @Column(name = "access_token", columnDefinition = "mediumtext")
+    @Column(name = "access_token", nullable = false,columnDefinition = "mediumtext")
     private String accessToken;
 
-    @Column(name = "access_token_expired_at", columnDefinition = "date")
+    @Column(name = "access_token_expired_at",nullable = false, columnDefinition = "date")
     private LocalDate accessTokenExpiredAt;
 
-    @Column(name = "refresh_token", columnDefinition = "mediumtext")
+    @Column(name = "refresh_token",nullable = false, columnDefinition = "mediumtext")
     private String refreshToken;
 
-    @Column(name = "refresh_token_expired_at", columnDefinition = "date")
+    @Column(name = "refresh_token_expired_at",nullable = false, columnDefinition = "date")
     private LocalDate refreshTokenExpiredAt;
 }

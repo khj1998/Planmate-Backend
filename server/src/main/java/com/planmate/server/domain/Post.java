@@ -30,7 +30,7 @@ import java.util.List;
 @Builder
 public class Post {
     @Id
-    @Column(name = "post_id",columnDefinition = "int")
+    @Column(name = "post_id",columnDefinition = "bigint")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ApiModelProperty(example = "게시물 고유 식별자")
     private Long postId;

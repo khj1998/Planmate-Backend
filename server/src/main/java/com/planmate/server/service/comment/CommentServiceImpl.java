@@ -109,7 +109,7 @@ public class CommentServiceImpl implements CommentService {
 
         if (commentLike == null) {
             commentLike = CommentLike.builder()
-                    .userId(userId)
+                    .memberId(userId)
                     .commentId(commentId)
                     .build();
             commentLikeRepository.save(commentLike);

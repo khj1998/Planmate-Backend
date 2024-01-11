@@ -1,0 +1,46 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
+
+name: CI/CD with Gradle
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: clone repository
+        run: git clone https://username:${{ secrets.PAT }}@github.com/khj1998/Planmate-Backend.git
+
+      - name: Set Up Java 
+        run : |
+          sudo apt-get update
+          sudo apt-get install -y openjdk-11-jdk
+          export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"
+          export PATH="$JAVA_HOME/bin:$PATH"
+
+      - name: install openssh
+        run : sudo apt-get install openssh-server
+
+      - name : gradlew execution grant
+        run: |
+          cd ./only-u-core
+          chmod +x ./gradlew
+
+      - name: CI
+        run: |
+          cd ./Planmate-Backend
+          ./gradlew bootjar
+
+      - name: CD
+        run: |
+          echo "${{ secrets.KEY }}" > ssh_key
+          chmod 400 ssh_key
+          scp -o "StrictHostKeyChecking no" -i ssh_key ./Planmate-Backend/build/libs/*.jar ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:/home/ubuntu/api-server
+          ssh -i ssh_key -o "StrictHostKeyChecking no" ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }} "docker compose down && docker compose build && docker compose up -d"

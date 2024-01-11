@@ -30,7 +30,7 @@ jobs:
 
       - name : gradlew execution grant
         run: |
-          cd ./only-u-core
+          cd ./Planmate-Backend
           chmod +x ./gradlew
 
       - name: CI

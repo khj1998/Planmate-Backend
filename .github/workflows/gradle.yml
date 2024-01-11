@@ -30,17 +30,17 @@ jobs:
 
       - name : gradlew execution grant
         run: |
-          cd ./Planmate-Backend
+          cd ./Planmate-Backend/server
           chmod +x ./gradlew
 
       - name: CI
         run: |
-          cd ./Planmate-Backend
+          cd ./Planmate-Backend/server
           ./gradlew bootjar
 
       - name: CD
         run: |
           echo "${{ secrets.KEY }}" > ssh_key
           chmod 400 ssh_key
-          scp -o "StrictHostKeyChecking no" -i ssh_key ./Planmate-Backend/build/libs/*.jar ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:/home/ubuntu/api-server
+          scp -o "StrictHostKeyChecking no" -i ssh_key ./Planmate-Backend/server/build/libs/*.jar ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:/home/ubuntu/api-server
           ssh -i ssh_key -o "StrictHostKeyChecking no" ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }} "docker compose down && docker compose build && docker compose up -d"

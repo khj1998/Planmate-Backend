@@ -72,6 +72,8 @@ public class MemberServiceImpl implements MemberService {
                 .authorityName("ROLE_USER")
                 .build();
 
+        log.info("맴버 이름 : "+googleIdTokenVo.getName());
+
         final Member build = Member.builder()
                 .profile(googleIdTokenVo.getPicture())
                 .memberName(googleIdTokenVo.getName())
@@ -91,8 +93,8 @@ public class MemberServiceImpl implements MemberService {
         Token token = tokenRepository.findByMemberId(member.getMemberId())
                 .orElseThrow(() -> new TokenNotFoundException(member.getMemberId()));
 
-        token.setAccessToken(JwtUtil.createJwt(member));
-        token.setRefreshToken(JwtUtil.createRefreshToken());
+        token.setAccessToken(JwtUtil.generateAccessToken(member));
+        token.setRefreshToken(JwtUtil.generateRefreshToken(member));
         tokenRepository.save(token);
     }
 
@@ -107,9 +109,9 @@ public class MemberServiceImpl implements MemberService {
     public LoginResponseDto registerMember(Member member) {
         Token token = Token.builder()
                 .memberId(member.getMemberId())
-                .accessToken(JwtUtil.createJwt(member))
-                .accessTokenExpiredAt(LocalDate.now().plusDays(JwtUtil.ACCESS_TOKEN_EXPIRE_TIME))
-                .refreshToken(JwtUtil.createRefreshToken())
+                .accessToken(JwtUtil.generateAccessToken(member))
+                .accessTokenExpiredAt(LocalDate.now().plusDays(JwtUtil.ACCESS_DURATION))
+                .refreshToken(JwtUtil.generateRefreshToken(member))
                 .refreshTokenExpiredAt(LocalDate.now().plusYears(1))
                 .build();
 
@@ -121,17 +123,20 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public List<Authority> getAuthorities() {
-        log.info("called");
-        return memberRepository.findById(JwtUtil.getMemberId()).orElseThrow(
-                () -> new MemberNotFoundException(JwtUtil.getMemberId())
+        Long id = JwtUtil.getUserIdByAccessToken();
+
+        return memberRepository.findById(id).orElseThrow(
+                () -> new MemberNotFoundException(id)
         ).getAuthorities();
     }
 
     @Override
     @Transactional
     public Member getInfo() {
-        return memberRepository.findById(JwtUtil.getMemberId()).orElseThrow(
-                () -> new MemberNotFoundException(JwtUtil.getMemberId())
+        Long id = JwtUtil.getUserIdByAccessToken();
+
+        return memberRepository.findById(id).orElseThrow(
+                () -> new MemberNotFoundException(id)
         );
     }
 
@@ -139,14 +144,14 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public Member getInfo(final Long id) {
         return memberRepository.findById(id).orElseThrow(
-                () -> new MemberNotFoundException(JwtUtil.getMemberId())
+                () -> new MemberNotFoundException(id)
         );
     }
 
     @Override
     @Transactional
     public void signOut() {
-        final Long memberId = JwtUtil.getMemberId();
+        final Long memberId = JwtUtil.getUserIdByAccessToken();
         memberRepository.deleteById(memberId);
         tokenRepository.deleteByMemberId(memberId);
     }
@@ -157,8 +162,10 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public Member modifyName(final String name) {
-        Member member = memberRepository.findById(JwtUtil.getMemberId()).orElseThrow(
-                () -> new MemberNotFoundException(JwtUtil.getMemberId())
+        Long id = JwtUtil.getUserIdByAccessToken();
+
+        Member member = memberRepository.findById(id).orElseThrow(
+                () -> new MemberNotFoundException(id)
         );
 
         member.setMemberName(name);
@@ -169,8 +176,10 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public Member modifyImg(final String img) {
-        Member member = memberRepository.findById(JwtUtil.getMemberId()).orElseThrow(
-                () -> new MemberNotFoundException(JwtUtil.getMemberId())
+        Long id = JwtUtil.getUserIdByAccessToken();
+
+        Member member = memberRepository.findById(id).orElseThrow(
+                () -> new MemberNotFoundException(id)
         );
 
         member.setProfile(img);

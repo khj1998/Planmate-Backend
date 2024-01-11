@@ -24,7 +24,7 @@ public class PlannerServiceImpl implements PlannerService {
     @Transactional(readOnly = true)
     public List<PlannerResponseDto> findPlan() {
         List<PlannerResponseDto> responseDtoList = new ArrayList<>();
-        Long memberId = JwtUtil.getMemberId();
+        Long memberId = JwtUtil.getUserIdByAccessToken();
         List<Planner> plannerList = plannerRepository.findAllPlanner(memberId);
 
         for (Planner planner : plannerList) {
@@ -38,7 +38,7 @@ public class PlannerServiceImpl implements PlannerService {
     @Override
     @Transactional
     public void createPlan(PlannerRequestDto plannerRequestDto) {
-        Long memberId = JwtUtil.getMemberId();
+        Long memberId = JwtUtil.getUserIdByAccessToken();
         Planner planner = Planner.of(plannerRequestDto,memberId);
         plannerRepository.save(planner);
     }
@@ -50,7 +50,7 @@ public class PlannerServiceImpl implements PlannerService {
     @Override
     @Transactional
     public void deletePlan(Long plannerId) {
-        Long memberId = JwtUtil.getMemberId();
+        Long memberId = JwtUtil.getUserIdByAccessToken();
         Planner planner = plannerRepository.findPlanner(memberId,plannerId)
                 .orElseThrow(() -> new PlannerNotFoundException(plannerId));
         plannerRepository.delete(planner);

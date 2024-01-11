@@ -68,7 +68,7 @@ public class SecurityConfig {
                 .cors().and()
 
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .addFilterAfter(new JwtCustomFilter(memberService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(new JwtCustomFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers("/admin/**").hasAnyAuthority("ROLE_ADMIN")
                 .antMatchers("/member/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")

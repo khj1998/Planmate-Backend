@@ -49,7 +49,7 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     @Transactional
     public Boolean createNotice(NoticeRequestDto noticeRequestDto) {
-        Long memberId = JwtUtil.getMemberId();
+        Long memberId = JwtUtil.getUserIdByAccessToken();
 
         Member owner = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(memberId));
@@ -63,7 +63,7 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     @Transactional
     public void deleteNotice(Long noticeId) {
-        Long memberId = JwtUtil.getMemberId();
+        Long memberId = JwtUtil.getUserIdByAccessToken();
 
         Post post = postRepository.findMemberPost(noticeId,memberId)
                 .orElseThrow(() -> new NoticeNotFoundException(noticeId));
@@ -74,7 +74,7 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     @Transactional
     public Boolean editNotice(NoticeEditRequestDto noticeEditRequestDto) {
-        Long memberId = JwtUtil.getMemberId();
+        Long memberId = JwtUtil.getUserIdByAccessToken();
 
         Post post = postRepository.findMemberPost(noticeEditRequestDto.getNoticeId(), memberId)
                 .orElseThrow(() -> new NoticeNotFoundException(noticeEditRequestDto.getNoticeId()));
@@ -89,7 +89,7 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     @Transactional(readOnly = true)
     public NoticePageResponseDto findRecentNotice(Integer pages) {
-        Long memberId = JwtUtil.getMemberId();
+        Long memberId = JwtUtil.getUserIdByAccessToken();
 
         List<NoticeResponseDto> responseDtoList = new ArrayList<>();
         Sort sort = Sort.by(Sort.Direction.DESC,"createdAt");
@@ -115,7 +115,7 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     @Transactional(readOnly = true)
     public NoticeResponseDto findByNoticeId(Long noticeId) {
-        Long memberId = JwtUtil.getMemberId();
+        Long memberId = JwtUtil.getUserIdByAccessToken();
 
         Post post = postRepository.findById(noticeId)
                 .orElseThrow(() -> new NoticeNotFoundException(noticeId));

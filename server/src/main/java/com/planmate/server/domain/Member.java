@@ -22,7 +22,7 @@ public class Member {
     @ApiModelProperty(example = "고유 식별자")
     private Long memberId;
 
-    @Column(name = "member_name", columnDefinition = "varchar(30)")
+    @Column(name = "member_name",nullable = false,length = 30,columnDefinition = "varchar")
     @ApiModelProperty(example = "멤버 이름")
     private String memberName;
 

@@ -12,15 +12,15 @@ import java.util.Optional;
 
 public interface MemberService {
     Optional<Member> checkDuplicated(String email);
-    public Optional<Member> findMemberById(Long id);
+    Optional<Member> findMemberById(Long id);
     Optional<Member> signUp(String idToken);
     void signIn(Member member);
-    public LoginResponseDto registerMember(Member member);
-    public List<Authority> getAuthorities();
-    public Member getInfo();
-    public Member getInfo(Long id);
-    public void signOut();
-    public Member modifyName(String name);
-    public Member modifyImg(String img);
+    LoginResponseDto registerMember(Member member);
+    List<Authority> getAuthorities();
+    Member getInfo();
+    Member getInfo(Long id);
+    void signOut();
+    Member modifyName(String name);
+    Member modifyImg(String img);
     LoginResponseDto getUserInfo(Long id);
 }

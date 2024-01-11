@@ -15,7 +15,7 @@ spring:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     show-sql: false
     hibernate:
-      ddl-auto: validate
+      ddl-auto: none
     properties:
       hibernate:
       format_sql: true
@@ -34,32 +34,6 @@ sns:
       url: ${GOOGLE_CALLBACK_URL}
     token:
       url: https://oauth2.googleapis.com/token
-  github:
-    url:
-    client:
-      id: ${GITHUB_CLIENT_ID}
-      secret: ${GITHUB_CLIENT_SECRET}
-    callback:
-      url: ${GITHUB_CALLBACK_URL}
-    token:
-      url:
-  naver:
-    url:
-    client:
-      id: ${NAVER_CLIENT_ID}
-      secret: ${NAVER_CLIENT_SECRET}
-    callback:
-      url: ${NAVER_CALLBACK_URL}
-    token:
-      url:
-  kakao:
-    url:
-    client:
-      secret: ${KAKAO_CLIENT_SECRET}
-    callback:
-      url: ${KAKAO_CALLBACK_URL}
-    token:
-      url:
 logging:
   slack:
     webhook-uri: ${WEBHOOK_URL}

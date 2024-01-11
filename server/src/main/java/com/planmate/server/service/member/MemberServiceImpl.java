@@ -72,6 +72,8 @@ public class MemberServiceImpl implements MemberService {
                 .authorityName("ROLE_USER")
                 .build();
 
+        log.info("맴버 이름 : "+googleIdTokenVo.getName());
+
         final Member build = Member.builder()
                 .profile(googleIdTokenVo.getPicture())
                 .memberName(googleIdTokenVo.getName())

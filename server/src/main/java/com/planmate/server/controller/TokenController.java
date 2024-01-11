@@ -26,19 +26,6 @@ public class TokenController {
     private final TokenService tokenService;
 
     /**
-     * token이 만료인지 확인하는 API
-     * @return 만료 시 true
-     * */
-    @GetMapping("/expired_at")
-    @ApiOperation("토큰 만료 확인 api")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "정상 응답")
-    })
-    public ResponseEntity<Boolean> checkExpiredAt() {
-        return ResponseEntity.ok(JwtUtil.isExpired(JwtUtil.getAccessToken()));
-    }
-
-    /**
      * access token 재발급 API
      * @param refreshTokenDto (access_token, refresh_token)
      * @return access_token

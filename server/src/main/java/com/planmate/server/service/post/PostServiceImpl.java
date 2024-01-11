@@ -44,7 +44,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public PostPageResponseDto findRecentPost(Integer pages) {
-        Long memberId = JwtUtil.getMemberId();
+        Long memberId = JwtUtil.getUserIdByAccessToken();
 
         List<PostResponseDto> responseDtoList = new ArrayList<>();
         Sort sort = Sort.by(Sort.Direction.DESC,"createdAt");
@@ -77,7 +77,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public PostCreateResponseDto createPost(PostDto postDto) {
-        Long memberId = JwtUtil.getMemberId();
+        Long memberId = JwtUtil.getUserIdByAccessToken();
         List<PostTag> postTagList = new ArrayList<>();
 
         Member owner = memberRepository.findById(memberId)
@@ -105,7 +105,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public PostResponseDto  findByPostId(Long postId) {
-        Long memberId = JwtUtil.getMemberId();
+        Long memberId = JwtUtil.getUserIdByAccessToken();
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostNotFoundException(postId));
@@ -131,7 +131,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public PostEditResponseDto editPost(PostDto postDto) {
-        Long memberId = JwtUtil.getMemberId();
+        Long memberId = JwtUtil.getUserIdByAccessToken();
 
         Post post = postRepository.findMemberPost(postDto.getId(),memberId)
                 .orElseThrow(() -> new PostNotFoundException(postDto.getId()));
@@ -151,7 +151,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public void deletePost(Long postId) {
-        Long memberId = JwtUtil.getMemberId();
+        Long memberId = JwtUtil.getUserIdByAccessToken();
         Post post = postRepository.findMemberPost(postId,memberId)
                 .orElseThrow(() -> new PostNotFoundException(postId));
         postRepository.delete(post);
@@ -166,7 +166,7 @@ public class PostServiceImpl implements PostService {
     @Transactional(readOnly = true)
     public PostPageResponseDto findMyPost(Integer pages) {
         List<PostResponseDto> responseDtoList = new ArrayList<>();
-        Long memberId = JwtUtil.getMemberId();
+        Long memberId = JwtUtil.getUserIdByAccessToken();
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(memberId));
@@ -198,7 +198,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public Boolean scrapPost(ScrapDto scrapDto) {
-        Long memberId = JwtUtil.getMemberId();
+        Long memberId = JwtUtil.getUserIdByAccessToken();
 
         Boolean isScraped = memberScrapRepository.findMemberScrap(memberId,scrapDto.getPostId()).isPresent();
 
@@ -222,7 +222,7 @@ public class PostServiceImpl implements PostService {
     @Transactional(readOnly = true)
     public PostPageResponseDto findScrapPost(Integer pages) {
         List<PostResponseDto> responseDtoList = new ArrayList<>();
-        Long memberId = JwtUtil.getMemberId();
+        Long memberId = JwtUtil.getUserIdByAccessToken();
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(memberId));
@@ -257,7 +257,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public PostPageResponseDto findPostByTagName(String tagName,Integer pages) {
-        Long memberId = JwtUtil.getMemberId();
+        Long memberId = JwtUtil.getUserIdByAccessToken();
 
         List<PostResponseDto> responseDtoList = new ArrayList<>();
 
@@ -289,7 +289,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public Boolean setPostLike(Long postId) {
-        Long memberId = JwtUtil.getMemberId();
+        Long memberId = JwtUtil.getUserIdByAccessToken();
         Boolean isPostLikeExist = postLikeRepository.findByPost(memberId,postId).isPresent();
 
         if (isPostLikeExist) {

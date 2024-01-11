@@ -32,7 +32,7 @@ public class StatisticServiceImpl implements StatisticService {
     @Override
     @Transactional(readOnly = true)
     public StatisticResponse getStatisticData() {
-        Long memberId = JwtUtil.getMemberId();
+        Long memberId = JwtUtil.getUserIdByAccessToken();
         Sort sort = Sort.by(Sort.Direction.DESC,"studyTime");
         Pageable pageable = PageRequest.of(0,4,sort);
         List<Subject> subjectList = subjectRepository.findAllSubject(memberId,pageable);
@@ -43,7 +43,7 @@ public class StatisticServiceImpl implements StatisticService {
     @Override
     @Transactional(readOnly = true)
     public StatisticResponse getDayStatisticData(LocalDate studyDate) {
-        Long memberId = JwtUtil.getMemberId();
+        Long memberId = JwtUtil.getUserIdByAccessToken();
 
         Sort sort = Sort.by(Sort.Direction.DESC,"studyTime");
         Pageable pageable = PageRequest.of(0,4,sort);

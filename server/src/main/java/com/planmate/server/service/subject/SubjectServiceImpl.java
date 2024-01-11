@@ -35,7 +35,7 @@ public class SubjectServiceImpl implements SubjectService {
     @Transactional(readOnly = true)
     public List<SubjectStudyTimeResponse> findSubjectTime() {
         List<SubjectStudyTimeResponse> responseDtoList = new ArrayList<>();
-        Long memberId = JwtUtil.getMemberId();
+        Long memberId = JwtUtil.getUserIdByAccessToken();
         List<Subject> subjectList = subjectRepository.findByMemberId(memberId);
 
         for (Subject subject : subjectList) {
@@ -50,7 +50,7 @@ public class SubjectServiceImpl implements SubjectService {
     @Transactional(readOnly = true)
     public List<SubjectResponse> findSubject() {
         List<SubjectResponse> responseList = new ArrayList<>();
-        Long memberId = JwtUtil.getMemberId();
+        Long memberId = JwtUtil.getUserIdByAccessToken();
         List<Subject> subjectList = subjectRepository.findByMemberId(memberId);
 
         for (Subject subject : subjectList) {
@@ -64,7 +64,7 @@ public class SubjectServiceImpl implements SubjectService {
     @Override
     @Transactional
     public void createSubject(SubjectCreateRequestDto subjectCreateRequestDto) {
-        Long memberId = JwtUtil.getMemberId();
+        Long memberId = JwtUtil.getUserIdByAccessToken();
         String subjectName = subjectCreateRequestDto.getName().replace(" ","");
 
         Boolean isExistSubject = subjectRepository.findSubject(memberId,subjectName).isPresent();
@@ -96,7 +96,7 @@ public class SubjectServiceImpl implements SubjectService {
     @Override
     @Transactional
     public void updateSubjectTime(SubjectTimeRequest subjectTimeRequest) {
-        Long memberId = JwtUtil.getMemberId();
+        Long memberId = JwtUtil.getUserIdByAccessToken();
         Subject subject = subjectRepository.findSubject(memberId, subjectTimeRequest.getSubjectId())
                 .orElseThrow(() -> new SubjectNotFoundException(subjectTimeRequest.getSubjectId()));
 
@@ -109,7 +109,7 @@ public class SubjectServiceImpl implements SubjectService {
     @Override
     @Transactional
     public void editSubject(SubjectEditRequestDto subjectEditRequestDto) {
-        Long memberId = JwtUtil.getMemberId();
+        Long memberId = JwtUtil.getUserIdByAccessToken();
         Long subjectId = subjectEditRequestDto.getSubjectId();
 
         Subject subject = subjectRepository.findSubject(memberId,subjectId)
@@ -122,7 +122,7 @@ public class SubjectServiceImpl implements SubjectService {
     @Override
     @Transactional
     public void deleteSubject(Long subjectId) {
-        Long memberId = JwtUtil.getMemberId();
+        Long memberId = JwtUtil.getUserIdByAccessToken();
 
         Subject subject = subjectRepository.findSubject(memberId,subjectId)
                 .orElseThrow(() -> new SubjectNotFoundException(subjectId));

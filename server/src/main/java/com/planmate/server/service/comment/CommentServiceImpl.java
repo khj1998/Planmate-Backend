@@ -46,7 +46,7 @@ public class CommentServiceImpl implements CommentService {
     @Transactional(readOnly = true)
     public CommentPageResponseDto findMyComment(Integer pages) {
         List<CommentResponseDto> responseDtoList = new ArrayList<>();
-        Long memberId = JwtUtil.getMemberId();
+        Long memberId = JwtUtil.getUserIdByAccessToken();
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(memberId));
 
@@ -66,7 +66,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public void createComment(CommentCreateRequestDto commentCreateRequestDto) {
-        Long memberId = JwtUtil.getMemberId();
+        Long memberId = JwtUtil.getUserIdByAccessToken();
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(memberId));
@@ -78,7 +78,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public void createChildComment(ChildCommentRequestDto childCommentRequestDto) {
-        Long memberId = JwtUtil.getMemberId();
+        Long memberId = JwtUtil.getUserIdByAccessToken();
         Comment parentComment = commentRepository.findById(childCommentRequestDto.getParentCommentId())
                 .orElseThrow(() -> new CommentNotFoundException(childCommentRequestDto.getParentCommentId()));
 
@@ -92,7 +92,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public void editComment(CommentEditRequestDto commentEditRequestDto) {
-        Long memberId = JwtUtil.getMemberId();
+        Long memberId = JwtUtil.getUserIdByAccessToken();
         Comment comment = commentRepository.findComment(memberId,commentEditRequestDto.getCommentId())
               .orElseThrow(() -> new CommentNotFoundException(commentEditRequestDto.getCommentId()));
 
@@ -103,7 +103,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public void setCommentLike(Long commentId) {
-        Long userId = JwtUtil.getMemberId();
+        Long userId = JwtUtil.getUserIdByAccessToken();
 
         CommentLike commentLike = commentLikeRepository.findCommentLike(userId,commentId);
 
@@ -121,7 +121,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public void deleteComment(Long commentId) {
-        Long memberId = JwtUtil.getMemberId();
+        Long memberId = JwtUtil.getUserIdByAccessToken();
         Comment comment = commentRepository.findComment(memberId,commentId)
                 .orElseThrow(() -> new CommentNotFoundException(commentId));
 
@@ -136,7 +136,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional(readOnly = true)
     public CommentPageResponseDto findRecentComment(CommentRequestDto commentRequestDto) {
-        Long memberId = JwtUtil.getMemberId();
+        Long memberId = JwtUtil.getUserIdByAccessToken();
         List<CommentResponseDto> responseDtoList = new ArrayList<>();
 
         Post post = postRepository.findById(commentRequestDto.getPostId())
@@ -163,7 +163,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional(readOnly = true)
     public List<CommentResponseDto> findRecentChildComment(ChildRecentRequestDto commentRequestDto) {
-        Long memberId = JwtUtil.getMemberId();
+        Long memberId = JwtUtil.getUserIdByAccessToken();
         List<CommentResponseDto> responseDtoList = new ArrayList<>();
 
         Post post = postRepository.findById(commentRequestDto.getPostId())

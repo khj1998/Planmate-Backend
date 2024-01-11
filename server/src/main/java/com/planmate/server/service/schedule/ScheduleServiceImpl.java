@@ -28,7 +28,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         return ScheduleResponseDto.of(scheduleRepository.save(
             Schedule.builder()
                     .title(addScheduleRequestDto.getTitle())
-                    .memberId(JwtUtil.getMemberId())
+                    .memberId(JwtUtil.getUserIdByAccessToken())
                     .targetDate(LocalDate.parse(addScheduleRequestDto.getTargetDate(), DateTimeFormatter.ISO_DATE))
                     .isFixed(false)
                     .build()
@@ -61,8 +61,8 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     @Transactional(readOnly = true)
     public List<Schedule> findAll() {
-        return scheduleRepository.findAllByMemberId(JwtUtil.getMemberId()).orElseThrow(
-                () -> new MemberScheduleNotFoundException(JwtUtil.getMemberId())
+        return scheduleRepository.findAllByMemberId(JwtUtil.getUserIdByAccessToken()).orElseThrow(
+                () -> new MemberScheduleNotFoundException(JwtUtil.getUserIdByAccessToken())
         );
     }
 
@@ -75,7 +75,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     @Transactional(readOnly = true)
     public ScheduleResponseDto findFixedDDay() {
-        Long memberId = JwtUtil.getMemberId();
+        Long memberId = JwtUtil.getUserIdByAccessToken();
 
         Optional<Schedule> schedule = scheduleRepository.findFixedSchedule(memberId);
 
@@ -89,7 +89,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     @Transactional
     public void fixDDay(Long id) {
-        Long memberId = JwtUtil.getMemberId();
+        Long memberId = JwtUtil.getUserIdByAccessToken();
 
         Optional<Schedule> schedule = scheduleRepository.findFixedSchedule(memberId);
 

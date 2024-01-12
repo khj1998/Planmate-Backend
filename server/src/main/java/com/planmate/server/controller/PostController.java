@@ -80,24 +80,6 @@ public class PostController {
     }
 
     /**
-     * Id를 통해 게시물 조회 요청을 받습니다.
-     * @author kimhojin98@naver.com
-     * @param postId 쿼리 파라미터를 통해 전달되는 게시물 Id 입니다.
-     * @return ResponseEntity<PostResponseDto> Id를 통해 조회된 게시물 Dto를 Body에 포함해 반환합니다.
-     */
-    @GetMapping("/check")
-    @ApiOperation("Id로 게시물 조회")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "게시물 정상 조회"),
-            @ApiResponse(responseCode = "401",description = "해당 사용자가 인증되지 않음 | 토큰 만료"),
-            @ApiResponse(responseCode = "403",description = "해당 사용자가 Member 권한이 아님"),
-            @ApiResponse(responseCode = "404",description = "게시물 조회에 실패함")
-    })
-    public ResponseEntity<PostResponseDto> findPostById(@RequestParam("postId") Long postId) {
-        return ResponseEntity.ok(postService.findByPostId(postId));
-    }
-
-    /**
      * Id를 통해 게시글 삭제 요청을 받습니다.
      * @author kimhojin98@naver.com
      * @param postId 쿼리 파라미터로 전달받는 게시물 Id입니다.

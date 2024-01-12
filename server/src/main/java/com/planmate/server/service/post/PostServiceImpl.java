@@ -55,12 +55,13 @@ public class PostServiceImpl implements PostService {
             Member member = memberRepository.findById(post.getMemberId())
                     .orElseThrow(() -> new MemberNotFoundException(post.getMemberId()));
 
+            List<PostTag> postTagList = postTagRepository.findByPostId(post.getPostId());
             List<PostLike> postLikeList = postLikeRepository.findAllByPostId(post.getPostId());
             List<MemberScrap> scrapList = memberScrapRepository.findByPostId(post.getPostId());
             List<Comment> commentList = commentRepository.findByPostId(post.getPostId());
 
-            PostResponseDto responseDto = PostResponseDto.of(post,member.getMemberName(),
-                    postLikeList,scrapList,commentList,memberId);
+            PostResponseDto responseDto = PostResponseDto.of(post,member
+                    ,postLikeList,scrapList,commentList,postTagList);
 
             responseDtoList.add(responseDto);
         }
@@ -94,32 +95,6 @@ public class PostServiceImpl implements PostService {
         postTagRepository.saveAll(postTagList);
 
         return PostCreateResponseDto.of(post,owner.getMemberName(), postTagList);
-    }
-
-    /**
-     * 게시물을 파라미터로 조회합니다.
-     * @author kimhojin98@naver.com
-     * @param postId 쿼리 파라미터로 전달된 게시물의 Id 값입니다.
-     * @return PostResponseDto - 게시물이 성공적으로 조회되면 반환되는 게시물 응답 Dto 입니다.
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public PostResponseDto  findByPostId(Long postId) {
-        Long memberId = JwtUtil.getUserIdByAccessToken();
-
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new PostNotFoundException(postId));
-
-        Member member = memberRepository.findById(post.getMemberId())
-                .orElseThrow(() -> new MemberNotFoundException(post.getMemberId()));
-
-        List<PostTag> postTagList = postTagRepository.findByPostId(postId);
-        List<MemberScrap> memberScrapList = memberScrapRepository.findByPostId(postId);
-        List<PostLike> postLikeList = postLikeRepository.findAllByPostId(postId);
-        List<Comment> commentList = commentRepository.findByPostId(post.getPostId());
-
-        return PostResponseDto.of(post,member.getMemberName()
-                ,postLikeList,memberScrapList,commentList,postTagList,memberId);
     }
 
     /**
@@ -181,8 +156,8 @@ public class PostServiceImpl implements PostService {
             List<PostLike> postLikeList = postLikeRepository.findAllByPostId(post.getPostId());
             List<Comment> commentList = commentRepository.findByPostId(post.getPostId());
 
-            PostResponseDto responseDto = PostResponseDto.of(post, member.getMemberName(),
-                    postLikeList,memberScrapList,commentList,postTagList,memberId);
+            PostResponseDto responseDto = PostResponseDto.of(post, member,postLikeList,
+                    memberScrapList,commentList,postTagList);
             responseDtoList.add(responseDto);
         }
 
@@ -240,8 +215,8 @@ public class PostServiceImpl implements PostService {
             List<MemberScrap> memberScrapList =  memberScrapRepository.findByPostId(post.getPostId());
             List<Comment> commentList = commentRepository.findByPostId(post.getPostId());
 
-            PostResponseDto responseDto = PostResponseDto.of(post,member.getMemberName(),
-                    postLikeList,memberScrapList,commentList,postTagList,memberId);
+            PostResponseDto responseDto = PostResponseDto.of(post,member,
+                    postLikeList,memberScrapList,commentList,postTagList);
             responseDtoList.add(responseDto);
         }
 
@@ -277,8 +252,8 @@ public class PostServiceImpl implements PostService {
             List<PostTag> postTags = postTagRepository.findByPostId(post.getPostId());
             List<Comment> commentList = commentRepository.findByPostId(post.getPostId());
 
-            PostResponseDto responseDto = PostResponseDto.of(post,member.getMemberName(),
-                    postLikeList,scrapList,commentList,postTags,memberId);
+            PostResponseDto responseDto = PostResponseDto.of(post,member,
+                    postLikeList,scrapList,commentList,postTags);
 
             responseDtoList.add(responseDto);
         }

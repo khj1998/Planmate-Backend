@@ -31,9 +31,9 @@ public class PostResponseDto {
     private Boolean isMyHearted;
     private Boolean isMyScraped;
 
-    public static PostResponseDto of(Post post, String nickname, List<PostLike> postLikeList,
+    public static PostResponseDto of(Post post, Member member, List<PostLike> postLikeList,
                                      List<MemberScrap> scrapList, List<Comment> commentList,
-                                     List<PostTag> postTagList,Long memberId) {
+                                     List<PostTag> postTagList) {
         Boolean isMyHearted = false;
         Boolean isMyScraped = false;
         List<String> tagList = new ArrayList<>();
@@ -43,14 +43,14 @@ public class PostResponseDto {
         }
 
         for (PostLike postLike : postLikeList) {
-            if (postLike.getMemberId() == memberId) {
+            if (postLike.getMemberId() == member.getMemberId()) {
                 isMyHearted = true;
                 break;
             }
         }
 
         for (MemberScrap memberScrap : scrapList) {
-            if (memberScrap.getMemberId() == memberId) {
+            if (memberScrap.getMemberId() == member.getMemberId()) {
                 isMyScraped = true;
                 break;
             }
@@ -58,7 +58,7 @@ public class PostResponseDto {
 
         return PostResponseDto.builder()
                 .postId(post.getPostId())
-                .nickname(nickname)
+                .nickname(member.getMemberName())
                 .title(post.getTitle())
                 .content(post.getContent())
                 .postTagList(tagList)

@@ -31,7 +31,7 @@ public class Planner {
     @Column(name = "color_hex",nullable = false,length = 8,columnDefinition = "varchar")
     private String colorHex;
 
-    @Column(name = "day",nullable = false,length = 2,columnDefinition = "varchar")
+    @Column(name = "day",nullable = false,length = 8,columnDefinition = "varchar")
     private String day;
 
     @Column(name = "start_time",nullable = false,length = 12,columnDefinition = "varchar")

@@ -12,8 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
 
-@RequiredArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
 public class LogOutServiceImpl implements LogOutService{
     private final TokenRepository tokenRepository;
     private final MemberRepository memberRepository;

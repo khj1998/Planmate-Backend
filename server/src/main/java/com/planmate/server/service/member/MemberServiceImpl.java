@@ -13,6 +13,7 @@ import com.planmate.server.repository.TokenRepository;
 import com.planmate.server.util.JwtUtil;
 import com.planmate.server.vo.GoogleIdTokenVo;
 import lombok.Generated;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,14 +31,10 @@ import java.util.Optional;
 
 @Slf4j
 @Generated
+@RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final TokenRepository tokenRepository;
-
-    public MemberServiceImpl(final MemberRepository memberRepository, final TokenRepository tokenRepository) {
-        this.memberRepository = memberRepository;
-        this.tokenRepository = tokenRepository;
-    }
 
     @Override
     @Transactional

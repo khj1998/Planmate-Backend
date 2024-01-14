@@ -74,9 +74,6 @@ public class SubjectController {
     @ApiOperation("공부/운동 시간 업데이트")
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "공부/운동 시간 업데이트 성공"),
-            @ApiResponse(responseCode = "401",description = "해당 사용자가 인증되지 않음 | 토큰 만료"),
-            @ApiResponse(responseCode = "403",description = "해당 사용자가 Member 권한이 아님"),
-            @ApiResponse(responseCode = "404",description = "공부/운동 시간 업데이트에 실패함")
     })
     public ResponseEntity<Boolean> updateTime(@RequestBody SubjectTimeRequest subjectTimeRequest) {
         subjectService.updateSubjectTime(subjectTimeRequest);

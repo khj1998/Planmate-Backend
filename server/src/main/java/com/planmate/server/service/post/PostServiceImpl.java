@@ -11,6 +11,7 @@ import com.planmate.server.exception.member.MemberNotFoundException;
 import com.planmate.server.exception.post.PostNotFoundException;
 import com.planmate.server.repository.*;
 import com.planmate.server.util.JwtUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
+@RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
@@ -27,19 +29,6 @@ public class PostServiceImpl implements PostService {
     private final PostTagRepository postTagRepository;
     private final PostLikeRepository postLikeRepository;
     private final CommentRepository commentRepository;
-
-    public PostServiceImpl(PostRepository postRepository, PostTagRepository postTagRepository
-            ,MemberRepository memberRepository
-            ,MemberScrapRepository memberScrapRepository
-            ,PostLikeRepository postLikeRepository
-            ,CommentRepository commentRepository) {
-        this.postRepository = postRepository;
-        this.memberRepository = memberRepository;
-        this.memberScrapRepository = memberScrapRepository;
-        this.postTagRepository = postTagRepository;
-        this.postLikeRepository = postLikeRepository;
-        this.commentRepository = commentRepository;
-    }
 
     @Override
     @Transactional(readOnly = true)

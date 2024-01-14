@@ -7,6 +7,7 @@ import com.planmate.server.repository.StudyBackUpRepository;
 import com.planmate.server.repository.SubjectRepository;
 import com.planmate.server.util.JwtUtil;
 import com.planmate.server.vo.StatisticData;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,16 +19,11 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
+@RequiredArgsConstructor
 public class StatisticServiceImpl implements StatisticService {
 
     private final SubjectRepository subjectRepository;
     private final StudyBackUpRepository studyBackUpRepository;
-
-    public StatisticServiceImpl(SubjectRepository subjectRepository,
-                                StudyBackUpRepository studyBackUpRepository) {
-        this.subjectRepository = subjectRepository;
-        this.studyBackUpRepository = studyBackUpRepository;
-    }
 
     @Override
     @Transactional(readOnly = true)

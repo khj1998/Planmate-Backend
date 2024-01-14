@@ -14,12 +14,14 @@ import com.planmate.server.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
+@Service
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
 
@@ -221,8 +223,6 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public PostPageResponseDto findPostByTagName(String tagName,Integer pages) {
-        Long memberId = JwtUtil.getUserIdByAccessToken();
-
         List<PostResponseDto> responseDtoList = new ArrayList<>();
 
         Sort sort = Sort.by(Sort.Direction.DESC,"createdAt");

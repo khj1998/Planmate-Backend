@@ -29,9 +29,6 @@ import java.util.Optional;
 @RequestMapping(value = "/login")
 @Slf4j
 public class LoginController {
-
-    @Value("${frontend.redirect.url}")
-    private String redirectURL;
     private final OauthService oauthService;
     private final MemberService memberService;
 
@@ -78,6 +75,6 @@ public class LoginController {
             memberService.registerMember(member.get());
         }
 
-        return new RedirectView(redirectURL+"?id="+member.get().getMemberId());
+        return null;
     }
 }

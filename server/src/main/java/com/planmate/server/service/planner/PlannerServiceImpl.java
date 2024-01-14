@@ -8,12 +8,14 @@ import com.planmate.server.repository.PlannerRepository;
 import com.planmate.server.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
+@Service
 @RequiredArgsConstructor
 public class PlannerServiceImpl implements PlannerService {
     private final PlannerRepository plannerRepository;

@@ -1,5 +1,6 @@
 package com.planmate.server.controller;
 
+import com.planmate.server.dto.request.statistic.StatisticDateRequestDto;
 import com.planmate.server.dto.response.statistic.StatisticResponse;
 import com.planmate.server.service.statistic.StatisticService;
 import io.swagger.annotations.Api;
@@ -39,9 +40,9 @@ public class StatisticController {
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "공부 통계 데이터 조회 api"),
     })
-    @GetMapping("/day")
-    public ResponseEntity<StatisticResponse> getDayStatistic(@RequestParam LocalDate studyDate) {
-        StatisticResponse responseDto = statisticService.getDayStatisticData(studyDate);
+    @PostMapping("/day")
+    public ResponseEntity<StatisticResponse> getDayStatistic(@RequestBody StatisticDateRequestDto statisticDateRequestDto) {
+        StatisticResponse responseDto = statisticService.getDayStatisticData(statisticDateRequestDto.getStudyDate());
         return ResponseEntity.ok(responseDto);
     }
 }

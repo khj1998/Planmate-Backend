@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 
 @Slf4j
@@ -31,10 +32,10 @@ public class StatisticServiceImpl implements StatisticService {
     @Transactional(readOnly = true)
     public StatisticResponse getStatisticData() {
         Long memberId = JwtUtil.getUserIdByAccessToken();
-        Sort sort = Sort.by(Sort.Direction.DESC,"studyTime");
-        Pageable pageable = PageRequest.of(0,4,sort);
-        List<Subject> subjectList = subjectRepository.findAllSubject(memberId,pageable);
+
+        List<Subject> subjectList = subjectRepository.findAllSubject(memberId,getStudyTimePageable());
         StatisticData statisticData = StatisticData.of(subjectList);
+
         return StatisticResponse.of(statisticData);
     }
 
@@ -43,12 +44,26 @@ public class StatisticServiceImpl implements StatisticService {
     public StatisticResponse getDayStatisticData(LocalDate studyDate) {
         Long memberId = JwtUtil.getUserIdByAccessToken();
 
-        Sort sort = Sort.by(Sort.Direction.DESC,"studyTime");
-        Pageable pageable = PageRequest.of(0,4,sort);
-        List<StudyBackUp> studyBackUpList = studyBackUpRepository.findStudyBackUp(studyDate,memberId,pageable);
-
+        List<StudyBackUp> studyBackUpList = studyBackUpRepository.findStudyBackUp(studyDate,memberId,getStudyTimePageable());
         StatisticData statisticData = StatisticData.backUp(studyBackUpList);
 
         return StatisticResponse.of(statisticData);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public StatisticResponse getMonthStatisticData(YearMonth yearMonth) {
+        Long memberId = JwtUtil.getUserIdByAccessToken();
+
+        LocalDate studyDate = yearMonth.atDay(1);
+        List<StudyBackUp> studyBackUpList = studyBackUpRepository.findMonthlyStudyBackUp(studyDate,memberId,getStudyTimePageable());
+        StatisticData statisticData = StatisticData.backUp(studyBackUpList);
+
+        return StatisticResponse.of(statisticData);
+    }
+
+    private Pageable getStudyTimePageable() {
+        Sort sort = Sort.by(Sort.Direction.DESC,"studyTime");
+        return PageRequest.of(0,4,sort);
     }
 }

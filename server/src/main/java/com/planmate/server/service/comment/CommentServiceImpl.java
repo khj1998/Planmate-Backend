@@ -15,11 +15,13 @@ import com.planmate.server.repository.CommentRepository;
 import com.planmate.server.repository.MemberRepository;
 import com.planmate.server.repository.PostRepository;
 import com.planmate.server.util.JwtUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -28,19 +30,13 @@ import java.util.Comparator;
 import java.util.List;
 
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
     private final CommentLikeRepository commentLikeRepository;
-
-    public CommentServiceImpl(PostRepository postRepository,CommentRepository commentRepository,MemberRepository memberRepository
-            ,CommentLikeRepository commentLikeRepository) {
-        this.postRepository = postRepository;
-        this.commentRepository = commentRepository;
-        this.memberRepository = memberRepository;
-        this.commentLikeRepository = commentLikeRepository;
-    }
 
     @Override
     @Transactional(readOnly = true)

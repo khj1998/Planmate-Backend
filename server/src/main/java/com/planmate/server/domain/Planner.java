@@ -5,6 +5,7 @@ import com.planmate.server.dto.request.planner.PlannerRequestDto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 
@@ -31,7 +32,7 @@ public class Planner {
     @Column(name = "color_hex",nullable = false,length = 8,columnDefinition = "varchar")
     private String colorHex;
 
-    @Column(name = "day",nullable = false,length = 2,columnDefinition = "varchar")
+    @Column(name = "day",nullable = false,length = 32,columnDefinition = "varchar")
     private String day;
 
     @Column(name = "start_time",nullable = false,length = 12,columnDefinition = "varchar")
@@ -49,5 +50,23 @@ public class Planner {
                 .startTime(plannerRequestDto.getStartAt())
                 .endTime(plannerRequestDto.getEndAt())
                 .build();
+    }
+
+    public void updatePlanner(PlannerRequestDto plannerRequestDto) {
+        if (StringUtils.hasText(plannerRequestDto.getScheduleName())) {
+            this.scheduleName = plannerRequestDto.getScheduleName();
+        }
+
+        if (StringUtils.hasText(plannerRequestDto.getStartAt())) {
+            this.startTime = plannerRequestDto.getStartAt();
+        }
+
+        if (StringUtils.hasText(plannerRequestDto.getEndAt())) {
+            this.endTime = plannerRequestDto.getEndAt();
+        }
+
+        if (StringUtils.hasText(plannerRequestDto.getColorHex())) {
+            this.colorHex = plannerRequestDto.getColorHex();
+        }
     }
 }

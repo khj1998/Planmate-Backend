@@ -16,35 +16,27 @@ import com.planmate.server.exception.notice.NoticeNotFoundException;
 import com.planmate.server.exception.post.PostNotFoundException;
 import com.planmate.server.repository.*;
 import com.planmate.server.util.JwtUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class NoticeServiceImpl implements NoticeService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
     private final MemberScrapRepository memberScrapRepository;
     private final PostLikeRepository postLikeRepository;
     private final CommentRepository commentRepository;
-
-    public NoticeServiceImpl(final PostRepository postRepository,
-                             final MemberRepository memberRepository,
-                             final MemberScrapRepository memberScrapRepository,
-                             final PostLikeRepository postLikeRepository,
-                             final CommentRepository commentRepository) {
-        this.postRepository = postRepository;
-        this.memberRepository = memberRepository;
-        this.memberScrapRepository = memberScrapRepository;
-        this.postLikeRepository = postLikeRepository;
-        this.commentRepository = commentRepository;
-    }
 
     @Override
     @Transactional

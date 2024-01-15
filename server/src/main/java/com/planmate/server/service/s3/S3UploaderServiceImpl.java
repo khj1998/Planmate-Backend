@@ -7,12 +7,14 @@ import com.amazonaws.services.s3.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
 
 @Slf4j
+@Service
 @RequiredArgsConstructor
 public class S3UploaderServiceImpl implements S3UploadService {
     private final AmazonS3 amazonS3Client;
@@ -23,11 +25,9 @@ public class S3UploaderServiceImpl implements S3UploadService {
     public String upload(MultipartFile multipartFile, String dirName) throws IOException {
         String fileName = multipartFile.getOriginalFilename();
 
-        //파일 형식 구하기
         String ext = fileName.split("\\.")[1];
         String contentType = "";
 
-        //content type을 지정해서 올려주지 않으면 자동으로 "application/octet-stream"으로 고정이 되서 링크 클릭시 웹에서 열리는게 아니라 자동 다운이 시작됨.
         switch (ext) {
             case "jpeg":
                 contentType = "image/jpeg";

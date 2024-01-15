@@ -9,21 +9,20 @@ import com.planmate.server.repository.MemberRepository;
 import com.planmate.server.repository.TokenRepository;
 import com.planmate.server.util.JwtUtil;
 import lombok.Generated;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
 @Slf4j
+@Service
 @Generated
+@RequiredArgsConstructor
 public class TokenServiceImpl implements TokenService {
     private final MemberRepository memberRepository;
     private final TokenRepository tokenRepository;
-
-    public TokenServiceImpl(final TokenRepository tokenRepository, final MemberRepository memberRepository) {
-        this.tokenRepository = tokenRepository;
-        this.memberRepository = memberRepository;
-    }
 
     /**
      * @author 지승언

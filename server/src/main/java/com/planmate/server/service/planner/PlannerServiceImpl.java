@@ -6,19 +6,19 @@ import com.planmate.server.dto.response.planner.PlannerResponseDto;
 import com.planmate.server.exception.planner.PlannerNotFoundException;
 import com.planmate.server.repository.PlannerRepository;
 import com.planmate.server.util.JwtUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class PlannerServiceImpl implements PlannerService {
     private final PlannerRepository plannerRepository;
-
-    public PlannerServiceImpl(PlannerRepository plannerRepository) {
-        this.plannerRepository = plannerRepository;
-    }
 
     @Override
     @Transactional(readOnly = true)
@@ -45,7 +45,12 @@ public class PlannerServiceImpl implements PlannerService {
 
     @Override
     @Transactional
-    public void editPlan(PlannerRequestDto plannerRequestDto) {}
+    public void editPlan(PlannerRequestDto plannerRequestDto) {
+        Long memberId = JwtUtil.getUserIdByAccessToken();
+        Planner planner = plannerRepository.findPlanner(memberId,plannerRequestDto.getPlannerId())
+                .orElseThrow(() -> new PlannerNotFoundException(plannerRequestDto.getPlannerId()));
+        planner.updatePlanner(plannerRequestDto);
+    }
 
     @Override
     @Transactional

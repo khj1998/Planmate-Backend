@@ -9,11 +9,13 @@ import com.planmate.server.repository.TokenRepository;
 import com.planmate.server.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
-@RequiredArgsConstructor
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class LogOutServiceImpl implements LogOutService{
     private final TokenRepository tokenRepository;
     private final MemberRepository memberRepository;

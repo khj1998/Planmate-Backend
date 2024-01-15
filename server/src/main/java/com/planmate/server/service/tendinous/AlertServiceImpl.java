@@ -5,16 +5,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@RequiredArgsConstructor
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class AlertServiceImpl implements AlertService {
     private final RestTemplate restTemplate;
-    private final String url;
 
     @Override
     public void alert(final AlertRequestDto alertRequestDto) {
@@ -24,6 +25,6 @@ public class AlertServiceImpl implements AlertService {
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<Map<String, Object>>(request);
 
-        restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+        restTemplate.exchange("http://localhost:3000", HttpMethod.POST, entity, String.class);
     }
 }

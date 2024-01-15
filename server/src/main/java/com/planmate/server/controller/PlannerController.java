@@ -41,9 +41,6 @@ public class PlannerController {
     @ApiOperation("시간표 추가")
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "시간표 추가 성공"),
-            @ApiResponse(responseCode = "401",description = "유저가 인증되지 않음"),
-            @ApiResponse(responseCode = "403",description = "유저가 맴버 | Admin 권한이 아님"),
-            @ApiResponse(responseCode = "404",description = "시간표 추가 실패")
     })
     @PostMapping("/add")
     public ResponseEntity<Boolean> addPlan(@RequestBody PlannerRequestDto plannerRequestDto) {
@@ -54,9 +51,6 @@ public class PlannerController {
     @ApiOperation("시간표 수정")
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "시간표 수정 성공"),
-            @ApiResponse(responseCode = "401",description = "유저가 인증되지 않음"),
-            @ApiResponse(responseCode = "403",description = "유저가 맴버 | Admin 권한이 아님"),
-            @ApiResponse(responseCode = "404",description = "시간표 수정 실패")
     })
     @PostMapping("/edit")
     public ResponseEntity<Boolean> editPlan(@RequestBody PlannerRequestDto plannerRequestDto) {
@@ -67,9 +61,6 @@ public class PlannerController {
     @ApiOperation("시간표 삭제")
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "시간표 삭제 성공"),
-            @ApiResponse(responseCode = "401",description = "유저가 인증되지 않음"),
-            @ApiResponse(responseCode = "403",description = "유저가 맴버 | Admin 권한이 아님"),
-            @ApiResponse(responseCode = "404",description = "시간표 삭제 실패")
     })
     @DeleteMapping("/remove")
     public ResponseEntity<Boolean> removePlan(@RequestParam Long plannerId) {

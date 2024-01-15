@@ -14,22 +14,20 @@ import com.planmate.server.exception.subject.SubjectNotFoundException;
 import com.planmate.server.repository.StudyBackUpRepository;
 import com.planmate.server.repository.SubjectRepository;
 import com.planmate.server.util.JwtUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class SubjectServiceImpl implements SubjectService {
     private final SubjectRepository subjectRepository;
     private final StudyBackUpRepository studyBackUpRepository;
-
-    public SubjectServiceImpl(SubjectRepository subjectRepository,
-                              StudyBackUpRepository studyBackUpRepository) {
-        this.subjectRepository = subjectRepository;
-        this.studyBackUpRepository = studyBackUpRepository;
-    }
 
     @Override
     @Transactional(readOnly = true)

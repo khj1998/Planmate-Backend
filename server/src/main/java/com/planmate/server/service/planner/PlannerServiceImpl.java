@@ -45,7 +45,12 @@ public class PlannerServiceImpl implements PlannerService {
 
     @Override
     @Transactional
-    public void editPlan(PlannerRequestDto plannerRequestDto) {}
+    public void editPlan(PlannerRequestDto plannerRequestDto) {
+        Long memberId = JwtUtil.getUserIdByAccessToken();
+        Planner planner = plannerRepository.findPlanner(memberId,plannerRequestDto.getPlannerId())
+                .orElseThrow(() -> new PlannerNotFoundException(plannerRequestDto.getPlannerId()));
+        planner.updatePlanner(plannerRequestDto);
+    }
 
     @Override
     @Transactional

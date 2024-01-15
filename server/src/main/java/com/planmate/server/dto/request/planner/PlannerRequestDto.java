@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class PlannerRequestDto {
+    private Long plannerId;
     private String scheduleName;
     private String colorHex;
     private String day;

@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PlannerResponseDto {
     private Long plannerId;
-    private String type;
     private String scheduleName;
     private String colorHex;
     private String day;

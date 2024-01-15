@@ -34,9 +34,6 @@ public class PostController {
     @ApiOperation("게시물 N개 조회")
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "게시물 최신 N개 조회 성공"),
-            @ApiResponse(responseCode = "401",description = "해당 사용자가 인증되지 않음 | 토큰 만료"),
-            @ApiResponse(responseCode = "403",description = "해당 사용자가 Member 권한이 아님"),
-            @ApiResponse(responseCode = "404",description = "게시물 N개 조회하는데 실패함")
     })
     public ResponseEntity<PostPageResponseDto> findRecentPost(@RequestParam("pages") Integer pages) {
         PostPageResponseDto responseDto = postService.findRecentPost(pages);
@@ -53,9 +50,6 @@ public class PostController {
     @ApiOperation("새 게시물을 생성")
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "새 게시물 생성 성공"),
-            @ApiResponse(responseCode = "401",description = "해당 사용자가 인증되지 않음 | 토큰 만료"),
-            @ApiResponse(responseCode = "403",description = "해당 사용자가 Member 권한이 아님"),
-            @ApiResponse(responseCode = "404",description = "새 게시물 생성에 실패함")
     })
     public ResponseEntity<PostCreateResponseDto> createPost(@RequestBody PostDto postDto) {
         return ResponseEntity.ok(postService.createPost(postDto));
@@ -71,9 +65,6 @@ public class PostController {
     @ApiOperation("태그로 게시물 조회")
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "태그로 게시물 조회 성공"),
-            @ApiResponse(responseCode = "401",description = "해당 사용자가 인증되지 않음 | 토큰 만료"),
-            @ApiResponse(responseCode = "403",description = "해당 사용자가 Member 권한이 아님"),
-            @ApiResponse(responseCode = "404",description = "태그로 게시물 조회 실패함")
     })
     public ResponseEntity<PostPageResponseDto> findPostByTagName(@RequestParam("tagName") String tagName,@RequestParam("pages") Integer pages) {
         return ResponseEntity.ok(postService.findPostByTagName(tagName,pages));
@@ -89,9 +80,6 @@ public class PostController {
     @ApiOperation("Id로 게시물 삭제")
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "게시물 정상 삭제"),
-            @ApiResponse(responseCode = "401",description = "해당 사용자가 인증되지 않음 | 토큰 만료"),
-            @ApiResponse(responseCode = "403",description = "해당 사용자가 Member 권한이 아님"),
-            @ApiResponse(responseCode = "404",description = "게시물 삭제에 실패함")
     })
     public ResponseEntity deletePost(@RequestParam("postId") Long postId) {
         postService.deletePost(postId);
@@ -107,9 +95,6 @@ public class PostController {
     @ApiOperation("내 게시물 조회")
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "나의 게시물 정상 조회"),
-            @ApiResponse(responseCode = "401",description = "해당 사용자가 인증되지 않음 | 토큰 만료"),
-            @ApiResponse(responseCode = "403",description = "해당 사용자가 Member 권한이 아님"),
-            @ApiResponse(responseCode = "404",description = "내 게시물 조회에 실패함")
     })
     public ResponseEntity<PostPageResponseDto> findMyPost(@RequestParam Integer pages) {
         return ResponseEntity.ok(postService.findMyPost(pages));
@@ -125,9 +110,6 @@ public class PostController {
     @ApiOperation("게시물 수정")
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "게시물 수정 성공"),
-            @ApiResponse(responseCode = "401",description = "해당 사용자가 인증되지 않음 | 토큰 만료"),
-            @ApiResponse(responseCode = "403",description = "해당 사용자가 Member 권한이 아님"),
-            @ApiResponse(responseCode = "404",description = "게시물 수정에 실패함")
     })
     public ResponseEntity<PostEditResponseDto> editPost(@RequestBody PostDto postDto) {
         return ResponseEntity.ok(postService.editPost(postDto));
@@ -142,10 +124,7 @@ public class PostController {
     @PostMapping("/scrap")
     @ApiOperation("게시물 스크랩 추가/취소")
     @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "게시물 스크랩 추가/취소 성공"),
-            @ApiResponse(responseCode = "401",description = "해당 사용자가 인증되지 않음 | 토큰 만료"),
-            @ApiResponse(responseCode = "403",description = "해당 사용자가 Member 권한이 아님"),
-            @ApiResponse(responseCode = "404",description = "게시물 스크랩 추가/취소에 실패함")
+            @ApiResponse(responseCode = "200",description = "게시물 스크랩 추가/취소 성공")
     })
     public ResponseEntity<Boolean> scrapPost(@RequestBody ScrapDto scrapDto) {
         return ResponseEntity.ok(postService.scrapPost(scrapDto));
@@ -159,10 +138,7 @@ public class PostController {
     @GetMapping("/find/scrap")
     @ApiOperation("스크랩한 게시물 조회")
     @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "스크랩한 게시물 조회 성공"),
-            @ApiResponse(responseCode = "401",description = "해당 사용자가 인증되지 않음 | 토큰 만료"),
-            @ApiResponse(responseCode = "403",description = "해당 사용자가 Member 권한이 아님"),
-            @ApiResponse(responseCode = "404",description = "스크랩한 게시물 조회에 실패함")
+            @ApiResponse(responseCode = "200",description = "스크랩한 게시물 조회 성공")
     })
     public ResponseEntity<PostPageResponseDto> findScrapPost(@RequestParam Integer pages) {
         return ResponseEntity.ok(postService.findScrapPost(pages));

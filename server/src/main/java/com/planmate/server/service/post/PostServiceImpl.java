@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -254,14 +255,13 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public Boolean setPostLike(Long postId) {
         Long memberId = JwtUtil.getUserIdByAccessToken();
-        Boolean isPostLikeExist = postLikeRepository.findByPost(memberId,postId).isPresent();
+        Optional<PostLike> postLike = postLikeRepository.findByPost(memberId,postId);
 
-        if (isPostLikeExist) {
-            PostLike postLike = postLikeRepository.findByPost(memberId,postId).get();
-            postLikeRepository.delete(postLike);
+        if (postLike.isPresent()) {
+            postLikeRepository.delete(postLike.get());
         } else {
-            PostLike postLike = PostLike.of(memberId,postId);
-            postLikeRepository.save(postLike);
+            PostLike newLike = PostLike.of(memberId,postId);
+            postLikeRepository.save(newLike);
         }
 
         return true;

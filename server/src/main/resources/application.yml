@@ -13,7 +13,7 @@ spring:
   jpa:
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect
-    show-sql: false
+    show-sql: true
     hibernate:
       ddl-auto: none
     properties:

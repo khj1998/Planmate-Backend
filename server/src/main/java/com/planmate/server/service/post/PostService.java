@@ -11,6 +11,7 @@ import java.util.List;
 
 public interface PostService {
     PostCreateResponseDto createPost(PostDto postDto);
+    PostResponseDto findByPostId(Long postId);
     void deletePost(Long postId);
     PostPageResponseDto findRecentPost(Integer pages);
     PostPageResponseDto findPostByTagName(String tagName,Integer pages);

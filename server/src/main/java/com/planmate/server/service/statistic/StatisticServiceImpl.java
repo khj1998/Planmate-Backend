@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.YearMonth;
 import java.util.List;
 
@@ -55,8 +56,9 @@ public class StatisticServiceImpl implements StatisticService {
     public StatisticResponse getMonthStatisticData(YearMonth yearMonth) {
         Long memberId = JwtUtil.getUserIdByAccessToken();
 
-        LocalDate studyDate = yearMonth.atDay(1);
-        List<StudyBackUp> studyBackUpList = studyBackUpRepository.findMonthlyStudyBackUp(studyDate,memberId,getStudyTimePageable());
+        Integer year = yearMonth.getYear();
+        Integer month = yearMonth.getMonth().getValue();
+        List<StudyBackUp> studyBackUpList = studyBackUpRepository.findMonthlyStudyBackUp(year,month,memberId,getStudyTimePageable());
         StatisticData statisticData = StatisticData.backUp(studyBackUpList);
 
         return StatisticResponse.of(statisticData);

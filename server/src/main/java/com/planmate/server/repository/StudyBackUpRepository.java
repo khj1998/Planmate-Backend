@@ -20,7 +20,8 @@ public interface StudyBackUpRepository extends JpaRepository<StudyBackUp,Long> {
     List<StudyBackUp> findStudyBackUp(@Param("studyDate")LocalDate studyDate, @Param("memberId") Long memberId, Pageable pageable);
 
     @Query("select ds from StudyBackUp ds " +
-            "where ds.studyDate >= :studyDate " +
-            "and ds.memberId = :memberId")
-    List<StudyBackUp> findMonthlyStudyBackUp(@Param("studyDate") LocalDate studyDate, @Param("memberId") Long memberId, Pageable pageable);
+            "where ds.memberId = :memberId and " +
+            "YEAR(ds.studyDate) = :year and MONTH(ds.studyDate) = :month")
+    List<StudyBackUp> findMonthlyStudyBackUp(@Param("year") Integer year,@Param("month") Integer month
+            , @Param("memberId") Long memberId, Pageable pageable);
 }

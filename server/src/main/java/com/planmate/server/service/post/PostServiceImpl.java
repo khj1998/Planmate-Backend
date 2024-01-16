@@ -33,11 +33,15 @@ public class PostServiceImpl implements PostService {
     private final PostLikeRepository postLikeRepository;
     private final CommentRepository commentRepository;
 
+    /**
+     * 페이지 별 게시물 정보를 조회합니다.
+     * @author kimhojin98@naver.com
+     * @param pages 게시물을 조회할 페이지 입니다.
+     * @return PostPageResponseDto - 각 페이지 별로 게시물 응답 dto입니다.
+     */
     @Override
     @Transactional(readOnly = true)
     public PostPageResponseDto findRecentPost(Integer pages) {
-        Long memberId = JwtUtil.getUserIdByAccessToken();
-
         List<PostResponseDto> responseDtoList = new ArrayList<>();
         Sort sort = Sort.by(Sort.Direction.DESC,"createdAt");
         Pageable pageable = PageRequest.of(pages,10,sort);
@@ -59,6 +63,30 @@ public class PostServiceImpl implements PostService {
         }
 
         return PostPageResponseDto.of(postList.getTotalPages(),responseDtoList);
+    }
+
+    /**
+     * 게시물을 파라미터로 조회합니다.
+     * @author kimhojin98@naver.com
+     * @param postId 쿼리 파라미터로 전달된 게시물의 Id 값입니다.
+     * @return PostResponseDto - 게시물이 성공적으로 조회되면 반환되는 게시물 응답 Dto 입니다.
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public PostResponseDto findByPostId(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostNotFoundException(postId));
+
+        Member member = memberRepository.findById(post.getMemberId())
+                .orElseThrow(() -> new MemberNotFoundException(post.getMemberId()));
+
+        List<PostTag> postTagList = postTagRepository.findByPostId(postId);
+        List<MemberScrap> memberScrapList = memberScrapRepository.findByPostId(postId);
+        List<PostLike> postLikeList = postLikeRepository.findAllByPostId(postId);
+        List<Comment> commentList = commentRepository.findByPostId(post.getPostId());
+
+        return PostResponseDto.of(post,member,postLikeList,memberScrapList
+                ,commentList,postTagList);
     }
 
     /**

@@ -8,7 +8,9 @@ import javax.persistence.*;
 
 @Slf4j
 @Entity
-@Table(name = "comment_like")
+@Table(name = "comment_like",uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"member_id","comment_id"})
+})
 @Getter
 @Setter
 @Builder

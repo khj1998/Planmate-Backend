@@ -42,6 +42,8 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public PostPageResponseDto findRecentPost(Integer pages) {
+        Long memberId = JwtUtil.getUserIdByAccessToken();
+
         List<PostResponseDto> responseDtoList = new ArrayList<>();
         Sort sort = Sort.by(Sort.Direction.DESC,"createdAt");
         Pageable pageable = PageRequest.of(pages,10,sort);
@@ -58,7 +60,7 @@ public class PostServiceImpl implements PostService {
 
             PostResponseDto responseDto = PostResponseDto.of(post,member
                     ,postLikeList,scrapList,commentList,postTagList);
-
+            responseDto.setIsMyPost(post.getMemberId().equals(memberId));
             responseDtoList.add(responseDto);
         }
 
@@ -74,6 +76,8 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public PostResponseDto findByPostId(Long postId) {
+        Long memberId = JwtUtil.getUserIdByAccessToken();
+
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostNotFoundException(postId));
 
@@ -85,8 +89,11 @@ public class PostServiceImpl implements PostService {
         List<PostLike> postLikeList = postLikeRepository.findAllByPostId(postId);
         List<Comment> commentList = commentRepository.findByPostId(post.getPostId());
 
-        return PostResponseDto.of(post,member,postLikeList,memberScrapList
+        PostResponseDto responseDto = PostResponseDto.of(post,member,postLikeList,memberScrapList
                 ,commentList,postTagList);
+        responseDto.setIsMyPost(post.getMemberId().equals(memberId));
+
+        return responseDto;
     }
 
     /**
@@ -178,6 +185,7 @@ public class PostServiceImpl implements PostService {
 
             PostResponseDto responseDto = PostResponseDto.of(post, member,postLikeList,
                     memberScrapList,commentList,postTagList);
+            responseDto.setIsMyPost(post.getMemberId().equals(memberId));
             responseDtoList.add(responseDto);
         }
 
@@ -237,6 +245,7 @@ public class PostServiceImpl implements PostService {
 
             PostResponseDto responseDto = PostResponseDto.of(post,member,
                     postLikeList,memberScrapList,commentList,postTagList);
+            responseDto.setIsMyPost(post.getMemberId().equals(memberId));
             responseDtoList.add(responseDto);
         }
 
@@ -252,6 +261,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public PostPageResponseDto findPostByTagName(String tagName,Integer pages) {
+        Long memberId = JwtUtil.getUserIdByAccessToken();
         List<PostResponseDto> responseDtoList = new ArrayList<>();
 
         Sort sort = Sort.by(Sort.Direction.DESC,"createdAt");
@@ -272,7 +282,7 @@ public class PostServiceImpl implements PostService {
 
             PostResponseDto responseDto = PostResponseDto.of(post,member,
                     postLikeList,scrapList,commentList,postTags);
-
+            responseDto.setIsMyPost(post.getMemberId().equals(memberId));
             responseDtoList.add(responseDto);
         }
 

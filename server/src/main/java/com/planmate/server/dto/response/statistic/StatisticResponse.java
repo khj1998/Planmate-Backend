@@ -8,6 +8,7 @@ import com.planmate.server.vo.StudyTime;
 import lombok.*;
 
 import java.sql.Time;
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -17,6 +18,8 @@ import java.util.List;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class StatisticResponse {
+    private LocalDate studyDate;
+
     private Long totalStudyTimeHours;
     private Long totalStudyTimeMinutes;
     private Long totalStudyTimeSeconds;
@@ -45,6 +48,7 @@ public class StatisticResponse {
         Time endAt = statisticData.getEndAt();
 
         return StatisticResponse.builder()
+                .studyDate(statisticData.getStudyDate())
                 .totalStudyTimeHours((long) totalStudyTime.getHours())
                 .totalStudyTimeMinutes((long) totalStudyTime.getMinutes())
                 .totalStudyTimeSeconds((long) totalStudyTime.getSeconds())

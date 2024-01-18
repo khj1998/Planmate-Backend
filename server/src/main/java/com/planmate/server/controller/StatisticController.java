@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Slf4j
 @CrossOrigin
@@ -52,7 +53,7 @@ public class StatisticController {
             @ApiResponse(responseCode = "200",description = "연 월로 통계 데이터 요청 성공")
     })
     @PostMapping("/month")
-    public ResponseEntity<StatisticResponse> getMonthStatistic(@RequestBody StatisticMonthRequestDto requestDto) {
+    public ResponseEntity<List<StatisticResponse>> getMonthStatistic(@RequestBody StatisticMonthRequestDto requestDto) {
         return ResponseEntity.ok(statisticService.getMonthStatisticData(requestDto.getYearMonth()));
     }
 }

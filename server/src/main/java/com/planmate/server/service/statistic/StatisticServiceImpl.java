@@ -19,7 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.YearMonth;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -46,22 +47,46 @@ public class StatisticServiceImpl implements StatisticService {
         Long memberId = JwtUtil.getUserIdByAccessToken();
 
         List<StudyBackUp> studyBackUpList = studyBackUpRepository.findStudyBackUp(studyDate,memberId,getStudyTimePageable());
-        StatisticData statisticData = StatisticData.backUp(studyBackUpList);
+        StatisticData statisticData = StatisticData.backUp(studyBackUpList,studyDate);
 
         return StatisticResponse.of(statisticData);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public StatisticResponse getMonthStatisticData(YearMonth yearMonth) {
+    public List<StatisticResponse> getMonthStatisticData(LocalDate yearMonth) {
         Long memberId = JwtUtil.getUserIdByAccessToken();
+        List<StatisticResponse> responseList = new ArrayList<>();
 
         Integer year = yearMonth.getYear();
         Integer month = yearMonth.getMonth().getValue();
-        List<StudyBackUp> studyBackUpList = studyBackUpRepository.findMonthlyStudyBackUp(year,month,memberId,getStudyTimePageable());
-        StatisticData statisticData = StatisticData.backUp(studyBackUpList);
+        List<StudyBackUp> studyBackUpList = studyBackUpRepository.findMonthlyStudyBackUp(year,month,memberId);
+        Map<LocalDate,StatisticData> studyBackUpGroup = groupStudyBackUpByLocalDate(studyBackUpList);
 
-        return StatisticResponse.of(statisticData);
+        for (LocalDate studyDate : studyBackUpGroup.keySet()) {
+            StatisticData statisticData = studyBackUpGroup.get(studyDate);
+            responseList.add(StatisticResponse.of(statisticData));
+        }
+
+        return responseList;
+    }
+
+    private Map<LocalDate,StatisticData> groupStudyBackUpByLocalDate(List<StudyBackUp> studyBackUpList) {
+        Map<LocalDate,StatisticData> statisticDataMap = new HashMap<>();
+
+        Map<LocalDate,List<StudyBackUp>> studyBackUpGroup = studyBackUpList.stream()
+                .collect(Collectors.groupingBy(StudyBackUp::getStudyDate));
+
+        studyBackUpGroup.forEach((date,backUpList) -> {
+            backUpList.sort(Comparator.comparing(StudyBackUp::getStudyTime).reversed());
+            Integer maxSize = Math.min(backUpList.size(),4);
+            List<StudyBackUp> slicedStudyBackUpList = new ArrayList<>(studyBackUpList.subList(0,maxSize));
+
+            StatisticData statisticData = StatisticData.backUp(slicedStudyBackUpList,date);
+            statisticDataMap.put(backUpList.get(0).getStudyDate(),statisticData);
+        });
+
+        return new TreeMap<>(statisticDataMap);
     }
 
     private Pageable getStudyTimePageable() {

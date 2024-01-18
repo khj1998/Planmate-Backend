@@ -30,6 +30,7 @@ public class PostResponseDto {
     private Long commentCount;
     private Boolean isMyHearted;
     private Boolean isMyScraped;
+    private Boolean isMyPost;
 
     public static PostResponseDto of(Post post, Member member, List<PostLike> postLikeList,
                                      List<MemberScrap> scrapList, List<Comment> commentList,

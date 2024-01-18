@@ -5,6 +5,7 @@ import com.planmate.server.domain.Subject;
 import lombok.*;
 
 import java.sql.Time;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class StatisticData {
     private Time maxStudyTime;
     private Time startAt;
     private Time endAt;
+    private LocalDate studyDate;
     private List<StudyTime> studyTimeList;
 
     public static StatisticData of(List<Subject> subjectList) {
@@ -59,7 +61,7 @@ public class StatisticData {
                 .build();
     }
 
-    public static StatisticData backUp(List<StudyBackUp> backUpList) {
+    public static StatisticData backUp(List<StudyBackUp> backUpList,LocalDate studyDate) {
         List<StudyTime> studyTimeList = new ArrayList<>();
         Integer totalStudySecond = 0;
         Integer restSecond = 0;
@@ -88,6 +90,7 @@ public class StatisticData {
         }
 
         return StatisticData.builder()
+                .studyDate(studyDate)
                 .studyTimeList(studyTimeList)
                 .totalStudyTime(getTime(totalStudySecond))
                 .restTime(getTime(restSecond))

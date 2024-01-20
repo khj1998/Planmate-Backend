@@ -23,11 +23,11 @@ class StatisticServiceImplTest {
     void addMockBackUpData() {
         Random random = new Random();
         Integer subjectNum = 1;
-        LocalDate startDate = LocalDate.of(2023,12,1);
-        LocalDate currentDate = LocalDate.now();
+        LocalDate startDate = LocalDate.of(2024,1,1);
+        LocalDate januaryMaxDate = LocalDate.of(2024,1,31);
         List<StudyBackUp> studyBackUpList = new ArrayList<>();
 
-        for (LocalDate date = startDate; !date.isAfter(currentDate); date = date.plusDays(1)) {
+        for (LocalDate date = startDate; !date.isAfter(januaryMaxDate); date = date.plusDays(1)) {
             Integer hours = random.nextInt(11);
             Integer minutes = random.nextInt(60);
             Integer seconds = random.nextInt(60);

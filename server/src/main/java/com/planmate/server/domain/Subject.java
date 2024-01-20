@@ -15,7 +15,6 @@ import java.util.Calendar;
 @Entity
 @Table(name = "subject")
 @Getter
-@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -86,6 +85,14 @@ public class Subject {
         this.restTime = new Time(0,0,0);
     }
 
+    public void updateName(String name) {
+        this.name = name;
+    }
+
+    public void updateColorHex(String colorHex) {
+        this.colorHex = colorHex;
+    }
+
     public void updateStudyTime(String startAt,String endAt) {
         String[] startSplit = startAt.split(":");
         String[] endSplit = endAt.split(":");
@@ -101,7 +108,7 @@ public class Subject {
         Integer minutes = (newStudyTimeSecond - 3600*hours)/60;
         Integer seconds = newStudyTimeSecond - 3600*hours - 60*minutes;
 
-        this.setStudyTime(new Time(hours,minutes,seconds));
+        this.studyTime = new Time(hours,minutes,seconds);
 
         Integer maxStudyTime = this.getMaxStudyTime().getHours()*3600 + this.getMaxStudyTime().getMinutes()*60 + this.getMaxStudyTime().getSeconds();
         maxStudyTime = Math.max(maxStudyTime,newStudySecond);
@@ -110,7 +117,7 @@ public class Subject {
         minutes = (maxStudyTime - 3600*hours)/60;
         seconds = maxStudyTime - 3600*hours - 60*minutes;
 
-        this.setMaxStudyTime(new Time(hours,minutes,seconds));
+        this.maxStudyTime = new Time(hours,minutes,seconds);
     }
 
     public void updateStartEndTime(SubjectTimeRequest subjectTimeRequest) {
@@ -129,17 +136,17 @@ public class Subject {
             hours = startTimeSecond/3600;
             minutes = (startTimeSecond - hours*3600)/60;
             seconds = startTimeSecond - hours*3600 - minutes*60;
-            this.setStartAt(new Time(hours,minutes,seconds));
+            this.startAt = new Time(hours,minutes,seconds);
 
             hours = endTimeSecond/3600;
             minutes = (endTimeSecond - hours*3600)/60;
             seconds = endTimeSecond - hours*3600 - minutes*60;
-            this.setEndAt(new Time(hours,minutes,seconds));
+            this.endAt = new Time(hours,minutes,seconds);
         } else {
             hours = endTimeSecond/3600;
             minutes = (endTimeSecond - hours*3600)/60;
             seconds = endTimeSecond - hours*3600 - hours*60;
-            this.setEndAt(new Time(hours,minutes,seconds));
+            this.endAt = new Time(hours,minutes,seconds);
         }
      }
 
@@ -155,6 +162,6 @@ public class Subject {
         Integer minutes = (newRestSecond-hours*3600)/60;
         Integer seconds = newRestSecond - 3600*hours - 60*minutes;
 
-        this.setRestTime(new Time(hours,minutes,seconds));
+        this.restTime = new Time(hours,minutes,seconds);
     }
 }

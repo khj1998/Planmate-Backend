@@ -138,8 +138,8 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findMemberPost(postDto.getId(),memberId)
                 .orElseThrow(() -> new PostNotFoundException(postDto.getId()));
 
-        post.setTitle(postDto.getTitle());
-        post.setContent(postDto.getContent());
+        post.updateTitle(postDto.getTitle());
+        post.updateContent(postDto.getContent());
         postRepository.save(post);
 
         return PostEditResponseDto.of();

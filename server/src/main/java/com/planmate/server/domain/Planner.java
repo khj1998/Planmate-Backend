@@ -13,7 +13,6 @@ import javax.persistence.*;
 @Entity
 @Table(name = "planner")
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

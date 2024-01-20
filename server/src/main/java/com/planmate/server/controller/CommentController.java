@@ -105,7 +105,7 @@ public class CommentController {
         return ResponseEntity.ok(true);
     }
 
-    @PostMapping("/modify")
+    @PostMapping("/edit")
     @ApiOperation("댓글 수정")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "댓글 수정 성공"),

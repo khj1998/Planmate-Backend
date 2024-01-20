@@ -11,7 +11,6 @@ import java.util.List;
 @Entity
 @Table(name = "member")
 @Getter
-@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -55,5 +54,13 @@ public class Member {
         }
 
         return false;
+    }
+
+    public void updateMemberName(String memberName) {
+        this.memberName = memberName;
+    }
+
+    public void updateProfile(String profileImg) {
+        this.profile = profileImg;
     }
 }

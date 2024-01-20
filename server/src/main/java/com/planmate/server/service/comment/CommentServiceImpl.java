@@ -92,7 +92,7 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = commentRepository.findComment(memberId,commentEditRequestDto.getCommentId())
               .orElseThrow(() -> new CommentNotFoundException(commentEditRequestDto.getCommentId()));
 
-        comment.setContent(commentEditRequestDto.getContent());
+        comment.updateContent(commentEditRequestDto.getContent());
         commentRepository.save(comment);
     }
 

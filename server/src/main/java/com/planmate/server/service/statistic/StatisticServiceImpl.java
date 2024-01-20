@@ -80,7 +80,7 @@ public class StatisticServiceImpl implements StatisticService {
         studyBackUpGroup.forEach((date,backUpList) -> {
             backUpList.sort(Comparator.comparing(StudyBackUp::getStudyTime).reversed());
             Integer maxSize = Math.min(backUpList.size(),4);
-            List<StudyBackUp> slicedStudyBackUpList = new ArrayList<>(studyBackUpList.subList(0,maxSize));
+            List<StudyBackUp> slicedStudyBackUpList = new ArrayList<>(backUpList.subList(0,maxSize));
 
             StatisticData statisticData = StatisticData.backUp(slicedStudyBackUpList,date);
             statisticDataMap.put(backUpList.get(0).getStudyDate(),statisticData);

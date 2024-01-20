@@ -12,7 +12,6 @@ import javax.persistence.*;
         @UniqueConstraint(columnNames = {"member_id","post_id"})
 })
 @Getter
-@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

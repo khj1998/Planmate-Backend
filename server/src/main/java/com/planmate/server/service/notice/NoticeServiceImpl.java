@@ -71,8 +71,8 @@ public class NoticeServiceImpl implements NoticeService {
         Post post = postRepository.findMemberPost(noticeEditRequestDto.getNoticeId(), memberId)
                 .orElseThrow(() -> new NoticeNotFoundException(noticeEditRequestDto.getNoticeId()));
 
-        post.setTitle(noticeEditRequestDto.getTitle());
-        post.setContent(noticeEditRequestDto.getContent());
+        post.updateTitle(noticeEditRequestDto.getTitle());
+        post.updateContent(noticeEditRequestDto.getContent());
         postRepository.save(post);
 
         return true;

@@ -24,7 +24,6 @@ import java.util.List;
 @Table(name = "post")
 @ApiModel(value = "게시물 테이블")
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -75,5 +74,13 @@ public class Post {
                 .title(noticeRequestDto.getTitle())
                 .content(noticeRequestDto.getContent())
                 .build();
+    }
+
+    public void updateTitle(String title) {
+        this.title = title;
+    }
+
+    public void updateContent(String content) {
+        this.content = content;
     }
 }

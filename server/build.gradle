@@ -49,6 +49,8 @@ dependencies {
     //gson
     implementation 'com.google.code.gson:gson:2.10'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.16.1'
+    //modelmapper
+    implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.3.8'
 }
 
 test {

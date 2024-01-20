@@ -92,8 +92,8 @@ public class MemberServiceImpl implements MemberService {
         Token token = tokenRepository.findByMemberId(member.getMemberId())
                 .orElseThrow(() -> new TokenNotFoundException(member.getMemberId()));
 
-        token.setAccessToken(JwtUtil.generateAccessToken(member));
-        token.setRefreshToken(JwtUtil.generateRefreshToken(member));
+        token.updateAccessToken(JwtUtil.generateAccessToken(member));
+        token.updateRefreshToken(JwtUtil.generateRefreshToken(member));
         tokenRepository.save(token);
     }
 
@@ -167,7 +167,7 @@ public class MemberServiceImpl implements MemberService {
                 () -> new MemberNotFoundException(id)
         );
 
-        member.setMemberName(name);
+        member.updateMemberName(name);
 
         return memberRepository.save(member);
     }
@@ -181,7 +181,7 @@ public class MemberServiceImpl implements MemberService {
                 () -> new MemberNotFoundException(id)
         );
 
-        member.setProfile(img);
+        member.updateProfile(img);
 
         return memberRepository.save(member);
     }

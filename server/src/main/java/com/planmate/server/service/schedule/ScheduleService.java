@@ -8,11 +8,11 @@ import com.planmate.server.dto.response.schedule.ScheduleResponseDto;
 import java.util.List;
 
 public interface ScheduleService {
-    public ScheduleResponseDto addDDay(AddScheduleRequestDto addScheduleRequestDto);
-    public void deleteDDay(Long id);
-    public ScheduleResponseDto modifySchedule(ScheduleEditRequestDto editRequestDto);
-    public List<Schedule> findAll();
-    public ScheduleResponseDto findMin();
+    ScheduleResponseDto addDDay(AddScheduleRequestDto addScheduleRequestDto);
+    void deleteDDay(Long id);
+    ScheduleResponseDto modifySchedule(ScheduleEditRequestDto editRequestDto);
+    List<ScheduleResponseDto> findAll();
+    ScheduleResponseDto findMin();
     void fixDDay(Long id);
     ScheduleResponseDto findFixedDDay();
 }

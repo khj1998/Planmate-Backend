@@ -112,8 +112,8 @@ public class SubjectServiceImpl implements SubjectService {
 
         Subject subject = subjectRepository.findSubject(memberId,subjectId)
                 .orElseThrow(() -> new SubjectNotFoundException(subjectId));
-        subject.setName(subjectEditRequestDto.getName());
-        subject.setColorHex(subjectEditRequestDto.getColorHex());
+        subject.updateName(subjectEditRequestDto.getName());
+        subject.updateColorHex(subjectEditRequestDto.getColorHex());
         subjectRepository.save(subject);
     }
 

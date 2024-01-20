@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,18 +55,26 @@ public class ScheduleServiceImpl implements ScheduleService {
                 () -> new ScheduleNotFoundException(editRequestDto.getId())
         );
 
-        schedule.setTitle(editRequestDto.getTitle());
-        schedule.setTargetDate(LocalDate.parse(editRequestDto.getDate(), DateTimeFormatter.ISO_DATE));
+        schedule.updateTitle(editRequestDto.getTitle());
+        schedule.updateTargetDate(LocalDate.parse(editRequestDto.getDate(), DateTimeFormatter.ISO_DATE));
 
         return ScheduleResponseDto.of(scheduleRepository.save(schedule));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Schedule> findAll() {
-        return scheduleRepository.findAllByMemberId(JwtUtil.getUserIdByAccessToken()).orElseThrow(
+    public List<ScheduleResponseDto> findAll() {
+        List<ScheduleResponseDto> responseDtoList = new ArrayList<>();
+        List<Schedule> scheduleList = scheduleRepository.findAllByMemberId(JwtUtil.getUserIdByAccessToken()).orElseThrow(
                 () -> new MemberScheduleNotFoundException(JwtUtil.getUserIdByAccessToken())
         );
+
+        for (Schedule schedule : scheduleList) {
+            ScheduleResponseDto responseDto = ScheduleResponseDto.of(schedule);
+            responseDtoList.add(responseDto);
+        }
+
+        return responseDtoList;
     }
 
     @Override
@@ -85,7 +94,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             return null;
         }
 
-        return ScheduleResponseDto.of(schedule.get());
+        return ScheduleResponseDto.of(schedule.get(),schedule.get().getIsFixed());
     }
 
     @Override
@@ -97,13 +106,13 @@ public class ScheduleServiceImpl implements ScheduleService {
 
         if (schedule.isPresent()) {
             Schedule s = schedule.get();
-            s.setIsFixed(false);
+            s.updateIsFixed(false);
             scheduleRepository.save(s);
         }
 
         Schedule fixedSchedule = scheduleRepository.findByUserIdAndId(memberId,id)
                 .orElseThrow(() -> new ScheduleNotFoundException(id));
-        fixedSchedule.setIsFixed(true);
+        fixedSchedule.updateIsFixed(true);
 
         scheduleRepository.save(fixedSchedule);
     }

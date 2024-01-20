@@ -28,8 +28,8 @@ public class LogOutServiceImpl implements LogOutService{
                 () -> new TokenNotFoundException(JwtUtil.getUserIdByAccessToken())
         );
 
-        token.setAccessToken(JwtUtil.logout(member));
-        token.setAccessTokenExpiredAt(LocalDate.now().minusDays(JwtUtil.ACCESS_DURATION));
+        token.updateAccessToken(JwtUtil.logout(member));
+        token.updateAccessTokenExpiredAt(LocalDate.now().minusDays(JwtUtil.ACCESS_DURATION));
 
         return tokenRepository.save(token).getAccessToken();
     }

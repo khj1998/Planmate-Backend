@@ -49,7 +49,7 @@ public class ScheduleController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/modify")
+    @PostMapping("/edit")
     @ApiOperation(value = "d-day 수정")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "수정 환료")
@@ -63,7 +63,7 @@ public class ScheduleController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 환료")
     })
-    public ResponseEntity<List<Schedule>> findAll() {
+    public ResponseEntity<List<ScheduleResponseDto>> findAll() {
         return ResponseEntity.ok(scheduleService.findAll());
     }
 

@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "comment")
 @Getter
-@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -62,5 +61,9 @@ public class Comment {
                 .parentCommentId(childCommentRequestDto.getParentCommentId())
                 .content(childCommentRequestDto.getContent())
                 .build();
+    }
+
+    public void updateContent(String content) {
+        this.content = content;
     }
 }

@@ -13,7 +13,6 @@ import java.time.LocalDate;
 @Table(name = "token")
 @ApiModel(value = "token들을 저장하는 테이블")
 @Getter
-@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -33,4 +32,16 @@ public class Token {
 
     @Column(name = "refresh_token_expired_at",nullable = false, columnDefinition = "date")
     private LocalDate refreshTokenExpiredAt;
+
+    public void updateAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
+    public void updateAccessTokenExpiredAt(LocalDate accessTokenExpiredAt) {
+        this.accessTokenExpiredAt = accessTokenExpiredAt;
+    }
 }

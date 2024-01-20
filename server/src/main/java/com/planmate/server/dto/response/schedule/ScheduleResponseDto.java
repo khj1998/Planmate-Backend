@@ -1,5 +1,6 @@
 package com.planmate.server.dto.response.schedule;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.planmate.server.domain.Schedule;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,18 +12,30 @@ import java.time.Period;
 @Builder
 @Setter
 @Getter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ScheduleResponseDto {
-    private Long id;
+    private Long scheduleId;
     private String title;
-    private LocalDate date;
-    private Long dDay;
+    private LocalDate targetDate;
+    private Long remainingDays;
+    private Boolean isFixed;
 
     public static ScheduleResponseDto of(Schedule schedule) {
         return ScheduleResponseDto.builder()
-                .id(schedule.getId())
+                .scheduleId(schedule.getScheduleId())
                 .title(schedule.getTitle())
-                .date(schedule.getTargetDate())
-                .dDay(new Long(Period.between(LocalDate.now(), schedule.getTargetDate()).getDays()))
+                .targetDate(schedule.getTargetDate())
+                .remainingDays((long) Period.between(LocalDate.now(), schedule.getTargetDate()).getDays())
+                .build();
+    }
+
+    public static ScheduleResponseDto of(Schedule schedule,Boolean isFixed) {
+        return ScheduleResponseDto.builder()
+                .scheduleId(schedule.getScheduleId())
+                .title(schedule.getTitle())
+                .targetDate(schedule.getTargetDate())
+                .remainingDays((long) Period.between(LocalDate.now(), schedule.getTargetDate()).getDays())
+                .isFixed(isFixed)
                 .build();
     }
 }

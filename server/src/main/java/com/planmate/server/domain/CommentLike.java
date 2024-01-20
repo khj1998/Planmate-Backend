@@ -6,13 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 
-@Slf4j
 @Entity
 @Table(name = "comment_like",uniqueConstraints = {
         @UniqueConstraint(columnNames = {"member_id","comment_id"})
 })
 @Getter
-@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

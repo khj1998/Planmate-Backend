@@ -24,13 +24,15 @@ public class CommentResponseDto {
     private String content;
     private Long likeCount;
     private Boolean isAuthor;
+    private Boolean isPostAuthor;
     private Boolean isMyHearted;
 
-    public static CommentResponseDto of(Comment comment, Member member, List<CommentLike> commentLikeList, Boolean isAuthor,Long memberId) {
+    public static CommentResponseDto of(Comment comment, List<CommentLike> commentLikeList,Long memberId) {
         Boolean isMyHearted = false;
+        Member member = comment.getMember();
 
         for (CommentLike commentLike : commentLikeList) {
-            if (commentLike.getMemberId() == memberId) {
+            if (commentLike.getMember().getMemberId().equals(memberId)) {
                 isMyHearted = true;
                 break;
             }
@@ -38,41 +40,21 @@ public class CommentResponseDto {
 
         return CommentResponseDto.builder()
                 .commentId(comment.getCommentId())
-                .postId(comment.getPostId())
-                .memberName(member.getMemberName())
-                .content(comment.getContent())
-                .updatedAt(comment.getUpdatedAt())
-                .likeCount((long) commentLikeList.size())
-                .isAuthor(isAuthor)
-                .isMyHearted(isMyHearted)
-                .build();
-    }
-
-    public static CommentResponseDto of(Comment comment,Member member,List<CommentLike> commentLikeList,Long memberId) {
-        Boolean isMyHearted = false;
-
-        for (CommentLike commentLike : commentLikeList) {
-            if (commentLike.getMemberId() == memberId) {
-                isMyHearted = true;
-                break;
-            }
-        }
-
-        return CommentResponseDto.builder()
-                .commentId(comment.getCommentId())
-                .postId(comment.getPostId())
+                .postId(comment.getPost().getPostId())
                 .memberName(member.getMemberName())
                 .content(comment.getContent())
                 .updatedAt(comment.getUpdatedAt())
                 .likeCount((long) commentLikeList.size())
                 .isMyHearted(isMyHearted)
+                .isAuthor(member.getMemberId().equals(memberId))
+                .isPostAuthor(memberId.equals(comment.getPost().getMember().getMemberId()))
                 .build();
     }
 
     public static CommentResponseDto of(Comment comment) {
         return CommentResponseDto.builder()
                 .commentId(comment.getCommentId())
-                .postId(comment.getPostId())
+                .postId(comment.getPost().getPostId())
                 .content(comment.getContent())
                 .updatedAt(comment.getUpdatedAt())
                 .likeCount(0L)

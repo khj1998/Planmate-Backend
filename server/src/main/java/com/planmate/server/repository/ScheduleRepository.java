@@ -11,14 +11,14 @@ import java.util.Optional;
 
 @Repository
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
-    Optional<List<Schedule>> findAllByMemberId(Long id);
+    Optional<List<Schedule>> findAllByMemberMemberId(Long id);
     @Query(value = "select s from Schedule s where s.targetDate =  (select min(schedule.targetDate) from Schedule schedule)")
     Schedule findMinSchedule();
 
-    @Query("select s from Schedule s where s.memberId = :memberId and "+
+    @Query("select s from Schedule s where s.member.memberId = :memberId and "+
             "s.isFixed = true")
     Optional<Schedule> findFixedSchedule(@Param("memberId") Long memberId);
 
-    @Query("select s from Schedule s where s.memberId = :memberId and s.id = :id")
+    @Query("select s from Schedule s where s.member.memberId = :memberId and s.id = :id")
     Optional<Schedule> findByUserIdAndId(@Param("memberId") Long memberId, @Param("id") Long id);
 }

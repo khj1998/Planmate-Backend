@@ -35,9 +35,6 @@ public class SubjectController {
     @ApiOperation("자신의 각 과목 공부시간 조회")
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "자신의 각 과목 공부시간 조회 성공"),
-            @ApiResponse(responseCode = "401",description = "해당 사용자가 인증되지 않음 | 토큰 만료"),
-            @ApiResponse(responseCode = "403",description = "해당 사용자가 Member 권한이 아님"),
-            @ApiResponse(responseCode = "404",description = "자신의 각 과목 공부시간 조회 실패")
     })
     public ResponseEntity<List<SubjectStudyTimeResponse>> findSubjectTime() {
         List<SubjectStudyTimeResponse> responseDtoList = subjectService.findSubjectTime();
@@ -48,9 +45,6 @@ public class SubjectController {
     @ApiOperation("자신의 공부/운동 목록 조회")
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "자신의 공부/운동 목록 조회 성공"),
-            @ApiResponse(responseCode = "401",description = "해당 사용자가 인증되지 않음 | 토큰 만료"),
-            @ApiResponse(responseCode = "403",description = "해당 사용자가 Member 권한이 아님"),
-            @ApiResponse(responseCode = "404",description = "자신의 공부/운동 목록 조회 실패함")
     })
     public ResponseEntity<List<SubjectResponse>> findSubject() {
         List<SubjectResponse> responseList = subjectService.findSubject();
@@ -61,9 +55,6 @@ public class SubjectController {
     @ApiOperation("새 과목을 생성")
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "새 과목 생성 성공"),
-            @ApiResponse(responseCode = "401",description = "해당 사용자가 인증되지 않음 | 토큰 만료"),
-            @ApiResponse(responseCode = "403",description = "해당 사용자가 Member 권한이 아님"),
-            @ApiResponse(responseCode = "404",description = "새 과목을 생성하는데 실패함")
     })
     public ResponseEntity<Boolean> addSubject(@RequestBody SubjectCreateRequestDto subjectCreateRequestDto) {
         subjectService.createSubject(subjectCreateRequestDto);
@@ -90,7 +81,7 @@ public class SubjectController {
         return ResponseEntity.ok(true);
     }
     
-    @DeleteMapping("/remove")
+    @DeleteMapping
     @ApiOperation("과목 삭제")
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "과목 삭제 성공")

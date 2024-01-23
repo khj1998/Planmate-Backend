@@ -23,8 +23,9 @@ public class StudyBackUp {
     @ApiModelProperty(example = "고유 식별자")
     private Long id;
 
-    @Column(name = "member_id",nullable = false,columnDefinition = "int")
-    private Long memberId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @Column(name = "name",nullable = false,length = 50,columnDefinition = "varchar")
     private String name;
@@ -56,7 +57,7 @@ public class StudyBackUp {
         Integer day = LocalDateTime.now().getDayOfMonth();
 
         return StudyBackUp.builder()
-                .memberId(subject.getMemberId())
+                .member(subject.getMember())
                 .name(subject.getName())
                 .colorHex(subject.getColorHex())
                 .maxStudyTime(subject.getMaxStudyTime())

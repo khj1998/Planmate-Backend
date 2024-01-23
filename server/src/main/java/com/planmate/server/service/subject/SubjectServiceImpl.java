@@ -1,5 +1,6 @@
 package com.planmate.server.service.subject;
 
+import com.planmate.server.domain.Member;
 import com.planmate.server.domain.StudyBackUp;
 import com.planmate.server.domain.Subject;
 import com.planmate.server.dto.request.subject.SubjectCreateRequestDto;
@@ -9,8 +10,10 @@ import com.planmate.server.dto.response.subject.SubjectCreateResponse;
 import com.planmate.server.dto.response.subject.SubjectResponse;
 import com.planmate.server.dto.response.subject.SubjectStudyTimeResponse;
 import com.planmate.server.dto.response.subject.SubjectTimeResponse;
+import com.planmate.server.exception.member.MemberNotFoundException;
 import com.planmate.server.exception.subject.SubjectDuplicatedException;
 import com.planmate.server.exception.subject.SubjectNotFoundException;
+import com.planmate.server.repository.MemberRepository;
 import com.planmate.server.repository.StudyBackUpRepository;
 import com.planmate.server.repository.SubjectRepository;
 import com.planmate.server.util.JwtUtil;
@@ -26,6 +29,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class SubjectServiceImpl implements SubjectService {
+    private final MemberRepository memberRepository;
     private final SubjectRepository subjectRepository;
     private final StudyBackUpRepository studyBackUpRepository;
 
@@ -34,7 +38,7 @@ public class SubjectServiceImpl implements SubjectService {
     public List<SubjectStudyTimeResponse> findSubjectTime() {
         List<SubjectStudyTimeResponse> responseDtoList = new ArrayList<>();
         Long memberId = JwtUtil.getUserIdByAccessToken();
-        List<Subject> subjectList = subjectRepository.findByMemberId(memberId);
+        List<Subject> subjectList = subjectRepository.findByMemberMemberId(memberId);
 
         for (Subject subject : subjectList) {
             SubjectStudyTimeResponse responseDto = SubjectStudyTimeResponse.of(subject);
@@ -49,7 +53,7 @@ public class SubjectServiceImpl implements SubjectService {
     public List<SubjectResponse> findSubject() {
         List<SubjectResponse> responseList = new ArrayList<>();
         Long memberId = JwtUtil.getUserIdByAccessToken();
-        List<Subject> subjectList = subjectRepository.findByMemberId(memberId);
+        List<Subject> subjectList = subjectRepository.findByMemberMemberId(memberId);
 
         for (Subject subject : subjectList) {
             SubjectResponse response = SubjectResponse.of(subject);
@@ -63,6 +67,10 @@ public class SubjectServiceImpl implements SubjectService {
     @Transactional
     public void createSubject(SubjectCreateRequestDto subjectCreateRequestDto) {
         Long memberId = JwtUtil.getUserIdByAccessToken();
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundException(memberId));
+
         String subjectName = subjectCreateRequestDto.getName().replace(" ","");
 
         Boolean isExistSubject = subjectRepository.findSubject(memberId,subjectName).isPresent();
@@ -71,7 +79,7 @@ public class SubjectServiceImpl implements SubjectService {
             throw new SubjectDuplicatedException(subjectName);
         }
 
-        Subject subject = Subject.of(subjectCreateRequestDto,memberId);
+        Subject subject = Subject.of(subjectCreateRequestDto,member);
         subjectRepository.save(subject);
     }
 

@@ -16,11 +16,11 @@ public interface StudyBackUpRepository extends JpaRepository<StudyBackUp,Long> {
 
     @Query("select ds from StudyBackUp ds " +
             "where ds.studyDate = :studyDate " +
-            "and ds.memberId = :memberId")
+            "and ds.member.memberId = :memberId")
     List<StudyBackUp> findStudyBackUp(@Param("studyDate")LocalDate studyDate, @Param("memberId") Long memberId, Pageable pageable);
 
     @Query("select ds from StudyBackUp ds " +
-            "where ds.memberId = :memberId and " +
+            "where ds.member.memberId = :memberId and " +
             "YEAR(ds.studyDate) = :year and MONTH(ds.studyDate) = :month")
     List<StudyBackUp> findMonthlyStudyBackUp(@Param("year") Integer year,@Param("month") Integer month
             , @Param("memberId") Long memberId);

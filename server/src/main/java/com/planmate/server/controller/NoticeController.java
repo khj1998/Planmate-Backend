@@ -21,9 +21,6 @@ public class NoticeController {
     @ApiOperation("공지사항 최신순 조회")
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "공지사항 최신순 조회 성공"),
-            @ApiResponse(responseCode = "401",description = "해당 사용자가 인증되지 않음 | 토큰 만료"),
-            @ApiResponse(responseCode = "403",description = "해당 사용자가 ADMIN 권한이 아님"),
-            @ApiResponse(responseCode = "404",description = "공지사항 최신순 조회에 실패함")
     })
     public ResponseEntity<NoticePageResponseDto> findRecentNotice(@RequestParam Integer pages) {
         NoticePageResponseDto responseDto = noticeService.findRecentNotice(pages);

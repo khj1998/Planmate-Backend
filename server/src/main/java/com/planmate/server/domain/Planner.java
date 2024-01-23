@@ -22,8 +22,9 @@ public class Planner {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long plannerId;
 
-    @Column(name = "member_id",nullable = false,columnDefinition = "int")
-    private Long memberId;
+    @JoinColumn(name = "member_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Member member;
 
     @Column(name = "schedule_name",nullable = false,length = 64,columnDefinition = "varchar")
     private String scheduleName;
@@ -40,9 +41,9 @@ public class Planner {
     @Column(name = "end_time",nullable = false,length = 12,columnDefinition = "varchar")
     private String endTime;
 
-    public static Planner of(PlannerRequestDto plannerRequestDto,Long memberId) {
+    public static Planner of(PlannerRequestDto plannerRequestDto,Member member) {
         return Planner.builder()
-                .memberId(memberId)
+                .member(member)
                 .scheduleName(plannerRequestDto.getScheduleName())
                 .colorHex(plannerRequestDto.getColorHex())
                 .day(plannerRequestDto.getDay())

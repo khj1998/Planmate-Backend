@@ -11,10 +11,10 @@ import java.util.Optional;
 
 @Repository
 public interface PlannerRepository extends JpaRepository<Planner,Long> {
-    @Query("select p from Planner p where p.memberId = :memberId and "
+    @Query("select p from Planner p where p.member.memberId = :memberId and "
           +"p.plannerId = :plannerId")
     Optional<Planner> findPlanner(@Param("memberId") Long memberId,@Param("plannerId") Long plannerId);
 
-    @Query("select p from Planner p where p.memberId = :memberId")
+    @Query("select p from Planner p where p.member.memberId = :memberId")
     List<Planner> findAllPlanner(@Param("memberId") Long memberId);
 }

@@ -31,7 +31,7 @@ public class CommentResponseDto {
         Member member = comment.getMember();
 
         for (CommentLike commentLike : commentLikeList) {
-            if (commentLike.getMemberId().equals(memberId)) {
+            if (commentLike.getMember().getMemberId().equals(memberId)) {
                 isMyHearted = true;
                 break;
             }

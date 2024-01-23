@@ -39,7 +39,7 @@ public class ScheduleController {
         return ResponseEntity.ok(scheduleService.addDDay(dto));
     }
 
-    @DeleteMapping("/remove")
+    @DeleteMapping
     @ApiOperation(value = "d-day 삭제")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "삭제 환료")

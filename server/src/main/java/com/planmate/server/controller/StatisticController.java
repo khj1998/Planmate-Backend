@@ -28,9 +28,6 @@ public class StatisticController {
     @ApiOperation("통계 api")
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "공부 통계 데이터 조회 api"),
-            @ApiResponse(responseCode = "401",description = "유저가 인증되지 않음"),
-            @ApiResponse(responseCode = "403",description = "유저가 맴버 | ADMIN 권한이 아님"),
-            @ApiResponse(responseCode = "404",description = "공부 통계 데이터 조회 실패")
     })
     @GetMapping
     public ResponseEntity<StatisticResponse> getStatistic() {

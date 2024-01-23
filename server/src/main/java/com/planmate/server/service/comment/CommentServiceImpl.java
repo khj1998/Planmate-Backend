@@ -5,6 +5,7 @@ import com.planmate.server.domain.CommentLike;
 import com.planmate.server.domain.Member;
 import com.planmate.server.domain.Post;
 import com.planmate.server.dto.request.comment.*;
+import com.planmate.server.dto.response.comment.CommentLikeRequestDto;
 import com.planmate.server.dto.response.comment.CommentPageResponseDto;
 import com.planmate.server.dto.response.comment.CommentResponseDto;
 import com.planmate.server.exception.comment.CommentNotFoundException;
@@ -27,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -99,19 +101,23 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public void setCommentLike(Long commentId) {
-        Long userId = JwtUtil.getUserIdByAccessToken();
+    public void setCommentLike(CommentLikeRequestDto dto) {
+        Long memberId = JwtUtil.getUserIdByAccessToken();
 
-        CommentLike commentLike = commentLikeRepository.findCommentLike(userId,commentId);
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundException(memberId));
+        Comment comment = commentRepository.findById(dto.getCommentId())
+                .orElseThrow(() -> new CommentNotFoundException(dto.getCommentId()));
+        Optional<CommentLike> commentLike = commentLikeRepository.findCommentLike(memberId,dto.getCommentId());
 
-        if (commentLike == null) {
-            commentLike = CommentLike.builder()
-                    .memberId(userId)
-                    .commentId(commentId)
+        if (commentLike.isEmpty()) {
+            CommentLike newLike = CommentLike.builder()
+                    .member(member)
+                    .comment(comment)
                     .build();
-            commentLikeRepository.save(commentLike);
+            commentLikeRepository.save(newLike);
         } else {
-            commentLikeRepository.delete(commentLike);
+            commentLikeRepository.delete(commentLike.get());
         }
     }
 

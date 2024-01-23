@@ -12,11 +12,11 @@ import java.util.Optional;
 @Repository
 public interface CommentLikeRepository extends JpaRepository<CommentLike,Long> {
 
-    @Query("select l from CommentLike l where l.commentId = :commentId")
+    @Query("select l from CommentLike l where l.comment.commentId = :commentId")
     List<CommentLike> findAllByCommentId(@Param("commentId") Long commentId);
 
-    @Query("select l from CommentLike l where l.memberId = :memberId and "+
-          "l.commentId = :commentId")
-    CommentLike findCommentLike(@Param("memberId") Long userId,
+    @Query("select l from CommentLike l where l.member.memberId = :memberId and "+
+          "l.comment.commentId = :commentId")
+    Optional<CommentLike> findCommentLike(@Param("memberId") Long memberId,
                                           @Param("commentId") Long commentId);
 }

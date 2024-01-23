@@ -2,7 +2,6 @@ package com.planmate.server.domain;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 
@@ -21,16 +20,18 @@ public class CommentLike {
     @ApiModelProperty(example = "고유 식별자")
     private Long id;
 
-    @Column(name = "member_id",nullable = false,columnDefinition = "int")
-    private Long memberId;
+    @JoinColumn(name = "member_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Member member;
 
-    @Column(name = "comment_id",nullable = false,columnDefinition = "int")
-    private Long commentId;
+    @JoinColumn(name = "comment_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Comment comment;
 
-    public static CommentLike of(Long userId, Long commentId) {
+    public static CommentLike of(Member member, Comment comment) {
         return CommentLike.builder()
-                .memberId(userId)
-                .commentId(commentId)
+                .member(member)
+                .comment(comment)
                 .build();
     }
 }

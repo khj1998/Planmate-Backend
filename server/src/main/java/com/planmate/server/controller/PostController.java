@@ -91,7 +91,7 @@ public class PostController {
      * @param postId 쿼리 파라미터로 전달받는 게시물 Id입니다.
      * @return ResponseEntity 게시물 삭제 성공시 반환됩니다.
      */
-    @DeleteMapping("/remove")
+    @DeleteMapping
     @ApiOperation("Id로 게시물 삭제")
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "게시물 정상 삭제"),

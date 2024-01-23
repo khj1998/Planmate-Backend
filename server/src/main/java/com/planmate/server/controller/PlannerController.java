@@ -28,9 +28,6 @@ public class PlannerController {
     @ApiOperation("자신의 시간표 조회")
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "자신의 시간표 조회 성공"),
-            @ApiResponse(responseCode = "401",description = "유저가 인증되지 않음"),
-            @ApiResponse(responseCode = "403",description = "유저가 맴버 | Admin 권한이 아님"),
-            @ApiResponse(responseCode = "404",description = "자신의 시간표 조회 실패")
     })
     @GetMapping("/find")
     public ResponseEntity<List<PlannerResponseDto>> findPlan() {
@@ -62,7 +59,7 @@ public class PlannerController {
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "시간표 삭제 성공"),
     })
-    @DeleteMapping("/remove")
+    @DeleteMapping
     public ResponseEntity<Boolean> removePlan(@RequestParam Long plannerId) {
         plannerService.deletePlan(plannerId);
         return ResponseEntity.ok(true);

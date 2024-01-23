@@ -4,23 +4,19 @@ import com.planmate.server.dto.request.comment.ChildCommentRequestDto;
 import com.planmate.server.dto.request.comment.CommentCreateRequestDto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
-@Slf4j
 @Entity
 @NamedEntityGraph(name = "comment_paging",attributeNodes = {
         @NamedAttributeNode("member")
 })
 @Table(name = "comment")
 @Getter
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
 public class Comment {
     @Id
@@ -37,6 +33,9 @@ public class Comment {
     @JoinColumn(name= "post_id")
     private Post post;
 
+    @OneToMany(mappedBy = "comment",cascade = CascadeType.ALL)
+    private List<CommentLike> commentLikeList = new ArrayList<>();
+
     @Column(name = "content",nullable = false,columnDefinition = "longtext")
     private String content;
 
@@ -50,6 +49,14 @@ public class Comment {
     @UpdateTimestamp
     @Column(name = "updated_at",nullable = false,columnDefinition = "datetime")
     private LocalDateTime updatedAt;
+
+    @Builder
+    public Comment(Member member,Post post,Long parentCommentId,String content) {
+        this.member = member;
+        this.post = post;
+        this.parentCommentId = parentCommentId;
+        this.content = content;
+    }
 
     public static Comment of(CommentCreateRequestDto commentCreateRequestDto,Member member,Post post){
         return Comment.builder()

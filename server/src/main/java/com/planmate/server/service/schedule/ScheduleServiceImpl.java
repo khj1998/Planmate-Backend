@@ -60,8 +60,8 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     @Transactional
     public ScheduleResponseDto modifySchedule(final ScheduleEditRequestDto editRequestDto) {
-        Schedule schedule = scheduleRepository.findById(editRequestDto.getId()).orElseThrow(
-                () -> new ScheduleNotFoundException(editRequestDto.getId())
+        Schedule schedule = scheduleRepository.findById(editRequestDto.getScheduleId()).orElseThrow(
+                () -> new ScheduleNotFoundException(editRequestDto.getScheduleId())
         );
 
         schedule.updateTitle(editRequestDto.getTitle());

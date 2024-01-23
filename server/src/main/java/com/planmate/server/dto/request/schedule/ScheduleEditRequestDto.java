@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ScheduleEditRequestDto {
-    private Long id;
+    private Long scheduleId;
     private String date;
     private String title;
 }

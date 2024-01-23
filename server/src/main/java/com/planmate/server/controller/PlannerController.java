@@ -2,9 +2,7 @@ package com.planmate.server.controller;
 
 import com.planmate.server.dto.request.planner.PlannerRequestDto;
 import com.planmate.server.dto.response.planner.PlannerResponseDto;
-import com.planmate.server.dto.response.schedule.ScheduleResponseDto;
 import com.planmate.server.service.planner.PlannerService;
-import com.planmate.server.service.schedule.ScheduleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

@@ -1,11 +1,11 @@
-package com.planmate.server.dto.request.schedule;
+package com.planmate.server.dto.request.dday;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class AddScheduleRequestDto {
+public class AddDdayRequestDto {
     private String title;
     private String targetDate;
 }

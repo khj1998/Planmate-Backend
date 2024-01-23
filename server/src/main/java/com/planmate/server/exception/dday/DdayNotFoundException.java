@@ -1,4 +1,4 @@
-package com.planmate.server.exception.schedule;
+package com.planmate.server.exception.dday;
 
 import com.planmate.server.exception.ErrorCode;
 import lombok.Getter;
@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
 @Getter
-public class ScheduleNotFoundException extends RuntimeException {
+public class DdayNotFoundException extends RuntimeException {
     private String message;
     private ErrorCode errorCode;
 
-    public ScheduleNotFoundException(Long id) {
+    public DdayNotFoundException(Long id) {
         super(id.toString());
         message = id.toString();
     }

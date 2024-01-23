@@ -17,12 +17,12 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Schedule {
+public class Dday {
     @Id
     @Column(name = "id",columnDefinition = "bigint")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ApiModelProperty(example = "디데이 고유 식별자")
-    private Long scheduleId;
+    private Long dDayId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")

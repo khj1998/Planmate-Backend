@@ -26,20 +26,20 @@ public class NoticeResponseDto {
     private Boolean isMyHearted;
     private Boolean isMyScraped;
 
-    public static NoticeResponseDto of(Post post, String nickname, List<PostLike> postLikeList,
-                                     List<MemberScrap> scrapList, List<Comment> commentList, Long memberId) {
+    public static NoticeResponseDto of(Post post, List<PostLike> postLikeList,List<MemberScrap> scrapList,  Long memberId) {
         Boolean isMyHearted = false;
         Boolean isMyScraped = false;
+        Member member = post.getMember();
 
         for (PostLike postLike : postLikeList) {
-            if (postLike.getMemberId() == memberId) {
+            if (postLike.getMember().getMemberId() == memberId) {
                 isMyHearted = true;
                 break;
             }
         }
 
         for (MemberScrap memberScrap : scrapList) {
-            if (memberScrap.getMemberId() == memberId) {
+            if (memberScrap.getMember().getMemberId() == memberId) {
                 isMyScraped = true;
                 break;
             }
@@ -48,12 +48,12 @@ public class NoticeResponseDto {
         return NoticeResponseDto.builder()
                 .noticeId(post.getPostId())
                 .createdAt(post.getCreatedAt())
-                .nickname(nickname)
+                .nickname(member.getMemberName())
                 .title(post.getTitle())
                 .content(post.getContent())
                 .likeCount((long) postLikeList.size())
                 .scrapCount((long) scrapList.size())
-                .commentCount((long) commentList.size())
+                .commentCount((long) post.getCommentList().size())
                 .isMyHearted(isMyHearted)
                 .isMyScraped(isMyScraped)
                 .build();

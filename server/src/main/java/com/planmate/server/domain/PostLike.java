@@ -22,16 +22,18 @@ public class PostLike {
     @ApiModelProperty(example = "고유 식별자")
     private Long id;
 
-    @Column(name = "member_id",nullable = false,columnDefinition = "int")
-    private Long memberId;
+    @JoinColumn(name = "member_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Member member;
 
-    @Column(name = "post_id",nullable = false,columnDefinition = "bigint")
-    private Long postId;
+    @JoinColumn(name = "post_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Post post;
 
-    public static PostLike of(Long memberId,Long postId) {
+    public static PostLike of(Member member,Post post) {
         return PostLike.builder()
-                .memberId(memberId)
-                .postId(postId)
+                .member(member)
+                .post(post)
                 .build();
     }
 }

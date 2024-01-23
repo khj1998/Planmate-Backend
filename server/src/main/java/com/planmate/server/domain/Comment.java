@@ -14,6 +14,9 @@ import java.time.LocalDateTime;
 
 @Slf4j
 @Entity
+@NamedEntityGraph(name = "comment_paging",attributeNodes = {
+        @NamedAttributeNode("member")
+})
 @Table(name = "comment")
 @Getter
 @Builder
@@ -26,11 +29,13 @@ public class Comment {
     @ApiModelProperty(example = "고유 식별자")
     private Long commentId;
 
-    @Column(name = "member_id",nullable = false,columnDefinition = "int")
-    private Long memberId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
-    @Column(name = "post_id",nullable = false,columnDefinition = "int")
-    private Long postId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name= "post_id")
+    private Post post;
 
     @Column(name = "content",nullable = false,columnDefinition = "longtext")
     private String content;
@@ -46,18 +51,18 @@ public class Comment {
     @Column(name = "updated_at",nullable = false,columnDefinition = "datetime")
     private LocalDateTime updatedAt;
 
-    public static Comment of(CommentCreateRequestDto commentCreateRequestDto,Long memberId){
+    public static Comment of(CommentCreateRequestDto commentCreateRequestDto,Member member,Post post){
         return Comment.builder()
-                .memberId(memberId)
-                .postId(commentCreateRequestDto.getPostId())
+                .member(member)
+                .post(post)
                 .content(commentCreateRequestDto.getContent())
                 .build();
     }
 
-    public static Comment of(ChildCommentRequestDto childCommentRequestDto,Long memberId) {
+    public static Comment of(ChildCommentRequestDto childCommentRequestDto,Member member,Post post) {
         return Comment.builder()
-                .memberId(memberId)
-                .postId(childCommentRequestDto.getPostId())
+                .member(member)
+                .post(post)
                 .parentCommentId(childCommentRequestDto.getParentCommentId())
                 .content(childCommentRequestDto.getContent())
                 .build();

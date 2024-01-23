@@ -16,6 +16,9 @@ import java.time.LocalDateTime;
  */
 @Entity
 @Table(name = "post_tag")
+@NamedEntityGraph(name= "tag_paging",attributeNodes = {
+        @NamedAttributeNode("post")
+})
 @ApiModel(value = "게시물 태그 테이블")
 @Getter
 @Builder
@@ -28,13 +31,13 @@ public class PostTag {
     @ApiModelProperty(name = "게시물 태그 식별자")
     private Long tagId;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id")
+    private Post post;
+
     @Column(name = "tag_name",nullable = false,length = 15,columnDefinition = "varchar")
     @ApiModelProperty(example = "태그 이름")
     private String tagName;
-
-    @Column(name = "post_id",nullable = false,columnDefinition = "bigint")
-    @ApiModelProperty(example = "게시물 참조 외래키")
-    private Long postId;
 
     @CreationTimestamp
     @Column(name = "created_at",columnDefinition = "datetime")
@@ -44,10 +47,10 @@ public class PostTag {
     @Column(name = "updated_at",nullable = false,columnDefinition = "datetime")
     private LocalDateTime updatedAt;
 
-    public static PostTag of(String tagName,Long postId) {
+    public static PostTag of(String tagName,Post post) {
         return PostTag.builder()
                 .tagName(tagName)
-                .postId(postId)
+                .post(post)
                 .build();
     }
 }

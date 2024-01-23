@@ -8,25 +8,26 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.jpa.repository.EntityGraph;
 
 import javax.persistence.*;
 import javax.swing.plaf.metal.MetalLookAndFeel;
+import java.sql.Array;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * 게시물 테이블입니다. 맴버 참조를 위한 외래키를 가집니다.
  * @author kimhojin98@naver.com
  */
 @Entity
+@NamedEntityGraph(name = "post_paging",attributeNodes = {
+        @NamedAttributeNode("member"),
+})
 @Table(name = "post")
 @ApiModel(value = "게시물 테이블")
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class Post {
     @Id
     @Column(name = "post_id",columnDefinition = "bigint")
@@ -34,9 +35,21 @@ public class Post {
     @ApiModelProperty(example = "게시물 고유 식별자")
     private Long postId;
 
-    @Column(name = "member_id",nullable = false,columnDefinition = "int")
-    @ApiModelProperty(example = "게시물 소유 맴버와 매핑")
-    private Long memberId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    @OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
+    private List<PostTag> postTagList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
+    private List<Comment> commentList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post" ,cascade = CascadeType.ALL)
+    private List<PostLike> postLikeList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
+    private List<MemberScrap> memberScrapList = new ArrayList<>();
 
     @Column(name = "type",nullable = false,columnDefinition = "int")
     private Long type;
@@ -58,18 +71,26 @@ public class Post {
     @ApiModelProperty(example = "게시물 업데이트 날짜")
     private LocalDateTime updatedAt;
 
-    public static Post of(PostDto postDto,Long memberId)  {
+    @Builder
+    public Post(Member member,Long type,String title,String content) {
+        this.member = member;
+        this.type = type;
+        this.title = title;
+        this.content = content;
+    }
+
+    public static Post of(PostDto postDto,Member member)  {
         return Post.builder()
-                .memberId(memberId)
+                .member(member)
                 .type(0L)
                 .title(postDto.getTitle())
                 .content(postDto.getContent())
                 .build();
     }
 
-    public static Post of(NoticeRequestDto noticeRequestDto, Long memberId)  {
+    public static Post of(NoticeRequestDto noticeRequestDto, Member member)  {
         return Post.builder()
-                .memberId(memberId)
+                .member(member)
                 .type(1L)
                 .title(noticeRequestDto.getTitle())
                 .content(noticeRequestDto.getContent())
@@ -82,5 +103,9 @@ public class Post {
 
     public void updateContent(String content) {
         this.content = content;
+    }
+
+    public void addPostTag(List<PostTag> postTagList) {
+        this.postTagList = postTagList;
     }
 }

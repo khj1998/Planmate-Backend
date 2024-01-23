@@ -14,8 +14,8 @@ import java.util.Optional;
 @Repository
 public interface MemberScrapRepository extends JpaRepository<MemberScrap,Long> {
     @Query("SELECT m from MemberScrap m " +
-            "WHERE m.memberId = :ownerId AND m.postId  = :postId")
+            "WHERE m.member.memberId = :ownerId AND m.post.postId  = :postId")
     Optional<MemberScrap> findMemberScrap(@Param("ownerId") Long ownerId, @Param("postId") Long postId);
-    Page<MemberScrap> findByMemberId(Long memberId, Pageable pageable);
-    List<MemberScrap> findByPostId(Long postId);
+    Page<MemberScrap> findByMemberMemberId(Long memberId, Pageable pageable);
+    List<MemberScrap> findByPostPostId(Long postId);
 }

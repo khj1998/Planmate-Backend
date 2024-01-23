@@ -36,7 +36,6 @@ public class NoticeServiceImpl implements NoticeService {
     private final MemberRepository memberRepository;
     private final MemberScrapRepository memberScrapRepository;
     private final PostLikeRepository postLikeRepository;
-    private final CommentRepository commentRepository;
 
     @Override
     @Transactional
@@ -46,7 +45,7 @@ public class NoticeServiceImpl implements NoticeService {
         Member owner = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(memberId));
 
-        Post post = Post.of(noticeRequestDto,memberId);
+        Post post = Post.of(noticeRequestDto,owner);
         postRepository.save(post);
 
         return true;
@@ -89,15 +88,10 @@ public class NoticeServiceImpl implements NoticeService {
         Page<Post> postList = postRepository.findPostByPage(1L,pageable);
 
         for (Post post : postList) {
-            Member member = memberRepository.findById(post.getMemberId())
-                    .orElseThrow(() -> new MemberNotFoundException(post.getMemberId()));
+            List<PostLike> postLikeList = postLikeRepository.findAllByPostPostId(post.getPostId());
+            List<MemberScrap> scrapList = memberScrapRepository.findByPostPostId(post.getPostId());
 
-            List<PostLike> postLikeList = postLikeRepository.findAllByPostId(post.getPostId());
-            List<MemberScrap> scrapList = memberScrapRepository.findByPostId(post.getPostId());
-            List<Comment> commentList = commentRepository.findByPostId(post.getPostId());
-
-            NoticeResponseDto responseDto = NoticeResponseDto.of(post,member.getMemberName(),postLikeList,scrapList,commentList,memberId);
-
+            NoticeResponseDto responseDto = NoticeResponseDto.of(post,postLikeList,scrapList,memberId);
             responseDtoList.add(responseDto);
         }
 
@@ -109,17 +103,12 @@ public class NoticeServiceImpl implements NoticeService {
     public NoticeResponseDto findByNoticeId(Long noticeId) {
         Long memberId = JwtUtil.getUserIdByAccessToken();
 
-        Post post = postRepository.findById(noticeId)
+        Post post = postRepository.findByPostId(noticeId)
                 .orElseThrow(() -> new NoticeNotFoundException(noticeId));
 
-        Member member = memberRepository.findById(post.getMemberId())
-                .orElseThrow(() -> new MemberNotFoundException(post.getMemberId()));
+        List<MemberScrap> memberScrapList = memberScrapRepository.findByPostPostId(noticeId);
+        List<PostLike> postLikeList = postLikeRepository.findAllByPostPostId(noticeId);
 
-        List<MemberScrap> memberScrapList = memberScrapRepository.findByPostId(noticeId);
-        List<PostLike> postLikeList = postLikeRepository.findAllByPostId(noticeId);
-        List<Comment> commentList = commentRepository.findByPostId(noticeId);
-
-        return NoticeResponseDto.of(post,member.getMemberName()
-                ,postLikeList,memberScrapList,commentList,memberId);
+        return NoticeResponseDto.of(post,postLikeList,memberScrapList,memberId);
     }
 }

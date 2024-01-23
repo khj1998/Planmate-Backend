@@ -17,9 +17,7 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -45,22 +43,11 @@ public class PostServiceImpl implements PostService {
         Long memberId = JwtUtil.getUserIdByAccessToken();
 
         List<PostResponseDto> responseDtoList = new ArrayList<>();
-        Sort sort = Sort.by(Sort.Direction.DESC,"createdAt");
-        Pageable pageable = PageRequest.of(pages,10,sort);
-        Page<Post> postList = postRepository.findPostByPage(0L,pageable);
+        Page<Post> postList = postRepository.findPostByPage(0L,getPostPageable(pages));
 
         for (Post post : postList) {
-            Member member = memberRepository.findById(post.getMemberId())
-                    .orElseThrow(() -> new MemberNotFoundException(post.getMemberId()));
-
-            List<PostTag> postTagList = postTagRepository.findByPostId(post.getPostId());
-            List<PostLike> postLikeList = postLikeRepository.findAllByPostId(post.getPostId());
-            List<MemberScrap> scrapList = memberScrapRepository.findByPostId(post.getPostId());
-            List<Comment> commentList = commentRepository.findByPostId(post.getPostId());
-
-            PostResponseDto responseDto = PostResponseDto.of(post,member
-                    ,postLikeList,scrapList,commentList,postTagList);
-            responseDto.setIsMyPost(post.getMemberId().equals(memberId));
+            PostResponseDto responseDto = PostResponseDto.of(post);
+            responseDto.setIsMyPost(post.getMember().getMemberId().equals(memberId));
             responseDtoList.add(responseDto);
         }
 
@@ -78,20 +65,11 @@ public class PostServiceImpl implements PostService {
     public PostResponseDto findByPostId(Long postId) {
         Long memberId = JwtUtil.getUserIdByAccessToken();
 
-        Post post = postRepository.findById(postId)
+        Post post = postRepository.findByPostId(postId)
                 .orElseThrow(() -> new PostNotFoundException(postId));
 
-        Member member = memberRepository.findById(post.getMemberId())
-                .orElseThrow(() -> new MemberNotFoundException(post.getMemberId()));
-
-        List<PostTag> postTagList = postTagRepository.findByPostId(postId);
-        List<MemberScrap> memberScrapList = memberScrapRepository.findByPostId(postId);
-        List<PostLike> postLikeList = postLikeRepository.findAllByPostId(postId);
-        List<Comment> commentList = commentRepository.findByPostId(post.getPostId());
-
-        PostResponseDto responseDto = PostResponseDto.of(post,member,postLikeList,memberScrapList
-                ,commentList,postTagList);
-        responseDto.setIsMyPost(post.getMemberId().equals(memberId));
+        PostResponseDto responseDto = PostResponseDto.of(post);
+        responseDto.setIsMyPost(post.getMember().getMemberId().equals(memberId));
 
         return responseDto;
     }
@@ -111,15 +89,14 @@ public class PostServiceImpl implements PostService {
         Member owner = memberRepository.findById(memberId)
                         .orElseThrow(() -> new MemberNotFoundException(memberId));
 
-        Post post = Post.of(postDto, owner.getMemberId());
-        postRepository.save(post);
+        Post post = Post.of(postDto, owner);
 
         for (String tagName : postDto.getTagList()) {
-            PostTag postTag = PostTag.of(tagName,post.getPostId());
+            PostTag postTag = PostTag.of(tagName,post);
             postTagList.add(postTag);
         }
-
-        postTagRepository.saveAll(postTagList);
+        post.addPostTag(postTagList);
+        postRepository.save(post);
 
         return PostCreateResponseDto.of(post,owner.getMemberName(), postTagList);
     }
@@ -172,20 +149,11 @@ public class PostServiceImpl implements PostService {
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(memberId));
-
-        Sort sort = Sort.by(Sort.Direction.DESC,"createdAt");
-        Pageable pageable = PageRequest.of(pages,10,sort);
-        Page<Post> postList = postRepository.findByMemberId(member.getMemberId(),pageable);
+        Page<Post> postList = postRepository.findByMemberMemberId(member.getMemberId(),getPostPageable(pages));
 
         for (Post post : postList) {
-            List<PostTag> postTagList = postTagRepository.findByPostId(post.getPostId());
-            List<MemberScrap> memberScrapList = memberScrapRepository.findByPostId(post.getPostId());
-            List<PostLike> postLikeList = postLikeRepository.findAllByPostId(post.getPostId());
-            List<Comment> commentList = commentRepository.findByPostId(post.getPostId());
-
-            PostResponseDto responseDto = PostResponseDto.of(post, member,postLikeList,
-                    memberScrapList,commentList,postTagList);
-            responseDto.setIsMyPost(post.getMemberId().equals(memberId));
+            PostResponseDto responseDto = PostResponseDto.of(post);
+            responseDto.setIsMyPost(post.getMember().getMemberId().equals(memberId));
             responseDtoList.add(responseDto);
         }
 
@@ -209,7 +177,12 @@ public class PostServiceImpl implements PostService {
             MemberScrap memberScrap = memberScrapRepository.findMemberScrap(memberId,scrapDto.getPostId()).get();
             memberScrapRepository.delete(memberScrap);
         } else {
-            MemberScrap memberScrap = MemberScrap.of(memberId,scrapDto.getPostId());
+            Member member = memberRepository.findById(memberId)
+                    .orElseThrow(() -> new MemberNotFoundException(memberId));
+            Post post = postRepository.findById(scrapDto.getPostId())
+                    .orElseThrow(() -> new PostNotFoundException(scrapDto.getPostId()));
+
+            MemberScrap memberScrap = MemberScrap.of(member,post);
             memberScrapRepository.save(memberScrap);
         }
 
@@ -227,25 +200,14 @@ public class PostServiceImpl implements PostService {
         List<PostResponseDto> responseDtoList = new ArrayList<>();
         Long memberId = JwtUtil.getUserIdByAccessToken();
 
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(memberId));
-
-        Sort sort = Sort.by(Sort.Direction.DESC,"createdAt");
-        Pageable pageable = PageRequest.of(pages,10,sort);
-        Page<MemberScrap> scrapList = memberScrapRepository.findByMemberId(memberId,pageable);
+        Page<MemberScrap> scrapList = memberScrapRepository.findByMemberMemberId(memberId,getPostPageable(pages));
 
         for (MemberScrap memberScrap : scrapList) {
-            Post post = postRepository.findById(memberScrap.getPostId())
-                    .orElseThrow(() -> new PostNotFoundException(memberScrap.getPostId()));
+            Post post = postRepository.findByPostId(memberScrap.getMember().getMemberId())
+                    .orElseThrow(() -> new PostNotFoundException(memberScrap.getMember().getMemberId()));
 
-            List<PostTag> postTagList = postTagRepository.findByPostId(post.getPostId());
-            List<PostLike> postLikeList = postLikeRepository.findAllByPostId(post.getPostId());
-            List<MemberScrap> memberScrapList =  memberScrapRepository.findByPostId(post.getPostId());
-            List<Comment> commentList = commentRepository.findByPostId(post.getPostId());
-
-            PostResponseDto responseDto = PostResponseDto.of(post,member,
-                    postLikeList,memberScrapList,commentList,postTagList);
-            responseDto.setIsMyPost(post.getMemberId().equals(memberId));
+            PostResponseDto responseDto = PostResponseDto.of(post);
+            responseDto.setIsMyPost(post.getMember().getMemberId().equals(memberId));
             responseDtoList.add(responseDto);
         }
 
@@ -264,25 +226,12 @@ public class PostServiceImpl implements PostService {
         Long memberId = JwtUtil.getUserIdByAccessToken();
         List<PostResponseDto> responseDtoList = new ArrayList<>();
 
-        Sort sort = Sort.by(Sort.Direction.DESC,"createdAt");
-        Pageable pageable = PageRequest.of(pages,10,sort);
-        Page<PostTag> postTagList = postTagRepository.findByTagName(tagName,pageable);
+        Page<PostTag> postTagList = postTagRepository.findByTagName(tagName,getPostPageable(pages));
 
         for (PostTag postTag : postTagList) {
-            Post post = postRepository.findById(postTag.getPostId())
-                    .orElseThrow(() -> new PostNotFoundException(postTag.getPostId()));
-
-            Member member = memberRepository.findById(post.getMemberId())
-                    .orElseThrow(() -> new MemberNotFoundException(post.getMemberId()));
-
-            List<PostLike> postLikeList = postLikeRepository.findAllByPostId(post.getPostId());
-            List<MemberScrap> scrapList = memberScrapRepository.findByPostId(post.getPostId());
-            List<PostTag> postTags = postTagRepository.findByPostId(post.getPostId());
-            List<Comment> commentList = commentRepository.findByPostId(post.getPostId());
-
-            PostResponseDto responseDto = PostResponseDto.of(post,member,
-                    postLikeList,scrapList,commentList,postTags);
-            responseDto.setIsMyPost(post.getMemberId().equals(memberId));
+            Post post = postTag.getPost();
+            PostResponseDto responseDto = PostResponseDto.of(post);
+            responseDto.setIsMyPost(post.getMember().getMemberId().equals(memberId));
             responseDtoList.add(responseDto);
         }
 
@@ -298,10 +247,20 @@ public class PostServiceImpl implements PostService {
         if (postLike.isPresent()) {
             postLikeRepository.delete(postLike.get());
         } else {
-            PostLike newLike = PostLike.of(memberId,postId);
+            Member member = memberRepository.findById(memberId)
+                    .orElseThrow(() -> new MemberNotFoundException(memberId));
+            Post post = postRepository.findById(postId)
+                    .orElseThrow(() -> new PostNotFoundException(postId));
+
+            PostLike newLike = PostLike.of(member,post);
             postLikeRepository.save(newLike);
         }
 
         return true;
+    }
+
+    private Pageable getPostPageable(Integer pages) {
+        Sort sort = Sort.by(Sort.Direction.DESC,"createdAt");
+        return PageRequest.of(pages,10,sort);
     }
 }

@@ -42,17 +42,17 @@ public class ScheduleController {
     @DeleteMapping
     @ApiOperation(value = "d-day 삭제")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "삭제 환료")
+            @ApiResponse(responseCode = "200", description = "삭제 완료")
     })
-    public ResponseEntity removeDDay(@RequestParam(value = "id") Long id) {
-        scheduleService.deleteDDay(id);
+    public ResponseEntity removeDDay(@RequestParam(value = "scheduleId") Long scheduleId) {
+        scheduleService.deleteDDay(scheduleId);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/edit")
     @ApiOperation(value = "d-day 수정")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "수정 환료")
+            @ApiResponse(responseCode = "200", description = "수정 완료")
     })
     public ResponseEntity<ScheduleResponseDto> modifyDDay(@RequestBody ScheduleEditRequestDto dto) {
         return ResponseEntity.ok(scheduleService.modifySchedule(dto));
@@ -61,7 +61,7 @@ public class ScheduleController {
     @GetMapping("/all")
     @ApiOperation(value = "d-day 전체 조회")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "조회 환료")
+            @ApiResponse(responseCode = "200", description = "조회 완료")
     })
     public ResponseEntity<List<ScheduleResponseDto>> findAll() {
         return ResponseEntity.ok(scheduleService.findAll());

@@ -24,6 +24,7 @@ public class CommentResponseDto {
     private String content;
     private Long likeCount;
     private Boolean isAuthor;
+    private Boolean isPostAuthor;
     private Boolean isMyHearted;
 
     public static CommentResponseDto of(Comment comment, List<CommentLike> commentLikeList,Long memberId) {
@@ -46,6 +47,7 @@ public class CommentResponseDto {
                 .likeCount((long) commentLikeList.size())
                 .isMyHearted(isMyHearted)
                 .isAuthor(member.getMemberId().equals(memberId))
+                .isPostAuthor(memberId.equals(comment.getPost().getMember().getMemberId()))
                 .build();
     }
 

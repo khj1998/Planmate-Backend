@@ -60,7 +60,7 @@ public class AdminController {
         return ResponseEntity.ok(noticeService.editNotice(noticeEditRequestDto));
     }
 
-    @DeleteMapping("/notice/remove")
+    @DeleteMapping("/notice")
     @ApiOperation("Id로 공지사항 삭제")
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "공지사항 정상 삭제"),

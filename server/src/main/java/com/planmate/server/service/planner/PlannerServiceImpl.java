@@ -1,9 +1,13 @@
 package com.planmate.server.service.planner;
 
+import com.planmate.server.domain.Member;
 import com.planmate.server.domain.Planner;
 import com.planmate.server.dto.request.planner.PlannerRequestDto;
 import com.planmate.server.dto.response.planner.PlannerResponseDto;
+import com.planmate.server.exception.member.MemberNotFoundException;
 import com.planmate.server.exception.planner.PlannerNotFoundException;
+import com.planmate.server.repository.MemberRepository;
+import com.planmate.server.repository.MemberScrapRepository;
 import com.planmate.server.repository.PlannerRepository;
 import com.planmate.server.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +22,9 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class PlannerServiceImpl implements PlannerService {
+    private final MemberScrapRepository memberScrapRepository;
     private final PlannerRepository plannerRepository;
+    private final MemberRepository memberRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -39,7 +45,10 @@ public class PlannerServiceImpl implements PlannerService {
     @Transactional
     public void createPlan(PlannerRequestDto plannerRequestDto) {
         Long memberId = JwtUtil.getUserIdByAccessToken();
-        Planner planner = Planner.of(plannerRequestDto,memberId);
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundException(memberId));
+
+        Planner planner = Planner.of(plannerRequestDto,member);
         plannerRepository.save(planner);
     }
 

@@ -14,16 +14,16 @@ import java.util.Optional;
 @Repository
 public interface SubjectRepository extends JpaRepository<Subject,Long> {
 
-    List<Subject> findByMemberId(Long memberId);
+    List<Subject> findByMemberMemberId(Long memberId);
 
-    @Query("select s from Subject s where s.memberId = :memberId and "
+    @Query("select s from Subject s where s.member.memberId = :memberId and "
           +"s.name = :name")
     Optional<Subject> findSubject(@Param("memberId") Long memberId, @Param("name") String name);
 
-    @Query("select s from Subject s where s.memberId = :memberId and "+
+    @Query("select s from Subject s where s.member.memberId = :memberId and "+
             "s.id = :subjectId")
     Optional<Subject> findSubject(@Param("memberId") Long memberId, @Param("subjectId") Long subjectId);
 
-    @Query("select s from Subject s where s.memberId = :memberId")
+    @Query("select s from Subject s where s.member.memberId = :memberId")
     List<Subject> findAllSubject(@Param("memberId") Long memberId, Pageable pageable);
 }

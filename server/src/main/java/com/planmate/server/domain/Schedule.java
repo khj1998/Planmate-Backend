@@ -24,8 +24,9 @@ public class Schedule {
     @ApiModelProperty(example = "디데이 고유 식별자")
     private Long scheduleId;
 
-    @Column(name = "member_id", columnDefinition = "int")
-    private Long memberId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @Column(name = "title",nullable = false ,length = 30,columnDefinition = "varchar")
     private String title;

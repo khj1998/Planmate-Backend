@@ -1,11 +1,14 @@
 package com.planmate.server.service.schedule;
 
+import com.planmate.server.domain.Member;
 import com.planmate.server.domain.Schedule;
 import com.planmate.server.dto.request.schedule.AddScheduleRequestDto;
 import com.planmate.server.dto.request.schedule.ScheduleEditRequestDto;
 import com.planmate.server.dto.response.schedule.ScheduleResponseDto;
+import com.planmate.server.exception.member.MemberNotFoundException;
 import com.planmate.server.exception.schedule.MemberScheduleNotFoundException;
 import com.planmate.server.exception.schedule.ScheduleNotFoundException;
+import com.planmate.server.repository.MemberRepository;
 import com.planmate.server.repository.ScheduleRepository;
 import com.planmate.server.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -23,15 +26,21 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class ScheduleServiceImpl implements ScheduleService {
+    private final MemberRepository memberRepository;
     private final ScheduleRepository scheduleRepository;
 
     @Override
     @Transactional
     public ScheduleResponseDto addDDay(final AddScheduleRequestDto addScheduleRequestDto) {
+        Long memberId = JwtUtil.getUserIdByAccessToken();
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundException(memberId));
+
         return ScheduleResponseDto.of(scheduleRepository.save(
             Schedule.builder()
                     .title(addScheduleRequestDto.getTitle())
-                    .memberId(JwtUtil.getUserIdByAccessToken())
+                    .member(member)
                     .targetDate(LocalDate.parse(addScheduleRequestDto.getTargetDate(), DateTimeFormatter.ISO_DATE))
                     .isFixed(false)
                     .build()
@@ -65,7 +74,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Transactional(readOnly = true)
     public List<ScheduleResponseDto> findAll() {
         List<ScheduleResponseDto> responseDtoList = new ArrayList<>();
-        List<Schedule> scheduleList = scheduleRepository.findAllByMemberId(JwtUtil.getUserIdByAccessToken()).orElseThrow(
+        List<Schedule> scheduleList = scheduleRepository.findAllByMemberMemberId(JwtUtil.getUserIdByAccessToken()).orElseThrow(
                 () -> new MemberScheduleNotFoundException(JwtUtil.getUserIdByAccessToken())
         );
 

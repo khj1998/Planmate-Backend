@@ -25,8 +25,9 @@ public class Subject {
     @ApiModelProperty(name = "과목 태그 식별자")
     private Long id;
 
-    @Column(name = "member_id",nullable = false,columnDefinition = "int")
-    private Long memberId;
+    @JoinColumn(name = "member_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Member member;
 
     @Column(name = "name",nullable = false,length = 50,columnDefinition = "varchar")
     private String name;
@@ -49,7 +50,7 @@ public class Subject {
     @Column(name = "end_at",columnDefinition = "datetime")
     private Time endAt;
 
-    public static Subject of(SubjectCreateRequestDto subjectCreateRequestDto,Long memberId) {
+    public static Subject of(SubjectCreateRequestDto subjectCreateRequestDto,Member member) {
         String colorHex;
 
         if (subjectCreateRequestDto.getColorHex() == null) {
@@ -59,7 +60,7 @@ public class Subject {
         }
 
         return Subject.builder()
-                .memberId(memberId)
+                .member(member)
                 .name(subjectCreateRequestDto.getName())
                 .maxStudyTime(new Time(0,0,0))
                 .studyTime(new Time(0,0,0))

@@ -20,7 +20,7 @@ import java.util.List;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/schedule")
+@RequestMapping("/dday")
 @Slf4j
 @RequiredArgsConstructor
 @Api(tags = {"스케줄 관련 API"})
@@ -41,9 +41,9 @@ public class DdayController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "삭제 완료")
     })
-    public ResponseEntity removeDDay(@RequestParam(value = "dDayId") Long dDayId) {
+    public ResponseEntity<Boolean> removeDDay(@RequestParam(value = "dDayId") Long dDayId) {
         ddayService.deleteDDay(dDayId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(true);
     }
 
     @PostMapping("/edit")

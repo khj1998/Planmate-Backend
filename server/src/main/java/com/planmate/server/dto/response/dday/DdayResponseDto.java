@@ -1,6 +1,7 @@
 package com.planmate.server.dto.response.dday;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.planmate.server.domain.Dday;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,6 +15,7 @@ import java.time.Period;
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DdayResponseDto {
+    @JsonProperty("dDayId")
     private Long dDayId;
     private String title;
     private LocalDate targetDate;

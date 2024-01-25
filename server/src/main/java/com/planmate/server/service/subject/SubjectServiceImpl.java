@@ -15,6 +15,7 @@ import com.planmate.server.repository.MemberRepository;
 import com.planmate.server.repository.StudyBackUpRepository;
 import com.planmate.server.repository.SubjectRepository;
 import com.planmate.server.util.JwtUtil;
+import static com.planmate.server.config.ModelMapperConfig.modelMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -63,7 +64,7 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     @Transactional
-    public void createSubject(SubjectCreateRequestDto subjectCreateRequestDto) {
+    public SubjectResponse createSubject(SubjectCreateRequestDto subjectCreateRequestDto) {
         Long memberId = JwtUtil.getUserIdByAccessToken();
 
         Member member = memberRepository.findById(memberId)
@@ -78,7 +79,7 @@ public class SubjectServiceImpl implements SubjectService {
         }
 
         Subject subject = Subject.of(subjectCreateRequestDto,member);
-        subjectRepository.save(subject);
+        return modelMapper.map(subjectRepository.save(subject), SubjectResponse.class);
     }
 
     @Override
@@ -99,7 +100,7 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     @Transactional
-    public void updateSubjectTime(SubjectTimeRequest subjectTimeRequest) {
+    public SubjectResponse updateSubjectTime(SubjectTimeRequest subjectTimeRequest) {
         Long memberId = JwtUtil.getUserIdByAccessToken();
         Subject subject = subjectRepository.findSubject(memberId, subjectTimeRequest.getSubjectId())
                 .orElseThrow(() -> new SubjectNotFoundException(subjectTimeRequest.getSubjectId()));
@@ -107,12 +108,13 @@ public class SubjectServiceImpl implements SubjectService {
         subject.updateStudyTime(subjectTimeRequest.getStartAt(),subjectTimeRequest.getEndAt());
         subject.updateRestTime(subjectTimeRequest.getStartAt());
         subject.updateStartEndTime(subjectTimeRequest);
-        subjectRepository.save(subject);
+
+        return modelMapper.map(subjectRepository.save(subject),SubjectResponse.class);
     }
 
     @Override
     @Transactional
-    public void editSubject(SubjectEditRequestDto subjectEditRequestDto) {
+    public SubjectResponse editSubject(SubjectEditRequestDto subjectEditRequestDto) {
         Long memberId = JwtUtil.getUserIdByAccessToken();
         Long subjectId = subjectEditRequestDto.getSubjectId();
 
@@ -120,7 +122,8 @@ public class SubjectServiceImpl implements SubjectService {
                 .orElseThrow(() -> new SubjectNotFoundException(subjectId));
         subject.updateName(subjectEditRequestDto.getName());
         subject.updateColorHex(subjectEditRequestDto.getColorHex());
-        subjectRepository.save(subject);
+
+        return modelMapper.map(subjectRepository.save(subject), SubjectResponse.class);
     }
 
     @Override

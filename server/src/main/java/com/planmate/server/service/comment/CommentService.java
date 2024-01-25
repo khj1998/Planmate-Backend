@@ -12,9 +12,9 @@ public interface CommentService {
     CommentPageResponseDto findRecentComment(CommentRequestDto commentRequestDto);
     List<CommentResponseDto> findRecentChildComment(ChildRecentRequestDto commentRequestDto);
     CommentPageResponseDto findMyComment(Integer pages);
-    void createComment(CommentCreateRequestDto commentCreateRequestDto);
-    void createChildComment(ChildCommentRequestDto childCommentRequestDto);
-    void editComment(CommentEditRequestDto commentEditRequestDto);
+    CommentResponseDto createComment(CommentCreateRequestDto commentCreateRequestDto);
+    CommentResponseDto createChildComment(ChildCommentRequestDto childCommentRequestDto);
+    CommentResponseDto editComment(CommentEditRequestDto commentEditRequestDto);
     void setCommentLike(CommentLikeRequestDto dto);
     void deleteComment(Long commentId);
 }

@@ -1,6 +1,9 @@
 package com.planmate.server.service.statistic;
 
+import com.planmate.server.domain.Member;
 import com.planmate.server.domain.StudyBackUp;
+import com.planmate.server.exception.member.MemberNotFoundException;
+import com.planmate.server.repository.MemberRepository;
 import com.planmate.server.repository.StudyBackUpRepository;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
@@ -18,6 +21,8 @@ import java.util.Random;
 class StatisticServiceImplTest {
     @Autowired
     private StudyBackUpRepository studyBackUpRepository;
+    @Autowired
+    private MemberRepository memberRepository;
 
     @Test
     void addMockBackUpData() {
@@ -27,13 +32,16 @@ class StatisticServiceImplTest {
         LocalDate januaryMaxDate = LocalDate.of(2024,1,31);
         List<StudyBackUp> studyBackUpList = new ArrayList<>();
 
+        Member member = memberRepository.findById(1L)
+                .orElseThrow(() -> new MemberNotFoundException(1L));
+
         for (LocalDate date = startDate; !date.isAfter(januaryMaxDate); date = date.plusDays(1)) {
             Integer hours = random.nextInt(11);
             Integer minutes = random.nextInt(60);
             Integer seconds = random.nextInt(60);
 
             StudyBackUp studyBackUp = StudyBackUp.builder()
-                    .memberId(1L)
+                    .member(member)
                     .name("과목"+subjectNum)
                     .colorHex("#2196F3")
                     .maxStudyTime(new Time(hours,minutes,seconds))

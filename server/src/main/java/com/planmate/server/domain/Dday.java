@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "schedule")
+@Table(name = "d_day")
 @ApiModel(value = "d-day 테이블")
 @Getter
 @Builder

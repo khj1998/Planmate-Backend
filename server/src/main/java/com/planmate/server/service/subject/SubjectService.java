@@ -11,9 +11,9 @@ import java.util.List;
 public interface SubjectService {
     List<SubjectResponse> findSubject();
     List<SubjectStudyTimeResponse> findSubjectTime();
-    void createSubject(SubjectCreateRequestDto subjectCreateRequestDto);
-    void updateSubjectTime(SubjectTimeRequest subjectTimeRequest);
-    void editSubject(SubjectEditRequestDto subjectEditRequestDto);
+    SubjectResponse createSubject(SubjectCreateRequestDto subjectCreateRequestDto);
+    SubjectResponse updateSubjectTime(SubjectTimeRequest subjectTimeRequest);
+    SubjectResponse editSubject(SubjectEditRequestDto subjectEditRequestDto);
     void deleteSubject(Long subjectId);
     void backUpAndInit();
     Integer checkBackUpData();

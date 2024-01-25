@@ -112,8 +112,8 @@ public class PostServiceImpl implements PostService {
     public PostEditResponseDto editPost(PostDto postDto) {
         Long memberId = JwtUtil.getUserIdByAccessToken();
 
-        Post post = postRepository.findMemberPost(postDto.getId(),memberId)
-                .orElseThrow(() -> new PostNotFoundException(postDto.getId()));
+        Post post = postRepository.findMemberPost(postDto.getPostId(),memberId)
+                .orElseThrow(() -> new PostNotFoundException(postDto.getPostId()));
 
         post.updateTitle(postDto.getTitle());
         post.updateContent(postDto.getContent());
@@ -203,7 +203,7 @@ public class PostServiceImpl implements PostService {
         Page<MemberScrap> scrapList = memberScrapRepository.findByMemberMemberId(memberId,getPostPageable(pages));
 
         for (MemberScrap memberScrap : scrapList) {
-            Post post = postRepository.findByPostId(memberScrap.getMember().getMemberId())
+            Post post = postRepository.findByPostId(memberScrap.getPost().getPostId())
                     .orElseThrow(() -> new PostNotFoundException(memberScrap.getMember().getMemberId()));
 
             PostResponseDto responseDto = PostResponseDto.of(post);

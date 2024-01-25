@@ -16,6 +16,7 @@ import com.planmate.server.repository.CommentRepository;
 import com.planmate.server.repository.MemberRepository;
 import com.planmate.server.repository.PostRepository;
 import com.planmate.server.util.JwtUtil;
+import static com.planmate.server.config.ModelMapperConfig.modelMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -60,7 +61,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public void createComment(CommentCreateRequestDto commentCreateRequestDto) {
+    public CommentResponseDto createComment(CommentCreateRequestDto commentCreateRequestDto) {
         Long memberId = JwtUtil.getUserIdByAccessToken();
 
         Member member = memberRepository.findById(memberId)
@@ -70,12 +71,13 @@ public class CommentServiceImpl implements CommentService {
                 .orElseThrow(() -> new PostNotFoundException(commentCreateRequestDto.getPostId()));
 
         Comment comment = Comment.of(commentCreateRequestDto,member,post);
-        commentRepository.save(comment);
+
+        return modelMapper.map(commentRepository.save(comment), CommentResponseDto.class);
     }
 
     @Override
     @Transactional
-    public void createChildComment(ChildCommentRequestDto childCommentRequestDto) {
+    public CommentResponseDto createChildComment(ChildCommentRequestDto childCommentRequestDto) {
         Long memberId = JwtUtil.getUserIdByAccessToken();
 
         Member member = memberRepository.findById(memberId)
@@ -85,18 +87,21 @@ public class CommentServiceImpl implements CommentService {
                 .orElseThrow(() -> new PostNotFoundException(childCommentRequestDto.getPostId()));
 
         Comment childComment = Comment.of(childCommentRequestDto,member,post);
-        commentRepository.save(childComment);
+
+        return modelMapper.map(commentRepository.save(childComment), CommentResponseDto.class);
     }
 
     @Override
     @Transactional
-    public void editComment(CommentEditRequestDto commentEditRequestDto) {
+    public CommentResponseDto editComment(CommentEditRequestDto commentEditRequestDto) {
         Long memberId = JwtUtil.getUserIdByAccessToken();
         Comment comment = commentRepository.findComment(memberId,commentEditRequestDto.getCommentId())
               .orElseThrow(() -> new CommentNotFoundException(commentEditRequestDto.getCommentId()));
 
         comment.updateContent(commentEditRequestDto.getContent());
         commentRepository.save(comment);
+
+        return modelMapper.map(comment, CommentResponseDto.class);
     }
 
     @Override

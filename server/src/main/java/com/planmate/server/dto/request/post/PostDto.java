@@ -15,7 +15,7 @@ import java.util.List;
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PostDto {
-    private Long id;
+    private Long postId;
     private String title;
     private String content;
     private List<String> tagList;

@@ -1,13 +1,10 @@
 package com.planmate.server.controller;
 
-import com.planmate.server.domain.Subject;
 import com.planmate.server.dto.request.subject.SubjectCreateRequestDto;
 import com.planmate.server.dto.request.subject.SubjectEditRequestDto;
 import com.planmate.server.dto.request.subject.SubjectTimeRequest;
-import com.planmate.server.dto.response.subject.SubjectCreateResponse;
 import com.planmate.server.dto.response.subject.SubjectResponse;
 import com.planmate.server.dto.response.subject.SubjectStudyTimeResponse;
-import com.planmate.server.dto.response.subject.SubjectTimeResponse;
 import com.planmate.server.service.subject.SubjectService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -56,9 +53,8 @@ public class SubjectController {
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "새 과목 생성 성공"),
     })
-    public ResponseEntity<Boolean> addSubject(@RequestBody SubjectCreateRequestDto subjectCreateRequestDto) {
-        subjectService.createSubject(subjectCreateRequestDto);
-        return ResponseEntity.ok(true);
+    public ResponseEntity<SubjectResponse> addSubject(@RequestBody SubjectCreateRequestDto subjectCreateRequestDto) {
+        return ResponseEntity.ok(subjectService.createSubject(subjectCreateRequestDto));
     }
 
     @PostMapping("/time")
@@ -66,9 +62,8 @@ public class SubjectController {
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "공부/운동 시간 업데이트 성공"),
     })
-    public ResponseEntity<Boolean> updateTime(@RequestBody SubjectTimeRequest subjectTimeRequest) {
-        subjectService.updateSubjectTime(subjectTimeRequest);
-        return ResponseEntity.ok(true);
+    public ResponseEntity<SubjectResponse> updateTime(@RequestBody SubjectTimeRequest subjectTimeRequest) {
+        return ResponseEntity.ok(subjectService.updateSubjectTime(subjectTimeRequest));
     }
 
     @PostMapping("/edit")
@@ -76,9 +71,8 @@ public class SubjectController {
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "과목 수정 성공")
     })
-    public ResponseEntity<Boolean> editSubject(@RequestBody SubjectEditRequestDto subjectEditRequestDto) {
-        subjectService.editSubject(subjectEditRequestDto);
-        return ResponseEntity.ok(true);
+    public ResponseEntity<SubjectResponse> editSubject(@RequestBody SubjectEditRequestDto subjectEditRequestDto) {
+        return ResponseEntity.ok(subjectService.editSubject(subjectEditRequestDto));
     }
     
     @DeleteMapping

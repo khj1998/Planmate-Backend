@@ -63,9 +63,8 @@ public class CommentController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "새 댓글 생성 성공"),
     })
-    public ResponseEntity<Boolean> addComment(@RequestBody CommentCreateRequestDto commentCreateRequestDto) {
-        commentService.createComment(commentCreateRequestDto);
-        return ResponseEntity.ok(true);
+    public ResponseEntity<CommentResponseDto> addComment(@RequestBody CommentCreateRequestDto commentCreateRequestDto) {
+        return ResponseEntity.ok(commentService.createComment(commentCreateRequestDto));
     }
 
     @PostMapping("/child/create")
@@ -73,9 +72,8 @@ public class CommentController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "새 대댓글 생성 성공"),
     })
-    public ResponseEntity<Boolean> addChildComment(@RequestBody ChildCommentRequestDto commentRequestDto) {
-        commentService.createChildComment(commentRequestDto);
-        return ResponseEntity.ok(true);
+    public ResponseEntity<CommentResponseDto> addChildComment(@RequestBody ChildCommentRequestDto commentRequestDto) {
+        return ResponseEntity.ok(commentService.createChildComment(commentRequestDto));
     }
 
     @PostMapping("/like")
@@ -93,9 +91,8 @@ public class CommentController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "댓글 수정 성공"),
     })
-    public ResponseEntity<Boolean> editComment(@RequestBody CommentEditRequestDto commentEditRequestDto) {
-        commentService.editComment(commentEditRequestDto);
-        return ResponseEntity.ok(true);
+    public ResponseEntity<CommentResponseDto> editComment(@RequestBody CommentEditRequestDto commentEditRequestDto) {
+        return ResponseEntity.ok(commentService.editComment(commentEditRequestDto));
     }
 
     @DeleteMapping

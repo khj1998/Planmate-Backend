@@ -1,21 +1,18 @@
 package com.planmate.server.controller;
 
-import com.planmate.server.dto.request.schedule.ScheduleFixRequestDto;
+import com.planmate.server.dto.request.dday.DdayFixRequestDto;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.planmate.server.domain.Schedule;
-import com.planmate.server.dto.request.schedule.AddScheduleRequestDto;
-import com.planmate.server.dto.request.schedule.ScheduleEditRequestDto;
-import com.planmate.server.dto.response.schedule.ScheduleResponseDto;
-import com.planmate.server.service.schedule.ScheduleService;
-import io.swagger.annotations.Api;
+import com.planmate.server.dto.request.dday.AddDdayRequestDto;
+import com.planmate.server.dto.request.dday.DdayEditRequestDto;
+import com.planmate.server.dto.response.dday.DdayResponseDto;
+import com.planmate.server.service.schedule.DdayService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,20 +20,20 @@ import java.util.List;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/schedule")
+@RequestMapping("/dday")
 @Slf4j
 @RequiredArgsConstructor
 @Api(tags = {"스케줄 관련 API"})
-public class ScheduleController {
-    private final ScheduleService scheduleService;
+public class DdayController {
+    private final DdayService ddayService;
 
     @PostMapping("/add")
     @ApiOperation(value = "d-day 추가")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "추가 환료")
     })
-    public ResponseEntity<ScheduleResponseDto> addDDay(@RequestBody AddScheduleRequestDto dto) {
-        return ResponseEntity.ok(scheduleService.addDDay(dto));
+    public ResponseEntity<DdayResponseDto> addDDay(@RequestBody AddDdayRequestDto dto) {
+        return ResponseEntity.ok(ddayService.addDDay(dto));
     }
 
     @DeleteMapping
@@ -44,9 +41,9 @@ public class ScheduleController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "삭제 완료")
     })
-    public ResponseEntity removeDDay(@RequestParam(value = "scheduleId") Long scheduleId) {
-        scheduleService.deleteDDay(scheduleId);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Boolean> removeDDay(@RequestParam(value = "dDayId") Long dDayId) {
+        ddayService.deleteDDay(dDayId);
+        return ResponseEntity.ok(true);
     }
 
     @PostMapping("/edit")
@@ -54,8 +51,8 @@ public class ScheduleController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "수정 완료")
     })
-    public ResponseEntity<ScheduleResponseDto> modifyDDay(@RequestBody ScheduleEditRequestDto dto) {
-        return ResponseEntity.ok(scheduleService.modifySchedule(dto));
+    public ResponseEntity<DdayResponseDto> modifyDDay(@RequestBody DdayEditRequestDto dto) {
+        return ResponseEntity.ok(ddayService.modifySchedule(dto));
     }
 
     @GetMapping("/all")
@@ -63,8 +60,8 @@ public class ScheduleController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 완료")
     })
-    public ResponseEntity<List<ScheduleResponseDto>> findAll() {
-        return ResponseEntity.ok(scheduleService.findAll());
+    public ResponseEntity<List<DdayResponseDto>> findAll() {
+        return ResponseEntity.ok(ddayService.findAll());
     }
 
     @ApiOperation("고정된 디데이 조회")
@@ -72,8 +69,8 @@ public class ScheduleController {
             @ApiResponse(responseCode = "200",description = "고정된 디데이 조회 성공")
     })
     @GetMapping("/fix")
-    public ResponseEntity<ScheduleResponseDto> findFixedDDay() {
-        ScheduleResponseDto responseDto = scheduleService.findFixedDDay();
+    public ResponseEntity<DdayResponseDto> findFixedDDay() {
+        DdayResponseDto responseDto = ddayService.findFixedDDay();
         return ResponseEntity.ok(responseDto);
     }
 
@@ -82,8 +79,8 @@ public class ScheduleController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "d-day 고정 완료")
     })
-    public ResponseEntity<Boolean> fixDDay(@RequestBody ScheduleFixRequestDto scheduleFixRequestDto) {
-        scheduleService.fixDDay(scheduleFixRequestDto.getId());
+    public ResponseEntity<Boolean> fixDDay(@RequestBody DdayFixRequestDto ddayFixRequestDto) {
+        ddayService.fixDDay(ddayFixRequestDto.getDDayId());
         return ResponseEntity.ok(true);
     }
 }

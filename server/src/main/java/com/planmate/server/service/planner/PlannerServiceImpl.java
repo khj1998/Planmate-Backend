@@ -10,6 +10,7 @@ import com.planmate.server.repository.MemberRepository;
 import com.planmate.server.repository.MemberScrapRepository;
 import com.planmate.server.repository.PlannerRepository;
 import com.planmate.server.util.JwtUtil;
+import static com.planmate.server.config.ModelMapperConfig.modelMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -43,22 +44,25 @@ public class PlannerServiceImpl implements PlannerService {
 
     @Override
     @Transactional
-    public void createPlan(PlannerRequestDto plannerRequestDto) {
+    public PlannerResponseDto createPlan(PlannerRequestDto plannerRequestDto) {
         Long memberId = JwtUtil.getUserIdByAccessToken();
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(memberId));
 
         Planner planner = Planner.of(plannerRequestDto,member);
-        plannerRepository.save(planner);
+
+        return modelMapper.map(plannerRepository.save(planner), PlannerResponseDto.class);
     }
 
     @Override
     @Transactional
-    public void editPlan(PlannerRequestDto plannerRequestDto) {
+    public PlannerResponseDto editPlan(PlannerRequestDto plannerRequestDto) {
         Long memberId = JwtUtil.getUserIdByAccessToken();
         Planner planner = plannerRepository.findPlanner(memberId,plannerRequestDto.getPlannerId())
                 .orElseThrow(() -> new PlannerNotFoundException(plannerRequestDto.getPlannerId()));
         planner.updatePlanner(plannerRequestDto);
+
+        return modelMapper.map(plannerRepository.save(planner), PlannerResponseDto.class);
     }
 
     @Override

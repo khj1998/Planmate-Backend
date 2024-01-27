@@ -28,6 +28,7 @@ public class DdayResponseDto {
                 .title(dday.getTitle())
                 .targetDate(dday.getTargetDate())
                 .remainingDays((long) Period.between(LocalDate.now(), dday.getTargetDate()).getDays())
+                .isFixed(dday.getIsFixed())
                 .build();
     }
 

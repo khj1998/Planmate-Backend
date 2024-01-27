@@ -40,9 +40,6 @@ public class AdminController {
     @ApiOperation("새 공지사항을 생성")
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "새 공지사항 생성 성공"),
-            @ApiResponse(responseCode = "401",description = "해당 사용자가 인증되지 않음 | 토큰 만료"),
-            @ApiResponse(responseCode = "403",description = "해당 사용자가 ADMIN 권한이 아님"),
-            @ApiResponse(responseCode = "404",description = "새 공지사항 생성에 실패함")
     })
     public ResponseEntity<Boolean> createPost(@RequestBody NoticeRequestDto noticeRequestDto) {
         return ResponseEntity.ok(noticeService.createNotice(noticeRequestDto));
@@ -52,9 +49,6 @@ public class AdminController {
     @ApiOperation("공지사항 수정")
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "공지사항 수정 성공"),
-            @ApiResponse(responseCode = "401",description = "해당 사용자가 인증되지 않음 | 토큰 만료"),
-            @ApiResponse(responseCode = "403",description = "해당 사용자가 ADMIN 권한이 아님"),
-            @ApiResponse(responseCode = "404",description = "공지사항 수정에 실패함")
     })
     public ResponseEntity<Boolean> editPost(@RequestBody NoticeEditRequestDto noticeEditRequestDto) {
         return ResponseEntity.ok(noticeService.editNotice(noticeEditRequestDto));
@@ -64,9 +58,6 @@ public class AdminController {
     @ApiOperation("Id로 공지사항 삭제")
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "공지사항 정상 삭제"),
-            @ApiResponse(responseCode = "401",description = "해당 사용자가 인증되지 않음 | 토큰 만료"),
-            @ApiResponse(responseCode = "403",description = "해당 사용자가 ADMIN 권한이 아님"),
-            @ApiResponse(responseCode = "404",description = "공지사항 삭제에 실패함")
     })
     public ResponseEntity deletePost(@RequestParam("noticeId") Long noticeId) {
         noticeService.deleteNotice(noticeId);

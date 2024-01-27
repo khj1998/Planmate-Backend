@@ -17,7 +17,7 @@ public class SubjectCreateResponse {
     public static SubjectCreateResponse of(Subject subject) {
 
         return SubjectCreateResponse.builder()
-                .subjectId(subject.getId())
+                .subjectId(subject.getSubjectId())
                 .name(subject.getName())
                 .colorHex(subject.getColorHex())
                 .build();

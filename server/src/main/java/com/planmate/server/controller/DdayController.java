@@ -52,7 +52,7 @@ public class DdayController {
             @ApiResponse(responseCode = "200", description = "수정 완료")
     })
     public ResponseEntity<DdayResponseDto> modifyDDay(@RequestBody DdayEditRequestDto dto) {
-        return ResponseEntity.ok(ddayService.modifySchedule(dto));
+        return ResponseEntity.ok(ddayService.editSchedule(dto));
     }
 
     @GetMapping("/all")

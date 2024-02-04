@@ -21,7 +21,7 @@ public interface SubjectRepository extends JpaRepository<Subject,Long> {
     Optional<Subject> findSubject(@Param("memberId") Long memberId, @Param("name") String name);
 
     @Query("select s from Subject s where s.member.memberId = :memberId and "+
-            "s.id = :subjectId")
+            "s.subjectId = :subjectId")
     Optional<Subject> findSubject(@Param("memberId") Long memberId, @Param("subjectId") Long subjectId);
 
     @Query("select s from Subject s where s.member.memberId = :memberId")

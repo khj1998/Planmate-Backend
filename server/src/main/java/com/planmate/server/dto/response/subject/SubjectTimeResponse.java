@@ -21,7 +21,7 @@ public class SubjectTimeResponse {
     public static SubjectTimeResponse of(Subject subject) {
 
         return SubjectTimeResponse.builder()
-                .subjectId(subject.getId())
+                .subjectId(subject.getSubjectId())
                 .name(subject.getName())
                 .maxStudyTime(subject.getMaxStudyTime())
                 .studyTime(subject.getStudyTime())

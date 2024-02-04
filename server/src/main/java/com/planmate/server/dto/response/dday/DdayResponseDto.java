@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.temporal.ChronoUnit;
 
 @Builder
 @Setter
@@ -27,7 +28,8 @@ public class DdayResponseDto {
                 .dDayId(dday.getDDayId())
                 .title(dday.getTitle())
                 .targetDate(dday.getTargetDate())
-                .remainingDays((long) Period.between(LocalDate.now(), dday.getTargetDate()).getDays())
+                .remainingDays(ChronoUnit.DAYS.between(LocalDate.now(),dday.getTargetDate()))
+                .isFixed(dday.getIsFixed())
                 .build();
     }
 

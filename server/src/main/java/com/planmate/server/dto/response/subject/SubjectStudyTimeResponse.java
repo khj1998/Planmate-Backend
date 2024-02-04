@@ -20,7 +20,7 @@ public class SubjectStudyTimeResponse {
 
     public static SubjectStudyTimeResponse of(Subject subject) {
         return SubjectStudyTimeResponse.builder()
-                .subjectId(subject.getId())
+                .subjectId(subject.getSubjectId())
                 .name(subject.getName())
                 .colorHex(subject.getColorHex())
                 .studyTimeHours((long) subject.getStudyTime().getHours())

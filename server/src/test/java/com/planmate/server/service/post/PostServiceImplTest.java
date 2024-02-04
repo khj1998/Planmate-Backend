@@ -3,10 +3,13 @@ package com.planmate.server.service.post;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.planmate.server.domain.PostLike;
 import com.planmate.server.dto.request.post.PostDto;
 import com.planmate.server.dto.request.post.PostLikeDto;
 import com.planmate.server.dto.response.post.PostCreateResponseDto;
+import com.planmate.server.repository.PostLikeRepository;
 import lombok.With;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,6 +50,9 @@ class PostServiceImplTest {
     private ObjectMapper objectMapper;
     @Autowired
     private WebApplicationContext wac;
+
+    @Autowired
+    private PostLikeRepository postLikeRepository;
 
     @BeforeEach
     public void setUp() {
@@ -128,10 +134,16 @@ class PostServiceImplTest {
         postLikeDto.setPostId(3L);
         String jsonValue = objectMapper.writeValueAsString(postLikeDto);
 
+        List<PostLike> postLikeList = postLikeRepository.findAllByPostPostId(3L);
+
         mockMvc.perform(MockMvcRequestBuilders.post("/post/like")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization","Bearer "+accessToken)
                 .content(jsonValue))
                 .andExpect(MockMvcResultMatchers.status().isOk());
+
+        List<PostLike> postLikeList2 = postLikeRepository.findAllByPostPostId(3L);
+
+        Assertions.assertThat(postLikeList.size()).isEqualTo(postLikeList2.size());
     }
 }

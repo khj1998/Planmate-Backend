@@ -20,10 +20,10 @@ import java.util.Calendar;
 @AllArgsConstructor
 public class Subject {
     @Id
-    @Column(name = "id",columnDefinition = "bigint")
+    @Column(name = "subject_id",columnDefinition = "bigint")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ApiModelProperty(name = "과목 태그 식별자")
-    private Long id;
+    private Long subjectId;
 
     @JoinColumn(name = "member_id")
     @ManyToOne(fetch = FetchType.LAZY)

@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,7 +60,7 @@ public class DdayServiceImpl implements DdayService {
 
     @Override
     @Transactional
-    public DdayResponseDto modifySchedule(final DdayEditRequestDto editRequestDto) {
+    public DdayResponseDto editSchedule(final DdayEditRequestDto editRequestDto) {
         Dday dday = ddayRepository.findById(editRequestDto.getDDayId()).orElseThrow(
                 () -> new DdayNotFoundException(editRequestDto.getDDayId())
         );
@@ -82,6 +83,10 @@ public class DdayServiceImpl implements DdayService {
             DdayResponseDto responseDto = DdayResponseDto.of(dday);
             responseDtoList.add(responseDto);
         }
+
+        responseDtoList.sort(
+                Comparator.comparing(DdayResponseDto::getRemainingDays)
+        );
 
         return responseDtoList;
     }

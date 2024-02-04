@@ -17,7 +17,7 @@ public class SubjectEditResponseDto {
     public static SubjectEditResponseDto of(Subject subject) {
 
         return SubjectEditResponseDto.builder()
-                .subjectId(subject.getId())
+                .subjectId(subject.getSubjectId())
                 .name(subject.getName())
                 .colorHex(subject.getColorHex())
                 .build();

@@ -16,14 +16,10 @@ import lombok.Generated;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
+import static com.planmate.server.config.ModelMapperConfig.modelMapper;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -52,7 +48,6 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public Optional<Member> findMemberById(final Long id) {
-        log.info("called member service");
         return memberRepository.findById(id);
     }
 
@@ -64,16 +59,14 @@ public class MemberServiceImpl implements MemberService {
      * */
     @Override
     @Transactional
-    public Optional<Member> signUp(final String idToken) {
-        final GoogleIdTokenVo googleIdTokenVo = convertToGoogleIdTokenVo(decryptIdToken(idToken.split("\\.")[1]));
+    public LoginResponseDto signUp(final String idToken) {
+        GoogleIdTokenVo googleIdTokenVo = convertToGoogleIdTokenVo(decryptIdToken(idToken.split("\\.")[1]));
 
         Authority authority = Authority.builder()
                 .authorityName("ROLE_USER")
                 .build();
 
-        log.info("맴버 이름 : "+googleIdTokenVo.getName());
-
-        final Member build = Member.builder()
+        Member member = Member.builder()
                 .profile(googleIdTokenVo.getPicture())
                 .memberName(googleIdTokenVo.getName())
                 .eMail(googleIdTokenVo.getEmail())
@@ -81,31 +74,8 @@ public class MemberServiceImpl implements MemberService {
                 .loginType(0L)
                 .build();
 
-        memberRepository.save(build);
+        memberRepository.save(member);
 
-        return Optional.of(build);
-    }
-
-    @Override
-    @Transactional
-    public void signIn(Member member) {
-        Token token = tokenRepository.findByMemberId(member.getMemberId())
-                .orElseThrow(() -> new TokenNotFoundException(member.getMemberId()));
-
-        token.updateAccessToken(JwtUtil.generateAccessToken(member));
-        token.updateRefreshToken(JwtUtil.generateRefreshToken(member));
-        tokenRepository.save(token);
-    }
-
-    /**
-     * @author 지승언
-     * token 정보를 저장한다
-     * @param member 회원가입한 member
-     * @return 회원가입한 멤버에 대한 access token, refresh token 각 토큰의 만료일, member info를 반환
-     * */
-    @Override
-    @Transactional
-    public LoginResponseDto registerMember(Member member) {
         Token token = Token.builder()
                 .memberId(member.getMemberId())
                 .accessToken(JwtUtil.generateAccessToken(member))
@@ -116,7 +86,20 @@ public class MemberServiceImpl implements MemberService {
 
         tokenRepository.save(token);
 
-        return LoginResponseDto.of(member, token);
+        return LoginResponseDto.of(member,token);
+    }
+
+    @Override
+    @Transactional
+    public LoginResponseDto signIn(Member member) {
+        Token token = tokenRepository.findByMemberId(member.getMemberId())
+                .orElseThrow(() -> new TokenNotFoundException(member.getMemberId()));
+
+        token.updateAccessToken(JwtUtil.generateAccessToken(member));
+        token.updateRefreshToken(JwtUtil.generateRefreshToken(member));
+        tokenRepository.save(token);
+
+        return LoginResponseDto.of(member,token);
     }
 
     @Override

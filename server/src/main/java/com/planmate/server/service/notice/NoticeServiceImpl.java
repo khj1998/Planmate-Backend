@@ -106,7 +106,8 @@ public class NoticeServiceImpl implements NoticeService {
         Post post = postRepository.findByPostId(noticeId)
                 .orElseThrow(() -> new NoticeNotFoundException(noticeId));
 
-        List<MemberScrap> memberScrapList = memberScrapRepository.findByPostPostId(noticeId);
+        List<MemberScrap> memberScrapList = memberScrapRepository.
+                findByPostPostId(noticeId);
         List<PostLike> postLikeList = postLikeRepository.findAllByPostPostId(noticeId);
 
         return NoticeResponseDto.of(post,postLikeList,memberScrapList,memberId);

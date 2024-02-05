@@ -13,9 +13,8 @@ import java.util.Optional;
 public interface MemberService {
     Optional<Member> checkDuplicated(String email);
     Optional<Member> findMemberById(Long id);
-    Optional<Member> signUp(String idToken);
-    void signIn(Member member);
-    LoginResponseDto registerMember(Member member);
+    LoginResponseDto signUp(String idToken);
+    LoginResponseDto signIn(Member member);
     List<Authority> getAuthorities();
     Member getInfo();
     Member getInfo(Long id);

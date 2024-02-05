@@ -1,25 +1,17 @@
 package com.planmate.server.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.planmate.server.domain.Member;
 import com.planmate.server.dto.response.login.GoogleLoginResponse;
 import com.planmate.server.dto.response.login.LoginResponseDto;
 import com.planmate.server.enums.SocialLoginType;
-import com.planmate.server.repository.MemberRepository;
 import com.planmate.server.service.login.OauthService;
 import com.planmate.server.service.member.MemberService;
-import com.planmate.server.service.token.TokenService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
-
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -59,22 +51,21 @@ public class LoginController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "정상 응답")
     })
-    public RedirectView callback(
+    public LoginResponseDto callback(
             @PathVariable(name = "socialLoginType") SocialLoginType socialLoginType,
             @RequestParam(name = "code") String code) throws IOException {
-
+        LoginResponseDto loginResponseDto;
         GoogleLoginResponse googleLoginResponse = oauthService.requestAccessToken(socialLoginType, code);
         String email = oauthService.getEmailByIdToken(googleLoginResponse.getId_token());
 
         Optional<Member> member = memberService.checkDuplicated(email);
 
         if (member.isPresent()) {
-            memberService.signIn(member.get());
+            loginResponseDto = memberService.signIn(member.get());
         }   else {
-            member = memberService.signUp(googleLoginResponse.getId_token());
-            memberService.registerMember(member.get());
+            loginResponseDto = memberService.signUp(googleLoginResponse.getId_token());
         }
 
-        return null;
+        return loginResponseDto;
     }
 }

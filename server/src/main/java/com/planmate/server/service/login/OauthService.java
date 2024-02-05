@@ -26,7 +26,6 @@ import java.util.List;
 public class OauthService {
     private final List<SocialOauth> socialOauthList;
     private final HttpServletResponse response;
-    private final Gson gson;
 
     /**
      * @author 지승언

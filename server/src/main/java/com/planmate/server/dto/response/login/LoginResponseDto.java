@@ -9,19 +9,18 @@ import lombok.Getter;
 @Builder
 @Getter
 public class LoginResponseDto {
-    private Long id;
-    private String name;
-    private String img;
+    private Long memberId;
+    private String nickname;
+    private String profileImage;
     private String email;
     private String accessToken;
     private String refreshToken;
 
-    @Generated
     public static LoginResponseDto of(Member member, Token token) {
         return LoginResponseDto.builder()
-                .id(member.getMemberId())
-                .name(member.getMemberName())
-                .img(member.getProfile())
+                .memberId(member.getMemberId())
+                .nickname(member.getMemberName())
+                .profileImage(member.getProfile())
                 .email(member.getEMail())
                 .accessToken(token.getAccessToken())
                 .refreshToken(token.getRefreshToken())

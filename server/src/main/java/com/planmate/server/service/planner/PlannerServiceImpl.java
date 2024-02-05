@@ -23,7 +23,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class PlannerServiceImpl implements PlannerService {
-    private final MemberScrapRepository memberScrapRepository;
     private final PlannerRepository plannerRepository;
     private final MemberRepository memberRepository;
 

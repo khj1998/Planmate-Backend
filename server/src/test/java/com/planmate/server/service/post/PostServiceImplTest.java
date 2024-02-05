@@ -125,7 +125,7 @@ class PostServiceImplTest {
     }
 
     @Test
-    @DisplayName("좋아요 취소 테스트")
+    @DisplayName("좋아요 추가/취소 테스트")
     @WithMockUser(roles = "USER")
     @Transactional
     @Rollback(false)
@@ -144,6 +144,6 @@ class PostServiceImplTest {
 
         List<PostLike> postLikeList2 = postLikeRepository.findAllByPostPostId(3L);
 
-        Assertions.assertThat(postLikeList.size()).isEqualTo(postLikeList2.size());
+        Assertions.assertThat(Math.abs(postLikeList.size()-postLikeList2.size())).isEqualTo(1);
     }
 }

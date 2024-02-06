@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:3000",allowedHeaders = {"Content-Type"})
 @RequiredArgsConstructor
 @RequestMapping(value = "/login")
 @Slf4j
@@ -46,7 +46,7 @@ public class LoginController {
      * @param code API Server 로부터 넘어노는 code
      * @return SNS Login 요청 결과로 받은 Json 형태의 String 문자열 (access_token, refresh_token 등)
      */
-    @GetMapping(value = "/{socialLoginType}/token")
+    @PostMapping(value = "/{socialLoginType}/token")
     @ApiOperation("회원가입 & token 발급 api")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "정상 응답")

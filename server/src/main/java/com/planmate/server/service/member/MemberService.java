@@ -2,6 +2,7 @@ package com.planmate.server.service.member;
 
 import com.planmate.server.domain.Authority;
 import com.planmate.server.domain.Member;
+import com.planmate.server.dto.request.login.GoogleLoginRequestDto;
 import com.planmate.server.dto.response.login.LoginResponseDto;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,9 +14,8 @@ import java.util.Optional;
 public interface MemberService {
     Optional<Member> checkDuplicated(String email);
     Optional<Member> findMemberById(Long id);
-    Optional<Member> signUp(String idToken);
-    void signIn(Member member);
-    LoginResponseDto registerMember(Member member);
+    LoginResponseDto signUp(GoogleLoginRequestDto requestDto);
+    LoginResponseDto signIn(Member member);
     List<Authority> getAuthorities();
     Member getInfo();
     Member getInfo(Long id);

@@ -39,7 +39,7 @@ public class TokenServiceImpl implements TokenService {
         tokenRepository.findByAccessTokenAndRefreshToken(refreshTokenDto.getAccessToken(), refreshTokenDto.getRefreshToken()).orElseThrow(() -> new TokenNotFoundException(refreshTokenDto.getId()));
 
         token.updateAccessToken(JwtUtil.generateAccessToken(member));
-        token.updateAccessTokenExpiredAt(LocalDate.now().plusDays(JwtUtil.ACCESS_DURATION));
+        token.updateAccessTokenExpiredAt(LocalDate.now().plusDays(JwtUtil.ACCESS_DURATION_DAYS));
 
         return tokenRepository.save(token);
     }

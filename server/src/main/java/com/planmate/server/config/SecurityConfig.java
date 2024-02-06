@@ -1,10 +1,11 @@
 package com.planmate.server.config;
 
-import com.planmate.server.service.member.MemberService;
 import com.planmate.server.util.JwtCustomFilter;
 import lombok.Generated;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.Ordered;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -44,10 +45,10 @@ public class SecurityConfig {
                         "/v3/api-docs/**",
                         "/swagger-resources/**",
                         "/health/**",
-                        "/login/**",
                         "/token/**",
                         "/info/auth",
                         "/health/**",
+                        "/login/**",
                         "/time/**"
                 );
             }
@@ -58,7 +59,7 @@ public class SecurityConfig {
      * 각 End Point를 어떤 권한을 가진 사용자가 사용하게 만들지에 대한 메소드이다.
      * */
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, MemberService memberService) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .httpBasic().disable()
                 .cors()
@@ -82,7 +83,6 @@ public class SecurityConfig {
                 .antMatchers("/statistic/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
                 .antMatchers("/planner/**").hasAnyAuthority("ROLE_USER","ROLE_ADMIN")
                 .antMatchers("/notice/**").hasAnyAuthority("ROLE_USER","ROLE_ADMIN")
-                .anyRequest().denyAll()
                 .and().build();
     }
 }

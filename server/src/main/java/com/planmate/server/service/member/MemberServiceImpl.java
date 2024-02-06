@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.planmate.server.domain.Authority;
 import com.planmate.server.domain.Member;
 import com.planmate.server.domain.Token;
+import com.planmate.server.dto.request.login.GoogleLoginRequestDto;
 import com.planmate.server.dto.response.login.LoginResponseDto;
 import com.planmate.server.exception.member.MemberNotFoundException;
 import com.planmate.server.exception.token.TokenNotFoundException;
@@ -16,14 +17,10 @@ import lombok.Generated;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
+import static com.planmate.server.config.ModelMapperConfig.modelMapper;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -52,71 +49,56 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public Optional<Member> findMemberById(final Long id) {
-        log.info("called member service");
         return memberRepository.findById(id);
     }
 
     /**
-     * @author 지승언
+     * @author 김호진
      * sns login시 받은 id token을 사용해 사용자를 DB에 저장한다
-     * @param idToken id_token
+     * @body Google에서 전달받은 유저 정보 dto 객체
      * @return 저장된 member 객체
      * */
     @Override
     @Transactional
-    public Optional<Member> signUp(final String idToken) {
-        final GoogleIdTokenVo googleIdTokenVo = convertToGoogleIdTokenVo(decryptIdToken(idToken.split("\\.")[1]));
-
+    public LoginResponseDto signUp(GoogleLoginRequestDto requestDto) {
         Authority authority = Authority.builder()
                 .authorityName("ROLE_USER")
                 .build();
 
-        log.info("맴버 이름 : "+googleIdTokenVo.getName());
-
-        final Member build = Member.builder()
-                .profile(googleIdTokenVo.getPicture())
-                .memberName(googleIdTokenVo.getName())
-                .eMail(googleIdTokenVo.getEmail())
+        Member member = Member.builder()
+                .profile(requestDto.getPicture())
+                .memberName(requestDto.getName())
+                .eMail(requestDto.getEmail())
                 .authorities(Arrays.asList(authority))
                 .loginType(0L)
                 .build();
 
-        memberRepository.save(build);
+        memberRepository.save(member);
 
-        return Optional.of(build);
+        Token token = Token.builder()
+                .memberId(member.getMemberId())
+                .accessToken(JwtUtil.generateAccessToken(member))
+                .accessTokenExpiredAt(LocalDate.now().plusDays(JwtUtil.ACCESS_DURATION_DAYS))
+                .refreshToken(JwtUtil.generateRefreshToken(member))
+                .refreshTokenExpiredAt(LocalDate.now().plusDays(JwtUtil.REFRESH_DURATION_DAYS))
+                .build();
+
+        tokenRepository.save(token);
+
+        return LoginResponseDto.of(member,token);
     }
 
     @Override
     @Transactional
-    public void signIn(Member member) {
+    public LoginResponseDto signIn(Member member) {
         Token token = tokenRepository.findByMemberId(member.getMemberId())
                 .orElseThrow(() -> new TokenNotFoundException(member.getMemberId()));
 
         token.updateAccessToken(JwtUtil.generateAccessToken(member));
         token.updateRefreshToken(JwtUtil.generateRefreshToken(member));
         tokenRepository.save(token);
-    }
 
-    /**
-     * @author 지승언
-     * token 정보를 저장한다
-     * @param member 회원가입한 member
-     * @return 회원가입한 멤버에 대한 access token, refresh token 각 토큰의 만료일, member info를 반환
-     * */
-    @Override
-    @Transactional
-    public LoginResponseDto registerMember(Member member) {
-        Token token = Token.builder()
-                .memberId(member.getMemberId())
-                .accessToken(JwtUtil.generateAccessToken(member))
-                .accessTokenExpiredAt(LocalDate.now().plusDays(JwtUtil.ACCESS_DURATION))
-                .refreshToken(JwtUtil.generateRefreshToken(member))
-                .refreshTokenExpiredAt(LocalDate.now().plusYears(1))
-                .build();
-
-        tokenRepository.save(token);
-
-        return LoginResponseDto.of(member, token);
+        return LoginResponseDto.of(member,token);
     }
 
     @Override
@@ -154,10 +136,7 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.deleteById(memberId);
         tokenRepository.deleteByMemberId(memberId);
     }
-
-    /**
-     * TODO: query annotation 써서 alter
-     * */
+    
     @Override
     @Transactional
     public Member modifyName(final String name) {
@@ -197,29 +176,5 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new TokenNotFoundException(member.getMemberId()));
 
         return LoginResponseDto.of(member,token);
-    }
-
-    /**
-     * @author 지승언
-     * sns login에서 받은 Id token을 한글로 인코딩하는 함수
-     * */
-    private String decryptIdToken(String idToken) {
-        byte[] decode = Base64.decodeBase64(idToken);
-
-        return new String(decode, StandardCharsets.UTF_8);
-    }
-
-    /**
-     * @author  지승언
-     * id token을 원하는 객체 형태로 변환 하는 함
-     * */
-    private GoogleIdTokenVo convertToGoogleIdTokenVo(String idToken) {
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        try {
-            return objectMapper.readValue(idToken, GoogleIdTokenVo.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("json failed");
-        }
     }
 }

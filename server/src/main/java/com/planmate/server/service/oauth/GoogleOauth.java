@@ -9,10 +9,12 @@ import com.planmate.server.vo.GoogleIdTokenVo;
 import lombok.Generated;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.http.parser.HttpParser;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
@@ -66,12 +68,18 @@ public class GoogleOauth implements SocialOauth {
     public String requestAccessToken(String code) {
         RestTemplate restTemplate = new RestTemplate();
 
-        Map<String, Object> params = new HashMap<>();
-        params.put("code", code);
-        params.put("client_id", GOOGLE_SNS_CLIENT_ID);
-        params.put("client_secret", GOOGLE_SNS_CLIENT_SECRET);
-        params.put("redirect_uri", GOOGLE_SNS_CALLBACK_URL);
-        params.put("grant_type", "authorization_code");
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.add("Accept","application/json");
+
+        MultiValueMap<String,String> params = new LinkedMultiValueMap<>();
+        params.add("code", code);
+        params.add("client_id", GOOGLE_SNS_CLIENT_ID);
+        params.add("client_secret", GOOGLE_SNS_CLIENT_SECRET);
+        params.add("redirect_uri", GOOGLE_SNS_CALLBACK_URL);
+        params.add("grant_type", "authorization_code");
+
+        HttpEntity<MultiValueMap<String,String>> request = new HttpEntity<>(params,headers);
 
         ResponseEntity<String> responseEntity =
                 restTemplate.postForEntity(GOOGLE_SNS_TOKEN_BASE_URL, params, String.class);

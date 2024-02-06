@@ -29,7 +29,7 @@ public class LogOutServiceImpl implements LogOutService{
         );
 
         token.updateAccessToken(JwtUtil.logout(member));
-        token.updateAccessTokenExpiredAt(LocalDate.now().minusDays(JwtUtil.ACCESS_DURATION));
+        token.updateAccessTokenExpiredAt(LocalDate.now().minusDays(JwtUtil.ACCESS_DURATION_DAYS));
 
         return tokenRepository.save(token).getAccessToken();
     }

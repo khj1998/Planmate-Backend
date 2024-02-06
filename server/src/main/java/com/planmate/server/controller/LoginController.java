@@ -1,6 +1,7 @@
 package com.planmate.server.controller;
 
 import com.planmate.server.domain.Member;
+import com.planmate.server.dto.request.login.GoogleLoginRequestDto;
 import com.planmate.server.dto.response.login.GoogleLoginResponse;
 import com.planmate.server.dto.response.login.LoginResponseDto;
 import com.planmate.server.enums.SocialLoginType;
@@ -25,25 +26,8 @@ public class LoginController {
     private final MemberService memberService;
 
     /**
-     * @author 지승언
-     * 사용자로부터 SNS 로그인 요청을 Social Login Type 을 받아 처리
-     * @param socialLoginType (GOOGLE, GITHUB, NAVER, KAKAO)
-     */
-    @GetMapping(value = "/{socialLoginType}")
-    @ApiOperation("sns login api")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "정상 응답")
-    })
-    public void socialLoginType(
-            @PathVariable(name = "socialLoginType") SocialLoginType socialLoginType) {
-        log.info(">> 사용자로부터 SNS 로그인 요청을 받음 :: {} Social Login", socialLoginType);
-        oauthService.request(socialLoginType);
-    }
-
-    /**
      * Social Login API Server 요청에 의한 callback 을 처리
-     * @param socialLoginType (GOOGLE, FACEBOOK, NAVER, KAKAO)
-     * @param code API Server 로부터 넘어노는 code
+     * @body accessToken (GOOGLE)
      * @return SNS Login 요청 결과로 받은 Json 형태의 String 문자열 (access_token, refresh_token 등)
      */
     @PostMapping(value = "/{socialLoginType}/token")
@@ -51,19 +35,16 @@ public class LoginController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "정상 응답")
     })
-    public LoginResponseDto callback(
-            @PathVariable(name = "socialLoginType") SocialLoginType socialLoginType,
-            @RequestParam(name = "code") String code) throws IOException {
+    public LoginResponseDto callback(@RequestBody GoogleLoginRequestDto requestDto) throws IOException {
         LoginResponseDto loginResponseDto;
-        GoogleLoginResponse googleLoginResponse = oauthService.requestAccessToken(socialLoginType, code);
-        String email = oauthService.getEmailByIdToken(googleLoginResponse.getId_token());
+        String email = requestDto.getEmail();
 
         Optional<Member> member = memberService.checkDuplicated(email);
 
         if (member.isPresent()) {
             loginResponseDto = memberService.signIn(member.get());
         }   else {
-            loginResponseDto = memberService.signUp(googleLoginResponse.getId_token());
+            loginResponseDto = memberService.signUp(requestDto);
         }
 
         return loginResponseDto;

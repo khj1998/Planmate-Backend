@@ -55,6 +55,12 @@ public class OauthService {
         return convertStringToResponse(response);
     }
 
+    /**
+     * author 김호진
+     * @param idToken : Google로부터 전달받은 idToken
+     * @return idToken에 실려있는 유저 email 정보
+     * @throws JsonProcessingException
+     */
     public String getEmailByIdToken(String idToken) throws JsonProcessingException {
         byte[] decode = Base64.decodeBase64(idToken.split("\\.")[1]);
         idToken = new String(decode, StandardCharsets.UTF_8);
@@ -79,9 +85,9 @@ public class OauthService {
     /**
      * @author 지승언
      * @param response 구글의 access token 요청 시 반환 되는 값
-     * @return 객체 형태로 돌려주기 위해 objectMapper를 사용해 객체로 변환
+     * @return 인가코드를 통해 요청한 토큰에 존재하는 유저 정보가 담긴 객체
      * */
-    private GoogleLoginResponse convertStringToResponse(String response) {
+    public GoogleLoginResponse convertStringToResponse(String response) {
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {

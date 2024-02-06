@@ -24,8 +24,10 @@ import java.util.*;
 @Generated
 public class JwtUtil {
     private static String JWT_SECRET_KEY;
-    public static final Long ACCESS_DURATION = 365 * 24 * 60 * 60 * 1000L;
-    public static final Long REFRESH_DURATION = 365 * 24 * 60 * 60 * 1000L;
+    public static final Long ACCESS_DURATION_DAYS = 365L;
+    public static final Long REFRESH_DURATION_DAYS = 365 * 24 * 60 * 60 * 1000L;
+    private static final Long ACCESS_DURATION_MILLIS = 365 * 24 * 60 * 60 * 1000L;
+    private static final Long REFRESH_DURATION_MILLIS = 365 * 24 * 60 * 60 * 1000L;
 
     @Value("${jwt.secret}")
     public void setKey(String key) {
@@ -41,7 +43,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_DURATION))
+                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_DURATION_MILLIS))
                 .signWith(SignatureAlgorithm.HS256, JWT_SECRET_KEY)
                 .compact();
     }
@@ -55,7 +57,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + REFRESH_DURATION))
+                .setExpiration(new Date(System.currentTimeMillis() + REFRESH_DURATION_MILLIS))
                 .signWith(SignatureAlgorithm.HS256, JWT_SECRET_KEY)
                 .compact();
     }
@@ -100,7 +102,7 @@ public class JwtUtil {
 
     public static String logout(Member member) {
         Date now = new Date();
-        Date expiredDate = new Date(now.getTime() - ACCESS_DURATION);
+        Date expiredDate = new Date(now.getTime() - ACCESS_DURATION_MILLIS);
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", member.getMemberId());

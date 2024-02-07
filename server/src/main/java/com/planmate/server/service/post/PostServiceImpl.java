@@ -29,7 +29,6 @@ public class PostServiceImpl implements PostService {
     private final MemberScrapRepository memberScrapRepository;
     private final PostTagRepository postTagRepository;
     private final PostLikeRepository postLikeRepository;
-    private final CommentRepository commentRepository;
 
     /**
      * 페이지 별 게시물 정보를 조회합니다.

@@ -12,7 +12,7 @@ import java.util.List;
 public class CommentPageResponseDto {
     private Integer totalPages;
     private Long totalCount;
-    List<CommentResponseDto> commentDtoList;
+    private List<CommentResponseDto> commentDtoList;
 
     public static CommentPageResponseDto of(Integer totalPages,Long totalCount,List<CommentResponseDto> commentDtoList) {
         return CommentPageResponseDto.builder()

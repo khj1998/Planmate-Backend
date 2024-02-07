@@ -30,6 +30,8 @@ public class CommentResponseDto {
     public static CommentResponseDto of(Comment comment, List<CommentLike> commentLikeList,Long memberId) {
         Boolean isMyHearted = false;
         Member member = comment.getMember();
+        Long commentAuthorId = comment.getMember().getMemberId();
+        Long postAuthorId = comment.getPost().getMember().getMemberId();
 
         for (CommentLike commentLike : commentLikeList) {
             if (commentLike.getMember().getMemberId().equals(memberId)) {
@@ -47,7 +49,7 @@ public class CommentResponseDto {
                 .likeCount((long) commentLikeList.size())
                 .isMyHearted(isMyHearted)
                 .isAuthor(member.getMemberId().equals(memberId))
-                .isPostAuthor(memberId.equals(comment.getPost().getMember().getMemberId()))
+                .isPostAuthor(commentAuthorId.equals(postAuthorId))
                 .build();
     }
 

@@ -29,13 +29,10 @@ public class MemberController {
     private final MemberService memberService;
     private final S3UploadService s3UploadService;
 
-    /**
-     * TODO: log-out
-     * */
     @GetMapping("info")
     @ApiOperation(value = "사용자 정보 조회")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "조회 환료")
+            @ApiResponse(responseCode = "200", description = "조회 완료")
     })
     public ResponseEntity<Member> getInfo() {
         return ResponseEntity.ok(memberService.getInfo());

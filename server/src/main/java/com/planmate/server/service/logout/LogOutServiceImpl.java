@@ -22,14 +22,18 @@ public class LogOutServiceImpl implements LogOutService{
 
     @Override
     public String logout() {
-        Member member = memberRepository.findById(JwtUtil.getUserIdByAccessToken()).orElseThrow(() -> new MemberNotFoundException(JwtUtil.getUserIdByAccessToken()));
+        Member member = memberRepository.findById(JwtUtil.getUserIdByAccessToken())
+                .orElseThrow(() -> new MemberNotFoundException(JwtUtil.getUserIdByAccessToken()));
 
-        Token token = tokenRepository.findByMemberId(JwtUtil.getUserIdByAccessToken()).orElseThrow(
+        Token token = tokenRepository.findByTokenId(JwtUtil.getUserIdByAccessToken()).orElseThrow(
                 () -> new TokenNotFoundException(JwtUtil.getUserIdByAccessToken())
         );
 
-        token.updateAccessToken(JwtUtil.logout(member));
+        token.updateAccessToken(JwtUtil.getExpiredAccessToken(member));
         token.updateAccessTokenExpiredAt(LocalDate.now().minusDays(JwtUtil.ACCESS_DURATION_DAYS));
+
+        token.updateRefreshToken(JwtUtil.getExpiredRefreshToken(member));
+        token.updateRefreshTokenExpiredAt(LocalDate.now().minusDays(JwtUtil.REFRESH_DURATION_DAYS));
 
         return tokenRepository.save(token).getAccessToken();
     }

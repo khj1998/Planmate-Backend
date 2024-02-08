@@ -67,4 +67,23 @@ public class TokenServiceImpl implements TokenService {
 
         return modelMapper.map(token, ReissueTokenResponseDto.class);
     }
+
+    @Override
+    @Transactional
+    public ReissueTokenResponseDto createAdminToken(ReissueTokenRequestDto dto) {
+        Member member = memberRepository.findById(dto.getId())
+                .orElseThrow(() -> new MemberNotFoundException(dto.getId()));
+
+        Token token = tokenRepository.findByAccessTokenAndRefreshToken(member.getMemberId(),dto.getAccessToken(),dto.getRefreshToken())
+                .orElseThrow(() -> new TokenNotFoundException(dto.getId()));
+
+        token.updateAccessToken(JwtUtil.generateAdminAccessToken(member));
+        token.updateAccessTokenExpiredAt(LocalDate.now().plusDays(JwtUtil.ACCESS_DURATION_DAYS));
+
+        token.updateRefreshToken(JwtUtil.generateAdminRefreshToken(member));
+        token.updateRefreshTokenExpiredAt(LocalDate.now().plusDays(JwtUtil.REFRESH_DURATION_DAYS));
+        tokenRepository.save(token);
+
+        return modelMapper.map(token, ReissueTokenResponseDto.class);
+    }
 }

@@ -62,6 +62,35 @@ public class JwtUtil {
                 .compact();
     }
 
+    public static String generateAdminAccessToken(Member member) {
+        Claims claims = Jwts.claims().setSubject(member.getMemberId().toString());
+
+        // 유저 권한 리스트로 변경 예정
+        claims.put("roles", Arrays.asList("ROLE_ADMIN","ROLE_USER"));
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_DURATION_MILLIS))
+                .signWith(SignatureAlgorithm.HS256, JWT_SECRET_KEY)
+                .compact();
+    }
+
+    public static String generateAdminRefreshToken(Member member) {
+        Claims claims = Jwts.claims().setSubject(member.getMemberId().toString());
+
+        //유저 권한 리스트로 변경 예정
+        claims.put("roles", Arrays.asList("ROLE_ADMIN","ROLE_USER"));
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + REFRESH_DURATION_MILLIS))
+                .signWith(SignatureAlgorithm.HS256, JWT_SECRET_KEY)
+                .compact();
+    }
+
+
     public static Long getUserIdByAccessToken() {
         String accessToken = getAccessTokenByRequest();
 

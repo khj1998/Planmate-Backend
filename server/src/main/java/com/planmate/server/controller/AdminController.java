@@ -3,10 +3,11 @@ package com.planmate.server.controller;
 import com.planmate.server.domain.Member;
 import com.planmate.server.dto.request.notice.NoticeEditRequestDto;
 import com.planmate.server.dto.request.notice.NoticeRequestDto;
-import com.planmate.server.dto.response.post.PostCreateResponseDto;
-import com.planmate.server.dto.response.post.PostEditResponseDto;
+import com.planmate.server.dto.request.token.ReissueTokenRequestDto;
+import com.planmate.server.dto.response.token.ReissueTokenResponseDto;
 import com.planmate.server.service.member.MemberService;
 import com.planmate.server.service.notice.NoticeService;
+import com.planmate.server.service.token.TokenService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @Api(tags = {"관리자 api"})
 @Slf4j
 public class AdminController {
+    private final TokenService tokenService;
     private final MemberService memberService;
     private final NoticeService noticeService;
 
@@ -62,5 +64,14 @@ public class AdminController {
     public ResponseEntity deletePost(@RequestParam("noticeId") Long noticeId) {
         noticeService.deleteNotice(noticeId);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/token")
+    @ApiOperation("관리자 권한으로 특정 계정 토큰 활성화")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200",description = "특정 계정 토큰 활성화 성공")
+    })
+    public ResponseEntity<ReissueTokenResponseDto> refreshTokenByAdmin(@RequestBody ReissueTokenRequestDto dto) {
+        return ResponseEntity.ok(tokenService.reissueTokenByAdmin(dto));
     }
 }

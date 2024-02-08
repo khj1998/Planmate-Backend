@@ -23,7 +23,7 @@ public class LogoutController {
     @GetMapping("sign-out")
     @ApiOperation(value = "로그 아웃")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "로그아웃 환료")
+            @ApiResponse(responseCode = "200", description = "로그아웃 완료")
     })
     public ResponseEntity<String> logout() {
         return ResponseEntity.ok(logOutService.logout());

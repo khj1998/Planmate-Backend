@@ -76,7 +76,7 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.save(member);
 
         Token token = Token.builder()
-                .memberId(member.getMemberId())
+                .tokenId(member.getMemberId())
                 .accessToken(JwtUtil.generateAccessToken(member))
                 .accessTokenExpiredAt(LocalDate.now().plusDays(JwtUtil.ACCESS_DURATION_DAYS))
                 .refreshToken(JwtUtil.generateRefreshToken(member))
@@ -91,7 +91,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public LoginResponseDto signIn(Member member) {
-        Token token = tokenRepository.findByMemberId(member.getMemberId())
+        Token token = tokenRepository.findByTokenId(member.getMemberId())
                 .orElseThrow(() -> new TokenNotFoundException(member.getMemberId()));
 
         token.updateAccessToken(JwtUtil.generateAccessToken(member));
@@ -134,7 +134,7 @@ public class MemberServiceImpl implements MemberService {
     public void signOut() {
         final Long memberId = JwtUtil.getUserIdByAccessToken();
         memberRepository.deleteById(memberId);
-        tokenRepository.deleteByMemberId(memberId);
+        tokenRepository.deleteByTokenId(memberId);
     }
     
     @Override
@@ -172,7 +172,7 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new MemberNotFoundException(id));
 
-        Token token = tokenRepository.findByMemberId(member.getMemberId())
+        Token token = tokenRepository.findByTokenId(member.getMemberId())
                 .orElseThrow(() -> new TokenNotFoundException(member.getMemberId()));
 
         return LoginResponseDto.of(member,token);

@@ -18,8 +18,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class Token {
     @Id
-    @Column(name = "member_id", columnDefinition = "int")
-    private Long memberId;
+    @Column(name = "token_id", columnDefinition = "int")
+    private Long tokenId;
 
     @Column(name = "access_token", nullable = false,columnDefinition = "mediumtext")
     private String accessToken;
@@ -43,5 +43,9 @@ public class Token {
 
     public void updateAccessTokenExpiredAt(LocalDate accessTokenExpiredAt) {
         this.accessTokenExpiredAt = accessTokenExpiredAt;
+    }
+
+    public void updateRefreshTokenExpiredAt(LocalDate refreshTokenExpiredAt) {
+        this.refreshTokenExpiredAt = refreshTokenExpiredAt;
     }
 }

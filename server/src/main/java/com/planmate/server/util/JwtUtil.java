@@ -62,6 +62,35 @@ public class JwtUtil {
                 .compact();
     }
 
+    public static String generateAdminAccessToken(Member member) {
+        Claims claims = Jwts.claims().setSubject(member.getMemberId().toString());
+
+        // 유저 권한 리스트로 변경 예정
+        claims.put("roles", Arrays.asList("ROLE_ADMIN","ROLE_USER"));
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_DURATION_MILLIS))
+                .signWith(SignatureAlgorithm.HS256, JWT_SECRET_KEY)
+                .compact();
+    }
+
+    public static String generateAdminRefreshToken(Member member) {
+        Claims claims = Jwts.claims().setSubject(member.getMemberId().toString());
+
+        //유저 권한 리스트로 변경 예정
+        claims.put("roles", Arrays.asList("ROLE_ADMIN","ROLE_USER"));
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + REFRESH_DURATION_MILLIS))
+                .signWith(SignatureAlgorithm.HS256, JWT_SECRET_KEY)
+                .compact();
+    }
+
+
     public static Long getUserIdByAccessToken() {
         String accessToken = getAccessTokenByRequest();
 
@@ -100,7 +129,7 @@ public class JwtUtil {
         }
     }
 
-    public static String logout(Member member) {
+    public static String getExpiredAccessToken(Member member) {
         Date now = new Date();
         Date expiredDate = new Date(now.getTime() - ACCESS_DURATION_MILLIS);
 
@@ -110,6 +139,23 @@ public class JwtUtil {
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
+                .setExpiration(expiredDate)
+                .signWith(SignatureAlgorithm.HS256, JWT_SECRET_KEY)
+                .compact();
+    }
+
+    public static String getExpiredRefreshToken(Member member) {
+        Claims claims = Jwts.claims().setSubject(member.getMemberId().toString());
+
+        Date now = new Date();
+        Date expiredDate = new Date(now.getTime() - REFRESH_DURATION_MILLIS);
+
+        //유저 권한 리스트로 변경 예정
+        claims.put("roles", Arrays.asList("ROLE_USER"));
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(expiredDate)
                 .signWith(SignatureAlgorithm.HS256, JWT_SECRET_KEY)
                 .compact();

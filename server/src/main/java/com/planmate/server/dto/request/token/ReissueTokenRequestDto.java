@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Generated
-public class RefreshTokenDto {
+public class ReissueTokenRequestDto {
     private Long id;
     private String accessToken;
     private String refreshToken;

@@ -1,10 +1,10 @@
 package com.planmate.server.service.token;
 
-import com.planmate.server.domain.Token;
-import com.planmate.server.dto.request.token.RefreshTokenDto;
-
-import java.util.Optional;
+import com.planmate.server.dto.request.token.ReissueTokenRequestDto;
+import com.planmate.server.dto.response.token.ReissueTokenResponseDto;
 
 public interface TokenService {
-    public Token reissueAccessToken(RefreshTokenDto refreshTokenDto);
+    ReissueTokenResponseDto reissueAccessToken(ReissueTokenRequestDto reissueTokenRequestDto);
+    ReissueTokenResponseDto reissueTokenByAdmin(ReissueTokenRequestDto dto);
+    ReissueTokenResponseDto createAdminToken(ReissueTokenRequestDto dto);
 }

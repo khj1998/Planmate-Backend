@@ -65,13 +65,4 @@ public class AdminController {
         noticeService.deleteNotice(noticeId);
         return ResponseEntity.ok().build();
     }
-
-    @PostMapping("/token")
-    @ApiOperation("관리자 권한으로 특정 계정 토큰 활성화")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "특정 계정 토큰 활성화 성공")
-    })
-    public ResponseEntity<ReissueTokenResponseDto> refreshTokenByAdmin(@RequestBody ReissueTokenRequestDto dto) {
-        return ResponseEntity.ok(tokenService.reissueTokenByAdmin(dto));
-    }
 }

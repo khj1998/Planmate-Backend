@@ -113,11 +113,11 @@ public class JwtUtil {
                 .get("roles");
     }
 
-    public static void validateAccessToken(String accessToken) {
+    public static void validateToken(String token) {
         try {
             Jwts.parserBuilder()
                     .setSigningKey(JWT_SECRET_KEY).build()
-                    .parseClaimsJws(accessToken);
+                    .parseClaimsJws(token);
         } catch (ExpiredJwtException ex) {
             log.error("엑세스 토큰 만료");
         } catch (MalformedJwtException ex) {

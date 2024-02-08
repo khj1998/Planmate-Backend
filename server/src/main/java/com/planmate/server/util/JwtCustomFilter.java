@@ -42,7 +42,7 @@ public class JwtCustomFilter extends OncePerRequestFilter {
         String accessToken = getAccessToken(request);
 
         try {
-            JwtUtil.validateAccessToken(accessToken);
+            JwtUtil.validateToken(accessToken);
         } catch (ExpiredJwtException ex) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             response.setContentType("text/plain");

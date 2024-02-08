@@ -4,6 +4,7 @@ import com.planmate.server.domain.Authority;
 import com.planmate.server.domain.Member;
 import com.planmate.server.dto.request.login.GoogleLoginRequestDto;
 import com.planmate.server.dto.response.login.LoginResponseDto;
+import com.planmate.server.dto.response.member.MemberResponseDto;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,10 +18,10 @@ public interface MemberService {
     LoginResponseDto signUp(GoogleLoginRequestDto requestDto);
     LoginResponseDto signIn(Member member);
     List<Authority> getAuthorities();
-    Member getInfo();
-    Member getInfo(Long id);
+    MemberResponseDto getInfo();
+    MemberResponseDto getInfo(Long id);
     void signOut();
-    Member modifyName(String name);
-    Member modifyImg(String img);
+    MemberResponseDto modifyName(String name);
+    MemberResponseDto modifyImg(String img);
     LoginResponseDto getUserInfo(Long id);
 }

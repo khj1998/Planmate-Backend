@@ -4,6 +4,7 @@ import com.planmate.server.domain.Member;
 import com.planmate.server.dto.request.notice.NoticeEditRequestDto;
 import com.planmate.server.dto.request.notice.NoticeRequestDto;
 import com.planmate.server.dto.request.token.ReissueTokenRequestDto;
+import com.planmate.server.dto.response.member.MemberResponseDto;
 import com.planmate.server.dto.response.token.ReissueTokenResponseDto;
 import com.planmate.server.service.member.MemberService;
 import com.planmate.server.service.notice.NoticeService;
@@ -34,7 +35,7 @@ public class AdminController {
             @ApiResponse(responseCode = "200", description = "조회 환료"),
             @ApiResponse(responseCode = "403", description = "관리자 권한 없음")
     })
-    public ResponseEntity<Member> getInfo(@RequestParam(value = "id") Long id) {
+    public ResponseEntity<MemberResponseDto> getInfo(@RequestParam(value = "id") Long id) {
         return ResponseEntity.ok(memberService.getInfo(id));
     }
 

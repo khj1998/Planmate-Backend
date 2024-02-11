@@ -49,7 +49,7 @@ public class PostResponseDto {
         }
 
         for (PostLike postLike : postLikeList) {
-            if (postLike.getMember().getMemberId().equals(member.getMemberId())) {
+            if (postLike.getMember().getMemberId().equals(memberId)) {
                 isMyHearted = true;
                 break;
             }

@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.*;
 @Api(tags = {"관리자 api"})
 @Slf4j
 public class AdminController {
-    private final TokenService tokenService;
     private final MemberService memberService;
     private final NoticeService noticeService;
 

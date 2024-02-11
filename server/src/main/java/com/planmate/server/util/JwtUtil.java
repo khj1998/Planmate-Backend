@@ -1,10 +1,10 @@
 package com.planmate.server.util;
 
 import com.planmate.server.domain.Member;
-import com.planmate.server.exception.token.AuthorizationHeaderException;
-import com.planmate.server.exception.token.TokenNotStartWithBearerException;
+import com.planmate.server.exception.token.*;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.Generated;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
@@ -119,13 +119,13 @@ public class JwtUtil {
                     .setSigningKey(JWT_SECRET_KEY).build()
                     .parseClaimsJws(token);
         } catch (ExpiredJwtException ex) {
-            log.error("엑세스 토큰 만료");
+            throw new TokenExpiredException();
         } catch (MalformedJwtException ex) {
-            log.error("엑세스 토큰이 유효한 형태가 아님");
+            throw new TokenMalformedException();
         } catch (UnsupportedJwtException ex) {
-            log.error("엑세스 토큰이 서비스의 형태와 맞지 않음");
+            throw new TokenUnsupportedException();
         } catch (SignatureException ex) {
-            log.error("엑세스 토큰 서명이 유효하지 않음");
+            throw new TokenSignatureException();
         }
     }
 

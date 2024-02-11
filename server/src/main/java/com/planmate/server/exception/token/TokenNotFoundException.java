@@ -11,21 +11,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @Generated
 public class TokenNotFoundException extends RuntimeException {
     private String message;
-    private ErrorCode code;
 
     public TokenNotFoundException(Long id) {
         super(id.toString());
 
         this.message = id.toString();
-    }
-
-    public TokenNotFoundException(String token) {
-        super("failed to find token ");
-        this.message = "failed to find token";
-    }
-
-    public TokenNotFoundException() {
-        super("failed to find token");
-        this.message = "failed to find token";
     }
 }

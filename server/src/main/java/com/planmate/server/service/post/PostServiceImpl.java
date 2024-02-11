@@ -45,7 +45,7 @@ public class PostServiceImpl implements PostService {
         Page<Post> postList = postRepository.findPostByPage(0L,getPostPageable(pages));
 
         for (Post post : postList) {
-            PostResponseDto responseDto = PostResponseDto.of(post);
+            PostResponseDto responseDto = PostResponseDto.of(post,memberId);
             responseDto.setIsMyPost(post.getMember().getMemberId().equals(memberId));
             responseDtoList.add(responseDto);
         }
@@ -67,7 +67,7 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findByPostId(postId)
                 .orElseThrow(() -> new PostNotFoundException(postId));
 
-        PostResponseDto responseDto = PostResponseDto.of(post);
+        PostResponseDto responseDto = PostResponseDto.of(post,memberId);
         responseDto.setIsMyPost(post.getMember().getMemberId().equals(memberId));
 
         return responseDto;
@@ -151,7 +151,7 @@ public class PostServiceImpl implements PostService {
         Page<Post> postList = postRepository.findByMemberMemberId(member.getMemberId(),getPostPageable(pages));
 
         for (Post post : postList) {
-            PostResponseDto responseDto = PostResponseDto.of(post);
+            PostResponseDto responseDto = PostResponseDto.of(post,memberId);
             responseDto.setIsMyPost(post.getMember().getMemberId().equals(memberId));
             responseDtoList.add(responseDto);
         }
@@ -205,7 +205,7 @@ public class PostServiceImpl implements PostService {
             Post post = postRepository.findByPostId(memberScrap.getPost().getPostId())
                     .orElseThrow(() -> new PostNotFoundException(memberScrap.getMember().getMemberId()));
 
-            PostResponseDto responseDto = PostResponseDto.of(post);
+            PostResponseDto responseDto = PostResponseDto.of(post,memberId);
             responseDto.setIsMyPost(post.getMember().getMemberId().equals(memberId));
             responseDtoList.add(responseDto);
         }
@@ -229,7 +229,7 @@ public class PostServiceImpl implements PostService {
 
         for (PostTag postTag : postTagList) {
             Post post = postTag.getPost();
-            PostResponseDto responseDto = PostResponseDto.of(post);
+            PostResponseDto responseDto = PostResponseDto.of(post,memberId);
             responseDto.setIsMyPost(post.getMember().getMemberId().equals(memberId));
             responseDtoList.add(responseDto);
         }

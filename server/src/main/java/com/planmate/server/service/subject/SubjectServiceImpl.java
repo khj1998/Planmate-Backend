@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -198,12 +199,15 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     private Time getTotalStudyTime(List<Subject> subjectList) {
-        Long totalMillis = 0L;
+        LocalTime result = LocalTime.of(0,0,0);
 
         for (Subject subject : subjectList) {
-            totalMillis += subject.getStudyTime().getTime();
+            Time studyTime = subject.getStudyTime();
+            result = result.plusHours(studyTime.getHours())
+                                    .plusMinutes(studyTime.getMinutes())
+                                    .plusSeconds(studyTime.getSeconds());
         }
 
-        return new Time(totalMillis);
+        return Time.valueOf(result);
     }
 }

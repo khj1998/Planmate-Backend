@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @Generated
 public class MemberNotFoundException extends RuntimeException {
     private String message;
-    private ErrorCode code;
 
     public MemberNotFoundException(Long id) {
         super(id.toString());

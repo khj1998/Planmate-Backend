@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public interface MemberService {
     Optional<Member> checkDuplicated(String email);
-    Optional<Member> findMemberById(Long id);
+    Member findMemberById(Long id);
     LoginResponseDto signUp(GoogleLoginRequestDto requestDto);
     LoginResponseDto signIn(Member member);
     List<Authority> getAuthorities();

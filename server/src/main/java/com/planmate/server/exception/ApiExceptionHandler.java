@@ -100,24 +100,6 @@ public class ApiExceptionHandler {
         return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(TokenExpiredException.class)
-    public ResponseEntity<ApiErrorResponse> handleException(TokenExpiredException ex) {
-        ApiErrorResponse response = new ApiErrorResponse("ERROR-0014","token expired");
-        return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(TokenMalformedException.class)
-    public ResponseEntity<ApiErrorResponse> handleException(TokenMalformedException ex) {
-        ApiErrorResponse response = new ApiErrorResponse("ERROR-0015","malformed token");
-        return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(TokenUnsupportedException.class)
-    public ResponseEntity<ApiErrorResponse> handleException(TokenUnsupportedException ex) {
-        ApiErrorResponse response = new ApiErrorResponse("ERROR-0016","unsupported token");
-        return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
-    }
-
     @ExceptionHandler(SubjectTimeSliceNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleException(SubjectTimeSliceNotFoundException ex) {
         ApiErrorResponse response = new ApiErrorResponse("ERROR-0017","last study data is not existed : "+ex.getMessage());

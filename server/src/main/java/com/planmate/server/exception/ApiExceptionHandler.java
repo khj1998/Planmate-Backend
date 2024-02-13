@@ -11,6 +11,7 @@ import com.planmate.server.exception.subject.SubjectDuplicatedException;
 import com.planmate.server.exception.subject.SubjectNotFoundException;
 import com.planmate.server.exception.dday.MemberDdayNotFoundException;
 import com.planmate.server.exception.dday.DdayNotFoundException;
+import com.planmate.server.exception.subject.SubjectTimeSliceNotFoundException;
 import com.planmate.server.exception.token.*;
 import lombok.Generated;
 import org.springframework.http.HttpStatus;
@@ -115,5 +116,11 @@ public class ApiExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handleException(TokenUnsupportedException ex) {
         ApiErrorResponse response = new ApiErrorResponse("ERROR-0016","unsupported token");
         return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(SubjectTimeSliceNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleException(SubjectTimeSliceNotFoundException ex) {
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0017","last study data is not existed : "+ex.getMessage());
+        return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
     }
 }

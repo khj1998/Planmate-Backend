@@ -8,7 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.sql.Time;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "study_time_slice")
@@ -34,5 +34,5 @@ public class StudyTimeSlice {
 
     @CreationTimestamp
     @Column(name = "created_at",columnDefinition = "datetime")
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
 }

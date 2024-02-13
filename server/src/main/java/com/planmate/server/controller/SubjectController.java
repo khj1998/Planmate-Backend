@@ -5,6 +5,7 @@ import com.planmate.server.dto.request.subject.SubjectEditRequestDto;
 import com.planmate.server.dto.request.subject.SubjectTimeRequest;
 import com.planmate.server.dto.response.subject.SubjectResponse;
 import com.planmate.server.dto.response.subject.SubjectStudyTimeResponse;
+import com.planmate.server.dto.response.subject.SubjectTimeSliceResponse;
 import com.planmate.server.service.subject.SubjectService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -83,5 +84,14 @@ public class SubjectController {
     public ResponseEntity<Boolean> deleteSubject(@RequestParam Long subjectId) {
         subjectService.deleteSubject(subjectId);
         return ResponseEntity.ok(true);
+    }
+
+    @GetMapping("/time-slice")
+    @ApiOperation("전날 특정 시간 총 공부량 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200",description = "전날 특정 시간 총 공부량 조회 성공")
+    })
+    public ResponseEntity<SubjectTimeSliceResponse> findTimeSlice() {
+        return ResponseEntity.ok(subjectService.findTimeSlice());
     }
 }

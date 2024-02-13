@@ -4,6 +4,7 @@ import com.planmate.server.domain.Member;
 import com.planmate.server.dto.request.notice.NoticeEditRequestDto;
 import com.planmate.server.dto.request.notice.NoticeRequestDto;
 import com.planmate.server.dto.request.token.ReissueTokenRequestDto;
+import com.planmate.server.dto.response.member.MemberResponseDto;
 import com.planmate.server.dto.response.token.ReissueTokenResponseDto;
 import com.planmate.server.service.member.MemberService;
 import com.planmate.server.service.notice.NoticeService;
@@ -24,7 +25,6 @@ import org.springframework.web.bind.annotation.*;
 @Api(tags = {"관리자 api"})
 @Slf4j
 public class AdminController {
-    private final TokenService tokenService;
     private final MemberService memberService;
     private final NoticeService noticeService;
 
@@ -34,7 +34,7 @@ public class AdminController {
             @ApiResponse(responseCode = "200", description = "조회 환료"),
             @ApiResponse(responseCode = "403", description = "관리자 권한 없음")
     })
-    public ResponseEntity<Member> getInfo(@RequestParam(value = "id") Long id) {
+    public ResponseEntity<MemberResponseDto> getInfo(@RequestParam(value = "id") Long id) {
         return ResponseEntity.ok(memberService.getInfo(id));
     }
 
@@ -64,14 +64,5 @@ public class AdminController {
     public ResponseEntity deletePost(@RequestParam("noticeId") Long noticeId) {
         noticeService.deleteNotice(noticeId);
         return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/token")
-    @ApiOperation("관리자 권한으로 특정 계정 토큰 활성화")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "특정 계정 토큰 활성화 성공")
-    })
-    public ResponseEntity<ReissueTokenResponseDto> refreshTokenByAdmin(@RequestBody ReissueTokenRequestDto dto) {
-        return ResponseEntity.ok(tokenService.reissueTokenByAdmin(dto));
     }
 }

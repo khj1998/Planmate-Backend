@@ -10,7 +10,10 @@ import org.joda.time.LocalDateTime;
 import javax.persistence.*;
 import java.sql.Time;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
 
 @Entity
 @Table(name = "subject")

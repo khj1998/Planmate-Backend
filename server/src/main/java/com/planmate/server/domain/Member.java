@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Entity
@@ -62,5 +63,23 @@ public class Member {
 
     public void updateProfile(String profileImg) {
         this.profile = profileImg;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(memberId);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        if (this == obj) {
+            return true;
+        }
+
+        return Objects.equals(memberId,((Member) obj).getMemberId());
     }
 }

@@ -11,8 +11,8 @@ import com.planmate.server.exception.subject.SubjectDuplicatedException;
 import com.planmate.server.exception.subject.SubjectNotFoundException;
 import com.planmate.server.exception.dday.MemberDdayNotFoundException;
 import com.planmate.server.exception.dday.DdayNotFoundException;
-import com.planmate.server.exception.token.TokenNotFoundException;
-import com.planmate.server.exception.token.TokenNotStartWithBearerException;
+import com.planmate.server.exception.subject.SubjectTimeSliceNotFoundException;
+import com.planmate.server.exception.token.*;
 import lombok.Generated;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -97,6 +97,30 @@ public class ApiExceptionHandler {
     @ExceptionHandler(NoticeNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleException(NoticeNotFoundException ex) {
         ApiErrorResponse response = new ApiErrorResponse("ERROR-0013","notice not found id : "+ex.getMessage());
+        return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(TokenExpiredException.class)
+    public ResponseEntity<ApiErrorResponse> handleException(TokenExpiredException ex) {
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0014","token expired");
+        return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(TokenMalformedException.class)
+    public ResponseEntity<ApiErrorResponse> handleException(TokenMalformedException ex) {
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0015","malformed token");
+        return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(TokenUnsupportedException.class)
+    public ResponseEntity<ApiErrorResponse> handleException(TokenUnsupportedException ex) {
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0016","unsupported token");
+        return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(SubjectTimeSliceNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleException(SubjectTimeSliceNotFoundException ex) {
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0017","last study data is not existed : "+ex.getMessage());
         return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
     }
 }

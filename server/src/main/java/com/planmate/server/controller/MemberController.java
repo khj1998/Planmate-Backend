@@ -1,6 +1,7 @@
 package com.planmate.server.controller;
 
 import com.planmate.server.dto.response.login.LoginResponseDto;
+import com.planmate.server.dto.response.member.MemberResponseDto;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,7 +35,7 @@ public class MemberController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 완료")
     })
-    public ResponseEntity<Member> getInfo() {
+    public ResponseEntity<MemberResponseDto> getInfo() {
         return ResponseEntity.ok(memberService.getInfo());
     }
 
@@ -53,7 +54,7 @@ public class MemberController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "이름 변경 환료")
     })
-    public ResponseEntity<Member> modifyName(@RequestParam(value = "name") String name) {
+    public ResponseEntity<MemberResponseDto> modifyName(@RequestParam(value = "name") String name) {
         return ResponseEntity.ok(memberService.modifyName(name));
     }
 
@@ -62,7 +63,7 @@ public class MemberController {
             @ApiResponse(responseCode = "200", description = "이미지 변경 환료")
     })
     @PostMapping(value = "/img", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Member> modifyImg(@RequestParam(value = "image")MultipartFile multipartFile) throws IOException {
+    public ResponseEntity<MemberResponseDto> modifyImg(@RequestParam(value = "image")MultipartFile multipartFile) throws IOException {
         String img = s3UploadService.upload(multipartFile, "profile");
 
         return ResponseEntity.ok(memberService.modifyImg(img));

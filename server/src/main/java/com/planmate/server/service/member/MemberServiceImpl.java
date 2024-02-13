@@ -7,6 +7,7 @@ import com.planmate.server.domain.Member;
 import com.planmate.server.domain.Token;
 import com.planmate.server.dto.request.login.GoogleLoginRequestDto;
 import com.planmate.server.dto.response.login.LoginResponseDto;
+import com.planmate.server.dto.response.member.MemberResponseDto;
 import com.planmate.server.exception.member.MemberNotFoundException;
 import com.planmate.server.exception.token.TokenNotFoundException;
 import com.planmate.server.repository.MemberRepository;
@@ -113,20 +114,24 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public Member getInfo() {
+    public MemberResponseDto getInfo() {
         Long id = JwtUtil.getUserIdByAccessToken();
 
-        return memberRepository.findById(id).orElseThrow(
+        Member member =  memberRepository.findById(id).orElseThrow(
                 () -> new MemberNotFoundException(id)
         );
+
+        return modelMapper.map(member, MemberResponseDto.class);
     }
 
     @Override
     @Transactional
-    public Member getInfo(final Long id) {
-        return memberRepository.findById(id).orElseThrow(
+    public MemberResponseDto getInfo(final Long id) {
+        Member member =  memberRepository.findById(id).orElseThrow(
                 () -> new MemberNotFoundException(id)
         );
+
+        return modelMapper.map(member, MemberResponseDto.class);
     }
 
     @Override
@@ -139,7 +144,7 @@ public class MemberServiceImpl implements MemberService {
     
     @Override
     @Transactional
-    public Member modifyName(final String name) {
+    public MemberResponseDto modifyName(final String name) {
         Long id = JwtUtil.getUserIdByAccessToken();
 
         Member member = memberRepository.findById(id).orElseThrow(
@@ -148,12 +153,12 @@ public class MemberServiceImpl implements MemberService {
 
         member.updateMemberName(name);
 
-        return memberRepository.save(member);
+        return modelMapper.map(member, MemberResponseDto.class);
     }
 
     @Override
     @Transactional
-    public Member modifyImg(final String img) {
+    public MemberResponseDto modifyImg(final String img) {
         Long id = JwtUtil.getUserIdByAccessToken();
 
         Member member = memberRepository.findById(id).orElseThrow(
@@ -162,7 +167,7 @@ public class MemberServiceImpl implements MemberService {
 
         member.updateProfile(img);
 
-        return memberRepository.save(member);
+        return modelMapper.map(member, MemberResponseDto.class);
     }
 
     @Override

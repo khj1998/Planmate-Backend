@@ -33,7 +33,7 @@ public class PostResponseDto {
     private Boolean isMyScraped;
     private Boolean isMyPost;
 
-    public static PostResponseDto of(Post post) {
+    public static PostResponseDto of(Post post,Long memberId) {
         Boolean isMyHearted = false;
         Boolean isMyScraped = false;
         List<String> tagList = new ArrayList<>();
@@ -49,14 +49,14 @@ public class PostResponseDto {
         }
 
         for (PostLike postLike : postLikeList) {
-            if (postLike.getMember().getMemberId().equals(member.getMemberId())) {
+            if (postLike.getMember().getMemberId().equals(memberId)) {
                 isMyHearted = true;
                 break;
             }
         }
 
         for (MemberScrap memberScrap : scrapList) {
-            if (memberScrap.getMember().getMemberId().equals(member.getMemberId())) {
+            if (memberScrap.getMember().getMemberId().equals(memberId)) {
                 isMyScraped = true;
                 break;
             }

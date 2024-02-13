@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @Getter
 public class TokenNotStartWithBearerException extends RuntimeException {
     private String message;
-    private ErrorCode code;
 
     public TokenNotStartWithBearerException(String message) {
         super(message);

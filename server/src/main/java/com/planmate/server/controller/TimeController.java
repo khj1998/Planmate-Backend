@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,14 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @Api(tags = {"시간 초기화 관련 API"})
 @RequiredArgsConstructor
-public class TimeInitController {
+public class TimeController {
     private final SubjectService subjectService;
 
-    @GetMapping("/reset")
+    @PostMapping("/reset")
     @ApiOperation("공부/운동 시간 리셋")
     @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "공부/운동 시간 업데이트 성공"),
-            @ApiResponse(responseCode = "404",description = "공부/운동 시간 업데이트에 실패함")
+            @ApiResponse(responseCode = "200",description = "공부/운동 시간 업데이트 성공")
     })
     public ResponseEntity<Boolean> resetTime() {
         subjectService.backUpAndInit();
@@ -38,5 +38,14 @@ public class TimeInitController {
     })
     public ResponseEntity<Integer> checkData() {
         return ResponseEntity.ok(subjectService.checkBackUpData());
+    }
+
+    @PostMapping("/slice/backup")
+    @ApiOperation("특정 시간까지의 총 공부 시간 백업")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200",description = "특정 시간까지 총 공부 시간 백업 성공")
+    })
+    public ResponseEntity<Boolean> backupTimeSlice() {
+        return ResponseEntity.ok(subjectService.backupTimeSlice());
     }
 }

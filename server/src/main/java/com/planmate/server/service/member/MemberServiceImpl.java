@@ -49,8 +49,9 @@ public class MemberServiceImpl implements MemberService {
      * */
     @Override
     @Transactional
-    public Optional<Member> findMemberById(final Long id) {
-        return memberRepository.findById(id);
+    public Member findMemberById(final Long id) throws MemberNotFoundException {
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new MemberNotFoundException(id));
     }
 
     /**

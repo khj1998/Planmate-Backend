@@ -1,12 +1,11 @@
 package com.planmate.server.config;
 
-import com.planmate.server.exception.filter.FilterChainExceptionHandler;
+import com.planmate.server.service.member.MemberService;
+import com.planmate.server.util.FilterChainExceptionHandler;
 import com.planmate.server.util.JwtCustomFilter;
 import lombok.Generated;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.Ordered;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -15,9 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Generated
 /**
@@ -29,6 +26,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final CorsConfigurationSource corsConfigurationSource;
+    private final MemberService memberService;
 
     @Bean
     WebSecurityCustomizer webSecurityCustomizer() {
@@ -71,7 +69,7 @@ public class SecurityConfig {
 
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .addFilterBefore(new FilterChainExceptionHandler(), UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(new JwtCustomFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(new JwtCustomFilter(memberService), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers("/admin/**").hasAnyAuthority("ROLE_ADMIN")
                 .antMatchers("/member/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")

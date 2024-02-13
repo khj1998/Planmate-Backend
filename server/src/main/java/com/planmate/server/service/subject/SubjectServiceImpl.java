@@ -179,7 +179,7 @@ public class SubjectServiceImpl implements SubjectService {
         Integer nowHour = getNowHourValue();
         LocalDate yesterdayDate = LocalDate.now().minusDays(1L);
 
-        StudyTimeSlice yesterdayTimeSlice = studyTimeSliceRepository.findYesterdayTimeSlice(nowHour,yesterdayDate)
+        StudyTimeSlice yesterdayTimeSlice = studyTimeSliceRepository.findYesterdayTimeSlice(memberId,nowHour,yesterdayDate)
                 .orElseThrow(() -> new SubjectTimeSliceNotFoundException(yesterdayDate.toString()));
 
         List<Subject> subjectList = subjectRepository.findByMemberMemberId(memberId);

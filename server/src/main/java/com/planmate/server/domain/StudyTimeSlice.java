@@ -33,6 +33,6 @@ public class StudyTimeSlice {
     private Integer hour;
 
     @CreationTimestamp
-    @Column(name = "created_at",columnDefinition = "datetime")
+    @Column(name = "created_at",columnDefinition = "date")
     private LocalDate createdAt;
 }

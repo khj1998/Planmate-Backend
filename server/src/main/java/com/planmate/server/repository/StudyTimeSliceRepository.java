@@ -11,6 +11,8 @@ import java.util.Optional;
 
 public interface StudyTimeSliceRepository extends JpaRepository<StudyTimeSlice,Long> {
 
-    @Query("select s from StudyTimeSlice where s.hour <= hour and s.createdAt = :yesterdayDate")
-    Optional<StudyTimeSlice> findYesterdayTimeSlice(@Param("hour") Integer hour, @Param("yesterdayDate") LocalDate yesterdayDate);
+    @Query("select s from StudyTimeSlice s " +
+            "where s.member.memberId = :memberId and s.hour = :hour and s.createdAt = :yesterdayDate")
+    Optional<StudyTimeSlice> findYesterdayTimeSlice(@Param("memberId") Long memberId,@Param("hour") Integer hour
+            , @Param("yesterdayDate") LocalDate yesterdayDate);
 }

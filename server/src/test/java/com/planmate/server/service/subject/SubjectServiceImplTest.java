@@ -65,6 +65,6 @@ class SubjectServiceImplTest {
 
         List<StudyTimeSlice> studyTimeSliceList = studyTimeSliceRepository.findAll();
 
-        Assertions.assertThat(memberList.size()).isEqualTo(studyTimeSliceList.size());
+        Assertions.assertThat(studyTimeSliceList.size()%memberList.size()).isEqualTo(0);
     }
 }

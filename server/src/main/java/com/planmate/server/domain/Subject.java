@@ -68,16 +68,16 @@ public class Subject {
                 .maxStudyTime(new Time(0,0,0))
                 .studyTime(new Time(0,0,0))
                 .restTime(new Time(0,0,0))
-                .startAt(new Time(5,0,0))
-                .endAt(new Time(5,0,0))
+                .startAt(new Time(0,0,0))
+                .endAt(new Time(0,0,0))
                 .colorHex(colorHex)
                 .build();
     }
 
     public void initTime() {
         // 시작 시간, 끝 시간 초기 설정
-        this.startAt = new Time(5,0,0);
-        this.endAt = new Time(5,0,0);
+        this.startAt = new Time(0,0,0);
+        this.endAt = new Time(0,0,0);
 
         // maxStudyTime 초기 설정
         this.maxStudyTime = new Time(0,0,0);
@@ -100,32 +100,45 @@ public class Subject {
     public void updateStudyTime(String startAt,String endAt) {
         String[] startSplit = startAt.split(":");
         String[] endSplit = endAt.split(":");
-
-        Integer startTimeSecond = Integer.parseInt(startSplit[0])*3600 + Integer.parseInt(startSplit[1])*60 + Integer.parseInt(startSplit[2]);
+        Integer startTimeSecond;
         Integer endTimeSecond = Integer.parseInt(endSplit[0])*3600 + Integer.parseInt(endSplit[1])*60 + Integer.parseInt(endSplit[2]);
+
+        if (Integer.parseInt(startSplit[0]) > Integer.parseInt(endSplit[0])) {
+            startTimeSecond = 0;
+        } else {
+            startTimeSecond = Integer.parseInt(startSplit[0])*3600 + Integer.parseInt(startSplit[1])*60 + Integer.parseInt(startSplit[2]);
+        }
 
         Integer newStudySecond = endTimeSecond - startTimeSecond;
         Integer lastTimeSecond = this.getStudyTime().getHours()*3600 + this.getStudyTime().getMinutes()*60 + this.getStudyTime().getSeconds();
 
+        this.studyTime = getNewStudyTime(newStudySecond,lastTimeSecond);
+
+        Integer maxStudySecond = this.getMaxStudyTime().getHours()*3600 + this.getMaxStudyTime().getMinutes()*60 + this.getMaxStudyTime().getSeconds();
+        maxStudySecond = Math.max(maxStudySecond,newStudySecond);
+
+        this.maxStudyTime = getNewMaxStudyTime(maxStudySecond);
+    }
+
+    private Time getNewStudyTime(Integer newStudySecond,Integer lastTimeSecond) {
         Integer newStudyTimeSecond = newStudySecond + lastTimeSecond;
         Integer hours = newStudyTimeSecond/3600;
         Integer minutes = (newStudyTimeSecond - 3600*hours)/60;
         Integer seconds = newStudyTimeSecond - 3600*hours - 60*minutes;
 
-        this.studyTime = new Time(hours,minutes,seconds);
+        return new Time(hours,minutes,seconds);
+    }
 
-        Integer maxStudyTime = this.getMaxStudyTime().getHours()*3600 + this.getMaxStudyTime().getMinutes()*60 + this.getMaxStudyTime().getSeconds();
-        maxStudyTime = Math.max(maxStudyTime,newStudySecond);
+    private Time getNewMaxStudyTime(Integer maxStudySecond) {
+        Integer hours = maxStudySecond/3600;
+        Integer minutes = (maxStudySecond - 3600*hours)/60;
+        Integer seconds = maxStudySecond - 3600*hours - 60*minutes;
 
-        hours = maxStudyTime/3600;
-        minutes = (maxStudyTime - 3600*hours)/60;
-        seconds = maxStudyTime - 3600*hours - 60*minutes;
-
-        this.maxStudyTime = new Time(hours,minutes,seconds);
+        return new Time(hours,minutes,seconds);
     }
 
     public void updateStartEndTime(SubjectTimeRequest subjectTimeRequest) {
-        Time firstTime = new Time(5,0,0);
+        Time firstTime = new Time(0,0,0);
 
         String[] startSplit = subjectTimeRequest.getStartAt().split(":");
         String[] endSplit = subjectTimeRequest.getEndAt().split(":");
@@ -136,6 +149,7 @@ public class Subject {
         Integer minutes;
         Integer seconds;
 
+        // DB에 시작시간과 끝 시간이 같으면 유저는 공부한 적이 없음. 시작시간과 끝시간 모두 업데이트 해야함.
         if (this.endAt.getTime() == firstTime.getTime()) {
             hours = startTimeSecond/3600;
             minutes = (startTimeSecond - hours*3600)/60;
@@ -146,7 +160,7 @@ public class Subject {
             minutes = (endTimeSecond - hours*3600)/60;
             seconds = endTimeSecond - hours*3600 - minutes*60;
             this.endAt = new Time(hours,minutes,seconds);
-        } else {
+        } else { // 공부 시작한 기록이 있음. 공부 최종 종료 시간만 업데이트 진행.
             hours = endTimeSecond/3600;
             minutes = (endTimeSecond - hours*3600)/60;
             seconds = endTimeSecond - hours*3600 - hours*60;

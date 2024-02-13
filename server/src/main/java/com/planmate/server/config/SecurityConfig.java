@@ -1,5 +1,6 @@
 package com.planmate.server.config;
 
+import com.planmate.server.exception.filter.FilterChainExceptionHandler;
 import com.planmate.server.util.JwtCustomFilter;
 import lombok.Generated;
 import lombok.RequiredArgsConstructor;
@@ -69,6 +70,7 @@ public class SecurityConfig {
                 .cors().and()
 
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .addFilterBefore(new FilterChainExceptionHandler(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(new JwtCustomFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers("/admin/**").hasAnyAuthority("ROLE_ADMIN")

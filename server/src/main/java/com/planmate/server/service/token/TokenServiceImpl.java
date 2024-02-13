@@ -35,8 +35,6 @@ public class TokenServiceImpl implements TokenService {
     @Override
     @Transactional
     public ReissueTokenResponseDto reissueAccessToken(ReissueTokenRequestDto dto) {
-        JwtUtil.validateToken(dto.getRefreshToken());
-
         Member member = memberRepository.findById(dto.getId()).orElseThrow((() -> new MemberNotFoundException(dto.getId())));
 
         Token token = tokenRepository.findByAccessTokenAndRefreshToken(member.getMemberId(),dto.getAccessToken(),dto.getRefreshToken())

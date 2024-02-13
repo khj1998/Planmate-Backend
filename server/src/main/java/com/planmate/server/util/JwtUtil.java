@@ -113,20 +113,10 @@ public class JwtUtil {
                 .get("roles");
     }
 
-    public static void validateToken(String token) {
-        try {
-            Jwts.parserBuilder()
-                    .setSigningKey(JWT_SECRET_KEY).build()
-                    .parseClaimsJws(token);
-        } catch (ExpiredJwtException ex) {
-            throw new TokenExpiredException();
-        } catch (MalformedJwtException ex) {
-            throw new TokenMalformedException();
-        } catch (UnsupportedJwtException ex) {
-            throw new TokenUnsupportedException();
-        } catch (SignatureException ex) {
-            throw new TokenSignatureException();
-        }
+    public static void validateToken(String token) throws ExpiredJwtException,MalformedJwtException,UnsupportedJwtException,SignatureException {
+        Jwts.parserBuilder()
+                .setSigningKey(JWT_SECRET_KEY).build()
+                .parseClaimsJws(token);
     }
 
     public static String getExpiredAccessToken(Member member) {

@@ -1,8 +1,10 @@
 package com.planmate.server.dto.response.subject;
 
+import com.planmate.server.vo.YesterdayStudyTimeVo;
 import lombok.*;
 
 import java.sql.Time;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -10,19 +12,16 @@ import java.sql.Time;
 @Builder
 public class SubjectTimeSliceResponse {
     private Integer nowGraphHour;
-    private Integer yesterdayHour;
-    private Integer yesterdayMinute;
-    private Integer yesterdaySecond;
     private Integer todayHour;
     private Integer todayMinute;
     private Integer todaySecond;
 
-    public static SubjectTimeSliceResponse of(Time yesterdayTotalTime,Time nowTotalTime,Integer nowGraphHour) {
+    private List<YesterdayStudyTimeVo> yesterdayStudyTimeList;
+
+    public static SubjectTimeSliceResponse of(List<YesterdayStudyTimeVo> yesterdayStudyTimeList,Time nowTotalTime,Integer nowGraphHour) {
         return SubjectTimeSliceResponse.builder()
                 .nowGraphHour(nowGraphHour)
-                .yesterdayHour(yesterdayTotalTime.getHours())
-                .yesterdayMinute(yesterdayTotalTime.getMinutes())
-                .yesterdaySecond(yesterdayTotalTime.getSeconds())
+                .yesterdayStudyTimeList(yesterdayStudyTimeList)
                 .todayHour(nowTotalTime.getHours())
                 .todayMinute(nowTotalTime.getMinutes())
                 .todaySecond(nowTotalTime.getSeconds())

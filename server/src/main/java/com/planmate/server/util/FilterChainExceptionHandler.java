@@ -21,7 +21,7 @@ import java.io.IOException;
 public class FilterChainExceptionHandler extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String accessToken = getAccessToken(request);
+        String token = getAccessToken(request);
 
         if (!isBearerHeader(request)) {
             setExceptionResponse(response,HttpStatus.BAD_REQUEST.value(), "Authorization Header is not started with Bearer");
@@ -29,7 +29,7 @@ public class FilterChainExceptionHandler extends OncePerRequestFilter {
         }
 
         try {
-            JwtUtil.validateToken(accessToken);
+            JwtUtil.validateToken(token);
             filterChain.doFilter(request,response);
         } catch (ExpiredJwtException ex) {
             setExceptionResponse(response,HttpStatus.UNAUTHORIZED.value(),"token expired");

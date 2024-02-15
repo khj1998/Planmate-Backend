@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @Getter
 public class MemberDdayNotFoundException extends RuntimeException {
     private String message;
-    private ErrorCode errorCode;
 
     public MemberDdayNotFoundException(Long id) {
         super(id.toString());

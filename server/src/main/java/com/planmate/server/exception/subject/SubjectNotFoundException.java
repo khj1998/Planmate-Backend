@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @Generated
 public class SubjectNotFoundException extends RuntimeException {
     private String message;
-    private ErrorCode code;
 
     public SubjectNotFoundException(Long id) {
         super(id.toString());

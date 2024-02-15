@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @Getter
 public class PostNotFoundException extends RuntimeException {
     private String message;
-    private ErrorCode code;
 
     public PostNotFoundException(Long id) {
         super(id.toString());

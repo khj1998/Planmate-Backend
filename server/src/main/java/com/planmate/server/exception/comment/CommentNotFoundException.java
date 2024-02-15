@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @Generated
 public class CommentNotFoundException extends RuntimeException {
     private String message;
-    private ErrorCode code;
 
     public CommentNotFoundException(Long id) {
         super(id.toString());

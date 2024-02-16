@@ -4,26 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.planmate.server.domain.Member;
 import com.planmate.server.exception.ApiErrorResponse;
 import com.planmate.server.exception.member.MemberNotFoundException;
+import com.planmate.server.exception.token.TokenExpiredException;
 import com.planmate.server.service.member.MemberService;
-import com.planmate.server.service.member.MemberServiceImpl;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwt;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
-import io.jsonwebtoken.security.SignatureException;
-import lombok.Generated;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
+import com.planmate.server.service.token.TokenService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Component;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -33,13 +21,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 public class JwtCustomFilter extends OncePerRequestFilter {
     private final MemberService memberService;
+    private final TokenService tokenService;
 
-    public JwtCustomFilter(MemberService memberService) {
+    public JwtCustomFilter(MemberService memberService,TokenService tokenService) {
         this.memberService = memberService;
+        this.tokenService = tokenService;
     }
 
     @Override
@@ -51,6 +40,7 @@ public class JwtCustomFilter extends OncePerRequestFilter {
 
         try {
             Member member = memberService.findMemberById(JwtUtil.getUserIdByAccessToken());
+            tokenService.findExpiredToken(accessToken);
 
             UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(member.getMemberId(),null,
@@ -60,7 +50,9 @@ public class JwtCustomFilter extends OncePerRequestFilter {
 
             filterChain.doFilter(request, response);
         } catch (MemberNotFoundException ex) {
-            setExceptionResponse(response,HttpStatus.NOT_FOUND.value(), JwtUtil.getUserIdByAccessToken()+"member not found");
+            setExceptionResponse(response,HttpStatus.NOT_FOUND.value(), JwtUtil.getUserIdByAccessToken()+" member not found");
+        } catch (TokenExpiredException ex) {
+            setExceptionResponse(response,HttpStatus.UNAUTHORIZED.value(), accessToken + " already has been expired");
         }
     }
 

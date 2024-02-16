@@ -6,4 +6,5 @@ import com.planmate.server.dto.response.token.ReissueTokenResponseDto;
 public interface TokenService {
     ReissueTokenResponseDto reissueAccessToken(ReissueTokenRequestDto reissueTokenRequestDto);
     ReissueTokenResponseDto createAdminToken(ReissueTokenRequestDto dto);
+    void findExpiredToken(String token);
 }

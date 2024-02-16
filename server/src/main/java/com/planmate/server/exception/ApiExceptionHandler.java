@@ -99,4 +99,10 @@ public class ApiExceptionHandler {
         ApiErrorResponse response = new ApiErrorResponse("ERROR-0017","last study data is not existed : "+ex.getMessage());
         return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(TokenExpiredException.class)
+    public ResponseEntity<ApiErrorResponse> handleException(TokenExpiredException ex) {
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0018",ex.getMessage() + " token already has been expired");
+        return new ResponseEntity<>(response,HttpStatus.UNAUTHORIZED);
+    }
 }

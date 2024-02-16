@@ -1,11 +1,14 @@
 package com.planmate.server.service.token;
 
+import com.planmate.server.domain.ExpiredToken;
 import com.planmate.server.domain.Member;
 import com.planmate.server.domain.Token;
 import com.planmate.server.dto.request.token.ReissueTokenRequestDto;
 import com.planmate.server.dto.response.token.ReissueTokenResponseDto;
 import com.planmate.server.exception.member.MemberNotFoundException;
+import com.planmate.server.exception.token.TokenExpiredException;
 import com.planmate.server.exception.token.TokenNotFoundException;
+import com.planmate.server.repository.ExpiredTokenRepository;
 import com.planmate.server.repository.MemberRepository;
 import com.planmate.server.repository.TokenRepository;
 import com.planmate.server.util.JwtUtil;
@@ -14,17 +17,26 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import static com.planmate.server.config.ModelMapperConfig.modelMapper;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Slf4j
 @Service
 @Generated
 @RequiredArgsConstructor
 public class TokenServiceImpl implements TokenService {
+    @PersistenceContext
+    private EntityManager entityManager;
     private final MemberRepository memberRepository;
     private final TokenRepository tokenRepository;
+    private final ExpiredTokenRepository expiredTokenRepository;
 
     /**
      * @author 지승언
@@ -41,10 +53,10 @@ public class TokenServiceImpl implements TokenService {
                 .orElseThrow(() -> new TokenNotFoundException(dto.getId()));
 
         token.updateAccessToken(JwtUtil.generateAccessToken(member));
-        token.updateAccessTokenExpiredAt(LocalDate.now().plusDays(JwtUtil.ACCESS_DURATION_DAYS));
+        token.updateAccessTokenExpiredAt(LocalDateTime.now().plusDays(JwtUtil.ACCESS_DURATION_DAYS));
 
         token.updateRefreshToken(JwtUtil.getExpiredRefreshToken(member));
-        token.updateRefreshTokenExpiredAt(LocalDate.now().plusDays(JwtUtil.REFRESH_DURATION_DAYS));
+        token.updateRefreshTokenExpiredAt(LocalDateTime.now().plusDays(JwtUtil.REFRESH_DURATION_DAYS));
         tokenRepository.save(token);
 
         return modelMapper.map(token, ReissueTokenResponseDto.class);
@@ -66,12 +78,27 @@ public class TokenServiceImpl implements TokenService {
                 .orElseThrow(() -> new TokenNotFoundException(dto.getId()));
 
         token.updateAccessToken(JwtUtil.generateAdminAccessToken(member));
-        token.updateAccessTokenExpiredAt(LocalDate.now().plusDays(JwtUtil.ACCESS_DURATION_DAYS));
+        token.updateAccessTokenExpiredAt(LocalDateTime.now().plusDays(JwtUtil.ACCESS_DURATION_DAYS));
 
         token.updateRefreshToken(JwtUtil.generateAdminRefreshToken(member));
-        token.updateRefreshTokenExpiredAt(LocalDate.now().plusDays(JwtUtil.REFRESH_DURATION_DAYS));
+        token.updateRefreshTokenExpiredAt(LocalDateTime.now().plusDays(JwtUtil.REFRESH_DURATION_DAYS));
         tokenRepository.save(token);
 
         return modelMapper.map(token, ReissueTokenResponseDto.class);
+    }
+
+    @Override
+    @Transactional
+    public void findExpiredToken(String token) throws TokenExpiredException {
+        Optional<ExpiredToken> accessToken = expiredTokenRepository.findByAccessToken(token);
+
+        if (accessToken.isPresent()) {
+            if (accessToken.get().getAccessTokenExpiredAt().getSecond() <= LocalDateTime.now().getSecond()) {
+                expiredTokenRepository.delete(accessToken.get());
+                entityManager.flush();
+            }
+
+            throw new TokenExpiredException(token);
+        }
     }
 }

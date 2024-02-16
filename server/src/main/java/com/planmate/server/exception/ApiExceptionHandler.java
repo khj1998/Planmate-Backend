@@ -34,12 +34,6 @@ public class ApiExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(TokenNotStartWithBearerException.class)
-    public ResponseEntity<ApiErrorResponse> handleException(TokenNotStartWithBearerException ex) {
-        ApiErrorResponse response = new ApiErrorResponse("ERROR-0003","Token in header not start with Bearer");
-        return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
-    }
-
     @ExceptionHandler(PostNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleException(PostNotFoundException ex) {
         ApiErrorResponse response = new ApiErrorResponse("ERROR-0004","Post is not found : "+ex.getMessage());
@@ -104,5 +98,11 @@ public class ApiExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handleException(SubjectTimeSliceNotFoundException ex) {
         ApiErrorResponse response = new ApiErrorResponse("ERROR-0017","last study data is not existed : "+ex.getMessage());
         return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(TokenExpiredException.class)
+    public ResponseEntity<ApiErrorResponse> handleException(TokenExpiredException ex) {
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0018",ex.getMessage() + " token already has been expired");
+        return new ResponseEntity<>(response,HttpStatus.UNAUTHORIZED);
     }
 }

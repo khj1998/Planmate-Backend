@@ -12,7 +12,14 @@ import java.util.Optional;
 public interface StudyTimeSliceRepository extends JpaRepository<StudyTimeSlice,Long> {
 
     @Query("select s from StudyTimeSlice s " +
-            "where s.member.memberId = :memberId and s.hour = :hour and s.createdAt = :yesterdayDate")
-    Optional<StudyTimeSlice> findYesterdayTimeSlice(@Param("memberId") Long memberId,@Param("hour") Integer hour
-            , @Param("yesterdayDate") LocalDate yesterdayDate);
+            "where (s.member.memberId = :memberId " +
+            "and s.createdAt = :yesterdayDate) " +
+            "or (s.member.memberId = :memberId and s.createdAt = :todayDate and s.hour = 24)")
+    List<StudyTimeSlice> findYesterdayTimeSlice(@Param("memberId") Long memberId
+            , @Param("yesterdayDate") LocalDate yesterdayDate, @Param("todayDate") LocalDate todayDate);
+
+    @Query("select s from StudyTimeSlice s " +
+            "where s.member.memberId = :memberId " +
+            "and s.createdAt = :todayDate and s.hour != 24")
+    List<StudyTimeSlice> findTodayTimeSlice(@Param("memberId") Long memberId,@Param("todayDate") LocalDate todayDate);
 }

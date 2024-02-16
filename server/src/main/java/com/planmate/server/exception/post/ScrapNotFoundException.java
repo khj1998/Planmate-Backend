@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class ScrapNotFoundException extends RuntimeException {
     private String message;
-    private ErrorCode code;
 
     public ScrapNotFoundException(Long id) {
         super(id.toString());

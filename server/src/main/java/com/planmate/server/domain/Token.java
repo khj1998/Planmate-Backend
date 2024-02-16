@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "token")
@@ -24,14 +25,14 @@ public class Token {
     @Column(name = "access_token", nullable = false,columnDefinition = "mediumtext")
     private String accessToken;
 
-    @Column(name = "access_token_expired_at",nullable = false, columnDefinition = "date")
-    private LocalDate accessTokenExpiredAt;
+    @Column(name = "access_token_expired_at",nullable = false, columnDefinition = "datetime")
+    private LocalDateTime accessTokenExpiredAt;
 
     @Column(name = "refresh_token",nullable = false, columnDefinition = "mediumtext")
     private String refreshToken;
 
-    @Column(name = "refresh_token_expired_at",nullable = false, columnDefinition = "date")
-    private LocalDate refreshTokenExpiredAt;
+    @Column(name = "refresh_token_expired_at",nullable = false, columnDefinition = "datetime")
+    private LocalDateTime refreshTokenExpiredAt;
 
     public void updateAccessToken(String accessToken) {
         this.accessToken = accessToken;
@@ -41,11 +42,11 @@ public class Token {
         this.refreshToken = refreshToken;
     }
 
-    public void updateAccessTokenExpiredAt(LocalDate accessTokenExpiredAt) {
+    public void updateAccessTokenExpiredAt(LocalDateTime accessTokenExpiredAt) {
         this.accessTokenExpiredAt = accessTokenExpiredAt;
     }
 
-    public void updateRefreshTokenExpiredAt(LocalDate refreshTokenExpiredAt) {
+    public void updateRefreshTokenExpiredAt(LocalDateTime refreshTokenExpiredAt) {
         this.refreshTokenExpiredAt = refreshTokenExpiredAt;
     }
 }

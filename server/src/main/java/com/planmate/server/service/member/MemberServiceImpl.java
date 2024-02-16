@@ -24,6 +24,7 @@ import static com.planmate.server.config.ModelMapperConfig.modelMapper;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -80,9 +81,9 @@ public class MemberServiceImpl implements MemberService {
         Token token = Token.builder()
                 .tokenId(member.getMemberId())
                 .accessToken(JwtUtil.generateAccessToken(member))
-                .accessTokenExpiredAt(LocalDate.now().plusDays(JwtUtil.ACCESS_DURATION_DAYS))
+                .accessTokenExpiredAt(LocalDateTime.now().plusDays(JwtUtil.ACCESS_DURATION_DAYS))
                 .refreshToken(JwtUtil.generateRefreshToken(member))
-                .refreshTokenExpiredAt(LocalDate.now().plusDays(JwtUtil.REFRESH_DURATION_DAYS))
+                .refreshTokenExpiredAt(LocalDateTime.now().plusDays(JwtUtil.REFRESH_DURATION_DAYS))
                 .build();
 
         tokenRepository.save(token);

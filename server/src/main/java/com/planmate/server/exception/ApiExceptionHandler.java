@@ -34,12 +34,6 @@ public class ApiExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(TokenNotStartWithBearerException.class)
-    public ResponseEntity<ApiErrorResponse> handleException(TokenNotStartWithBearerException ex) {
-        ApiErrorResponse response = new ApiErrorResponse("ERROR-0003","Token in header not start with Bearer");
-        return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
-    }
-
     @ExceptionHandler(PostNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleException(PostNotFoundException ex) {
         ApiErrorResponse response = new ApiErrorResponse("ERROR-0004","Post is not found : "+ex.getMessage());

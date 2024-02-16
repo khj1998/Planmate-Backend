@@ -13,7 +13,6 @@ import com.planmate.server.dto.response.subject.SubjectTimeSliceResponse;
 import com.planmate.server.exception.member.MemberNotFoundException;
 import com.planmate.server.exception.subject.SubjectDuplicatedException;
 import com.planmate.server.exception.subject.SubjectNotFoundException;
-import com.planmate.server.exception.subject.SubjectTimeSliceNotFoundException;
 import com.planmate.server.repository.MemberRepository;
 import com.planmate.server.repository.StudyBackUpRepository;
 import com.planmate.server.repository.StudyTimeSliceRepository;
@@ -21,8 +20,7 @@ import com.planmate.server.repository.SubjectRepository;
 import com.planmate.server.util.JwtUtil;
 import static com.planmate.server.config.ModelMapperConfig.modelMapper;
 
-import com.planmate.server.vo.YesterdayStudyTimeVo;
-import io.jsonwebtoken.Jwt;
+import com.planmate.server.dto.response.subject.StudyTimeDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -175,42 +173,37 @@ public class SubjectServiceImpl implements SubjectService {
     @Transactional(readOnly = true)
     public SubjectTimeSliceResponse findTimeSlice() {
         Long memberId = JwtUtil.getUserIdByAccessToken();
+        LocalDate todayDate = LocalDate.now();
+        LocalDate yesterdayDate = todayDate.minusDays(1);
         Integer nowHour = getNowHourValue();
-        LocalDate yesterdayDate = LocalDate.now().minusDays(1L);
 
-        List<StudyTimeSlice> yesterdayTimeSlice = studyTimeSliceRepository.findYesterdayTimeSlice(memberId,yesterdayDate);
-        List<YesterdayStudyTimeVo> yesterdayStudyTimeVoList = getYesterdayStudyTimeVoList(yesterdayTimeSlice);
+        List<StudyTimeSlice> yesterdayTimeSlice = studyTimeSliceRepository.findYesterdayTimeSlice(memberId, yesterdayDate,todayDate);
+        List<StudyTimeDto> yesterdayTimeList = getStudyTimeList(yesterdayTimeSlice);
+
+        List<StudyTimeSlice> todayTimeSliceList = studyTimeSliceRepository.findTodayTimeSlice(memberId,todayDate);
+        List<StudyTimeDto> todayTimeList = getStudyTimeList(todayTimeSliceList);
 
         List<Subject> subjectList = subjectRepository.findByMemberMemberId(memberId);
         Time nowTotalTime = getTotalStudyTime(subjectList);
 
-        return SubjectTimeSliceResponse.of(yesterdayStudyTimeVoList,nowTotalTime,nowHour);
+        return SubjectTimeSliceResponse.of(yesterdayTimeList,todayTimeList,nowTotalTime,nowHour);
     }
 
-    private List<YesterdayStudyTimeVo> getYesterdayStudyTimeVoList(List<StudyTimeSlice> yesterdayTimeSliceList) {
-        Map<Integer,Integer> indexOrderMap = new HashMap<>();
-        List<YesterdayStudyTimeVo> yesterdayStudyTimeVoList = new ArrayList<>();
+    private List<StudyTimeDto> getStudyTimeList(List<StudyTimeSlice> timeSliceList) {
+        List<StudyTimeDto> studyTimeDtoList = new ArrayList<>();
 
-        for (int i = 0; i<=18; i+=6) {
-            indexOrderMap.put(i,i/6);
+        for (StudyTimeSlice studyTimeSlice : timeSliceList) {
+            StudyTimeDto vo = StudyTimeDto.of(studyTimeSlice.getTotalTime());
+            studyTimeDtoList.add(vo);
         }
 
-        for (int i = 0; i < 4; i++) {
-            yesterdayStudyTimeVoList.add(new YesterdayStudyTimeVo(0,0,0));
+        if (timeSliceList.size() < 4) {
+            for (int i = 0; i< 4 - timeSliceList.size(); i++) {
+                studyTimeDtoList.add(new StudyTimeDto(0,0,0));
+            }
         }
 
-        yesterdayTimeSliceList.sort(
-                Comparator.comparing(StudyTimeSlice::getHour)
-        );
-
-        for (StudyTimeSlice studyTimeSlice : yesterdayTimeSliceList) {
-            YesterdayStudyTimeVo vo = yesterdayStudyTimeVoList.get(indexOrderMap.get(studyTimeSlice.getHour()));
-            vo.setYesterdayHour(studyTimeSlice.getTotalTime().getHours());
-            vo.setYesterdayMinute(studyTimeSlice.getTotalTime().getMinutes());
-            vo.setYesterdaySecond(studyTimeSlice.getTotalTime().getSeconds());
-        }
-
-        return yesterdayStudyTimeVoList;
+        return studyTimeDtoList;
     }
 
     private HashMap<Member,List<Subject>> makeMemberSubjectGroup(List<Subject> subjectList) {
@@ -264,13 +257,13 @@ public class SubjectServiceImpl implements SubjectService {
         Integer nowHour = LocalTime.now().getHour();
 
         if (nowHour < 6) {
-            return 6;
+            return 24;
         } else if (nowHour < 12) {
-            return 12;
+            return 6;
         } else if (nowHour < 18) {
-            return 18;
+            return 12;
         } else {
-            return 0;
+            return 18;
         }
     }
 }

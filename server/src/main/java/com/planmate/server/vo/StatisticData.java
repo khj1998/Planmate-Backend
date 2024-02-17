@@ -48,7 +48,7 @@ public class StatisticData {
         }
 
         if (startAtSecond == Integer.MAX_VALUE) {
-            startAtSecond = 3600*5;
+            startAtSecond = 0;
         }
 
         return StatisticData.builder()
@@ -86,7 +86,7 @@ public class StatisticData {
         }
 
         if (startAtSecond == Integer.MAX_VALUE) {
-            startAtSecond = 3600*5;
+            startAtSecond = 0;
         }
 
         return StatisticData.builder()
@@ -117,7 +117,7 @@ public class StatisticData {
     }
 
     private static Integer getMinSecond(Time startAt,Time endAt,Integer compareSecond) {
-        Time endTime = new Time(5,0,0);
+        Time endTime = new Time(0,0,0);
 
         if (endTime.equals(endAt)) {
             return compareSecond;

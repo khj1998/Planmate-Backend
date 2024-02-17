@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = "https://plan-mate.vercel.app",allowedHeaders = {"Content-Type"})
+@CrossOrigin(origins = {"https://plan-mate.vercel.app","http://localhost:3000"},allowedHeaders = {"Content-Type"})
 @RequiredArgsConstructor
 @RequestMapping(value = "/login")
 @Slf4j

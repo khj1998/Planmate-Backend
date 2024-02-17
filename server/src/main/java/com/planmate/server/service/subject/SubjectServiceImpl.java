@@ -177,11 +177,11 @@ public class SubjectServiceImpl implements SubjectService {
         LocalDate yesterdayDate = todayDate.minusDays(1);
         Integer nowHour = getNowHourValue();
 
-        List<StudyTimeSlice> yesterdayTimeSlice = studyTimeSliceRepository.findYesterdayTimeSlice(memberId, yesterdayDate,todayDate);
-        List<StudyTimeDto> yesterdayTimeList = getStudyTimeList(yesterdayTimeSlice);
-
         List<StudyTimeSlice> todayTimeSliceList = studyTimeSliceRepository.findTodayTimeSlice(memberId,todayDate);
         List<StudyTimeDto> todayTimeList = getStudyTimeList(todayTimeSliceList);
+
+        List<StudyTimeSlice> yesterdayTimeSlice = studyTimeSliceRepository.findYesterdayTimeSlice(memberId, yesterdayDate,todayDate);
+        List<StudyTimeDto> yesterdayTimeList = getStudyTimeList(yesterdayTimeSlice);
 
         List<Subject> subjectList = subjectRepository.findByMemberMemberId(memberId);
         Time nowTotalTime = getTotalStudyTime(subjectList);
@@ -192,15 +192,19 @@ public class SubjectServiceImpl implements SubjectService {
     private List<StudyTimeDto> getStudyTimeList(List<StudyTimeSlice> timeSliceList) {
         List<StudyTimeDto> studyTimeDtoList = new ArrayList<>();
 
-        for (StudyTimeSlice studyTimeSlice : timeSliceList) {
-            StudyTimeDto vo = StudyTimeDto.of(studyTimeSlice.getTotalTime());
-            studyTimeDtoList.add(vo);
+        Map<Integer,Integer> indexMap = new HashMap<>();
+
+        for (int i = 6; i<=24; i+=6) {
+            indexMap.put(i,i/6-1);
         }
 
-        if (timeSliceList.size() < 4) {
-            for (int i = 0; i< 4 - timeSliceList.size(); i++) {
-                studyTimeDtoList.add(new StudyTimeDto(0,0,0));
-            }
+        for (int i = 0; i<4; i++) {
+            studyTimeDtoList.add(new StudyTimeDto(0,0,0));
+        }
+
+        for (StudyTimeSlice studyTimeSlice : timeSliceList) {
+            StudyTimeDto vo = StudyTimeDto.of(studyTimeSlice.getTotalTime());
+            studyTimeDtoList.set(indexMap.get(studyTimeSlice.getHour()),vo);
         }
 
         return studyTimeDtoList;

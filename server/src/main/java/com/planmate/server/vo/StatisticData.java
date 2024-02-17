@@ -107,10 +107,13 @@ public class StatisticData {
         Integer minute = nowDate.getMinute();
         Integer second = nowDate.getSecond();
 
-        Integer nowSecond = hour*3600 + minute*60 + second;
-        Integer nowRestTime = nowSecond - startAtSecond - totalStudySecond;
-
-        return getTime(nowRestTime);
+        if (totalStudySecond == 0) {
+            return getTime(0);
+        } else {
+            Integer nowSecond = hour*3600 + minute*60 + second;
+            Integer nowRestTime = nowSecond - startAtSecond - totalStudySecond;
+            return getTime(nowRestTime);
+        }
     }
 
     private static Time getTime(Integer inputSecond) {

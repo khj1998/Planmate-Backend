@@ -3,18 +3,13 @@ package com.planmate.server.domain;
 import com.planmate.server.dto.request.subject.SubjectCreateRequestDto;
 import com.planmate.server.dto.request.subject.SubjectTimeRequest;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.models.auth.In;
 import lombok.*;
-import org.joda.time.LocalDateTime;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import java.time.LocalDateTime;
 
 import javax.persistence.*;
 import java.sql.Time;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-
 @Entity
 @Table(name = "subject")
 @Getter
@@ -52,6 +47,12 @@ public class Subject {
 
     @Column(name = "end_at",columnDefinition = "datetime")
     private Time endAt;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     public static Subject of(SubjectCreateRequestDto subjectCreateRequestDto,Member member) {
         String colorHex;
@@ -138,8 +139,6 @@ public class Subject {
     }
 
     public void updateStartEndTime(SubjectTimeRequest subjectTimeRequest) {
-        Time firstTime = new Time(0,0,0);
-
         String[] startSplit = subjectTimeRequest.getStartAt().split(":");
         String[] endSplit = subjectTimeRequest.getEndAt().split(":");
 
@@ -150,7 +149,7 @@ public class Subject {
         Integer seconds;
 
         // DB에 시작시간과 끝 시간이 같으면 유저는 공부한 적이 없음. 시작시간과 끝시간 모두 업데이트 해야함.
-        if (this.endAt.getTime() == firstTime.getTime()) {
+        if (this.endAt.getTime() == this.getStartAt().getTime()) {
             hours = startTimeSecond/3600;
             minutes = (startTimeSecond - hours*3600)/60;
             seconds = startTimeSecond - hours*3600 - minutes*60;
@@ -163,23 +162,21 @@ public class Subject {
         } else { // 공부 시작한 기록이 있음. 공부 최종 종료 시간만 업데이트 진행.
             hours = endTimeSecond/3600;
             minutes = (endTimeSecond - hours*3600)/60;
-            seconds = endTimeSecond - hours*3600 - hours*60;
+            seconds = endTimeSecond - hours*3600 - minutes*60;
             this.endAt = new Time(hours,minutes,seconds);
         }
      }
 
-    public void updateRestTime(String startAt) {
-        String[] startSplit = startAt.split(":");
+    public void updateRestTime() {
+        Integer startTimeSecond = this.getStartAt().getHours()*3600 + this.getStartAt().getMinutes()*60 + this.getStartAt().getSeconds();
+        Integer endTimeSecond = this.getEndAt().getHours()*3600 + this.getEndAt().getMinutes()*60 + this.getEndAt().getSeconds();
+        Integer studyTimeSecond = this.getStudyTime().getHours()*3600 + this.getStudyTime().getMinutes()*60 + this.getStudyTime().getSeconds();
 
-        Integer nowStartSecond = Integer.parseInt(startSplit[0])*3600 + Integer.parseInt(startSplit[1])*60 + Integer.parseInt(startSplit[2]);
-        Integer lastEndSecond = this.getEndAt().getHours()*3600 + this.getEndAt().getMinutes()*60 + this.getEndAt().getSeconds();
-        Integer restSecond = this.getRestTime().getHours()*3600 + this.getRestTime().getMinutes()*60 + this.getRestTime().getSeconds();
-        Integer newRestSecond = restSecond + (nowStartSecond - lastEndSecond);
+        Integer totalRestTimeSecond = endTimeSecond - startTimeSecond - studyTimeSecond;
+        Integer restTimeHour = totalRestTimeSecond/3600;
+        Integer restTimeMinute = (totalRestTimeSecond - restTimeHour*3600) / 60;
+        Integer restTimeSecond = totalRestTimeSecond - restTimeHour*3600 - restTimeMinute*60;
 
-        Integer hours = newRestSecond/3600;
-        Integer minutes = (newRestSecond-hours*3600)/60;
-        Integer seconds = newRestSecond - 3600*hours - 60*minutes;
-
-        this.restTime = new Time(hours,minutes,seconds);
+        this.restTime = new Time(restTimeHour,restTimeMinute,restTimeSecond);
     }
 }

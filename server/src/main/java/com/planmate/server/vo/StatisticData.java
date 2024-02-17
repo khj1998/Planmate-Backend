@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +27,6 @@ public class StatisticData {
     public static StatisticData of(List<Subject> subjectList) {
         List<StudyTime> studyTimeList = new ArrayList<>();
         Integer totalStudySecond = 0;
-        Integer restSecond = 0;
         Integer maxStudySecond = 0;
         Integer startAtSecond = Integer.MAX_VALUE;
         Integer endAtSecond = 0;
@@ -41,7 +41,6 @@ public class StatisticData {
             studyTimeList.add(studyTime);
 
             totalStudySecond += getSecond(subject.getStudyTime());
-            restSecond += getSecond(subject.getRestTime());
             maxStudySecond = getMaxSecond(subject.getMaxStudyTime(),maxStudySecond);
             startAtSecond = getMinSecond(subject.getStartAt(),subject.getEndAt(),startAtSecond);
             endAtSecond = getMaxSecond(subject.getEndAt(),endAtSecond);
@@ -51,10 +50,12 @@ public class StatisticData {
             startAtSecond = 0;
         }
 
+        Time restTime = getRestTime(startAtSecond,totalStudySecond);
+
         return StatisticData.builder()
                 .studyTimeList(studyTimeList)
                 .totalStudyTime(getTime(totalStudySecond))
-                .restTime(getTime(restSecond))
+                .restTime(restTime)
                 .maxStudyTime(getTime(maxStudySecond))
                 .startAt(getTime(startAtSecond))
                 .endAt(getTime(endAtSecond))
@@ -98,6 +99,18 @@ public class StatisticData {
                 .startAt(getTime(startAtSecond))
                 .endAt(getTime(endAtSecond))
                 .build();
+    }
+
+    private static Time getRestTime(Integer startAtSecond,Integer totalStudySecond) {
+        LocalDateTime nowDate = LocalDateTime.now();
+        Integer hour = nowDate.getHour();
+        Integer minute = nowDate.getMinute();
+        Integer second = nowDate.getSecond();
+
+        Integer nowSecond = hour*3600 + minute*60 + second;
+        Integer nowRestTime = nowSecond - startAtSecond - totalStudySecond;
+
+        return getTime(nowRestTime);
     }
 
     private static Time getTime(Integer inputSecond) {

@@ -119,8 +119,8 @@ public class SubjectServiceImpl implements SubjectService {
                 .orElseThrow(() -> new SubjectNotFoundException(subjectTimeRequest.getSubjectId()));
 
         subject.updateStudyTime(subjectTimeRequest.getStartAt(),subjectTimeRequest.getEndAt());
-        subject.updateRestTime(subjectTimeRequest.getStartAt());
         subject.updateStartEndTime(subjectTimeRequest);
+        subject.updateRestTime();
 
         return modelMapper.map(subjectRepository.save(subject),SubjectResponse.class);
     }

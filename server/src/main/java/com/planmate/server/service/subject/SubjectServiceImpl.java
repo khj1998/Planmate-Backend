@@ -232,10 +232,12 @@ public class SubjectServiceImpl implements SubjectService {
         for (Member member : memberSubjectGroup.keySet()) {
             List<Subject> subjectList = memberSubjectGroup.get(member);
 
+            Integer hour = LocalDateTime.now().getHour() == 0 ? 24:LocalDateTime.now().getHour();
+
             StudyTimeSlice studyTimeSlice = StudyTimeSlice.builder()
                     .member(member)
                     .totalTime(getTotalStudyTime(subjectList))
-                    .hour(LocalDateTime.now().getHour())
+                    .hour(hour)
                     .build();
 
             studyTimeSliceList.add(studyTimeSlice);

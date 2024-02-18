@@ -1,4 +1,5 @@
 ## 플랜메이트 백엔드 서버입니다.
+서비스 URL : https://plan-mate.vercel.app/login
 
 ## 프로젝트 소개
 백엔드 개발 : 총 2인

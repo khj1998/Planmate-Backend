@@ -3,13 +3,16 @@ package com.planmate.server.service.member;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.planmate.server.domain.Authority;
+import com.planmate.server.domain.BannedEmail;
 import com.planmate.server.domain.Member;
 import com.planmate.server.domain.Token;
 import com.planmate.server.dto.request.login.GoogleLoginRequestDto;
 import com.planmate.server.dto.response.login.LoginResponseDto;
 import com.planmate.server.dto.response.member.MemberResponseDto;
+import com.planmate.server.exception.member.MemberBannedException;
 import com.planmate.server.exception.member.MemberNotFoundException;
 import com.planmate.server.exception.token.TokenNotFoundException;
+import com.planmate.server.repository.BannedEmailRepository;
 import com.planmate.server.repository.MemberRepository;
 import com.planmate.server.repository.TokenRepository;
 import com.planmate.server.util.JwtUtil;
@@ -36,6 +39,7 @@ import java.util.Optional;
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final TokenRepository tokenRepository;
+    private final BannedEmailRepository bannedEmailRepository;
 
     @Override
     @Transactional
@@ -53,6 +57,19 @@ public class MemberServiceImpl implements MemberService {
     public Member findMemberById(final Long id) throws MemberNotFoundException {
         return memberRepository.findById(id)
                 .orElseThrow(() -> new MemberNotFoundException(id));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void checkMember(Long id) throws MemberBannedException {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new MemberNotFoundException(id));
+
+        Optional<BannedEmail> bannedEmail = bannedEmailRepository.findByEmail(member.getEMail());
+
+        if (bannedEmail.isPresent()) {
+            throw new MemberBannedException(member.getEMail());
+        }
     }
 
     /**

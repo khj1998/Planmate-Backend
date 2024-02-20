@@ -12,4 +12,7 @@ import java.util.Optional;
 public interface MemberRepository extends JpaRepository<Member, Long> {
     @Query("select m from Member m where m.eMail = :email")
     Optional<Member> findByEmail(@Param("email") String email);
+
+    @Query("select m from Member m where m.memberName like %:memberName%")
+    Optional<Member> findByMemberName(@Param("memberName") String memberName);
 }

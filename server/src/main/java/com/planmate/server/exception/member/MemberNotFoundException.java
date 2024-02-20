@@ -17,4 +17,9 @@ public class MemberNotFoundException extends RuntimeException {
 
         this.message = id.toString();
     }
+
+    public MemberNotFoundException(String memberName) {
+        super(memberName);
+        this.message = memberName;
+    }
 }

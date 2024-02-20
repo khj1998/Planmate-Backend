@@ -3,6 +3,7 @@ package com.planmate.server.util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.planmate.server.domain.Member;
 import com.planmate.server.exception.ApiErrorResponse;
+import com.planmate.server.exception.member.MemberBannedException;
 import com.planmate.server.exception.member.MemberNotFoundException;
 import com.planmate.server.exception.token.TokenExpiredException;
 import com.planmate.server.service.member.MemberService;
@@ -39,11 +40,12 @@ public class JwtCustomFilter extends OncePerRequestFilter {
         String userRole = getUserRole(roleList);
 
         try {
-            Member member = memberService.findMemberById(JwtUtil.getUserIdByAccessToken());
+            Long memberId = JwtUtil.getUserIdByAccessToken();
+            memberService.checkMember(JwtUtil.getUserIdByAccessToken());
             tokenService.findExpiredToken(accessToken);
 
             UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(member.getMemberId(),null,
+                    new UsernamePasswordAuthenticationToken(memberId,null,
                             Collections.singleton(new SimpleGrantedAuthority(userRole)));
 
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
@@ -53,6 +55,8 @@ public class JwtCustomFilter extends OncePerRequestFilter {
             setExceptionResponse(response,HttpStatus.NOT_FOUND.value(), JwtUtil.getUserIdByAccessToken()+" member not found");
         } catch (TokenExpiredException ex) {
             setExceptionResponse(response,HttpStatus.UNAUTHORIZED.value(), accessToken + " already has been expired");
+        } catch (MemberBannedException ex) {
+            setExceptionResponse(response,HttpStatus.UNAUTHORIZED.value(), "This email has been banned!");
         }
     }
 

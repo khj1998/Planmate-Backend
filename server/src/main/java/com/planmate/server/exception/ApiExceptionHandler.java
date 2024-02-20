@@ -2,6 +2,7 @@ package com.planmate.server.exception;
 
 import com.planmate.server.exception.comment.CommentNotFoundException;
 import com.planmate.server.exception.converter.InvalidSubjectTypeException;
+import com.planmate.server.exception.member.MemberBannedException;
 import com.planmate.server.exception.member.MemberNotFoundException;
 import com.planmate.server.exception.notice.NoticeNotFoundException;
 import com.planmate.server.exception.planner.PlannerNotFoundException;
@@ -103,6 +104,12 @@ public class ApiExceptionHandler {
     @ExceptionHandler(TokenExpiredException.class)
     public ResponseEntity<ApiErrorResponse> handleException(TokenExpiredException ex) {
         ApiErrorResponse response = new ApiErrorResponse("ERROR-0018",ex.getMessage() + " token already has been expired");
+        return new ResponseEntity<>(response,HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(MemberBannedException.class)
+    public ResponseEntity<ApiErrorResponse> handleException(MemberBannedException ex) {
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0019",ex.getMessage() +" account has been banned");
         return new ResponseEntity<>(response,HttpStatus.UNAUTHORIZED);
     }
 }

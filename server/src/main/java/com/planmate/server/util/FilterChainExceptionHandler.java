@@ -44,7 +44,7 @@ public class FilterChainExceptionHandler extends OncePerRequestFilter {
     private void checkBearerHeader(HttpServletRequest request) throws AuthorizationHeaderException {
         String header = request.getHeader("Authorization");
 
-        if (!ObjectUtils.isEmpty(header) && header.startsWith("Bearer ")) {
+        if (ObjectUtils.isEmpty(header) || !header.startsWith("Bearer ")) {
             throw new AuthorizationHeaderException();
         }
     }

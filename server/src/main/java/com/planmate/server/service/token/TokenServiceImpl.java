@@ -53,10 +53,7 @@ public class TokenServiceImpl implements TokenService {
                 .orElseThrow(() -> new TokenNotFoundException(dto.getId()));
 
         token.updateAccessToken(JwtUtil.generateAccessToken(member));
-        token.updateAccessTokenExpiredAt(LocalDateTime.now().plusDays(JwtUtil.ACCESS_DURATION_DAYS));
-
         token.updateRefreshToken(JwtUtil.getExpiredRefreshToken(member));
-        token.updateRefreshTokenExpiredAt(LocalDateTime.now().plusDays(JwtUtil.REFRESH_DURATION_DAYS));
         tokenRepository.save(token);
 
         return modelMapper.map(token, ReissueTokenResponseDto.class);
@@ -78,10 +75,7 @@ public class TokenServiceImpl implements TokenService {
                 .orElseThrow(() -> new TokenNotFoundException(dto.getId()));
 
         token.updateAccessToken(JwtUtil.generateAdminAccessToken(member));
-        token.updateAccessTokenExpiredAt(LocalDateTime.now().plusDays(JwtUtil.ACCESS_DURATION_DAYS));
-
         token.updateRefreshToken(JwtUtil.generateAdminRefreshToken(member));
-        token.updateRefreshTokenExpiredAt(LocalDateTime.now().plusDays(JwtUtil.REFRESH_DURATION_DAYS));
         tokenRepository.save(token);
 
         return modelMapper.map(token, ReissueTokenResponseDto.class);

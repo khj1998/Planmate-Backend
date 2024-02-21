@@ -1,5 +1,6 @@
 package com.planmate.server.domain;
 
+import com.planmate.server.util.JwtUtil;
 import io.swagger.annotations.ApiModel;
 import lombok.*;
 
@@ -36,17 +37,11 @@ public class Token {
 
     public void updateAccessToken(String accessToken) {
         this.accessToken = accessToken;
+        this.accessTokenExpiredAt = LocalDateTime.now().plusDays(JwtUtil.ACCESS_DURATION_DAYS);
     }
 
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
-    }
-
-    public void updateAccessTokenExpiredAt(LocalDateTime accessTokenExpiredAt) {
-        this.accessTokenExpiredAt = accessTokenExpiredAt;
-    }
-
-    public void updateRefreshTokenExpiredAt(LocalDateTime refreshTokenExpiredAt) {
-        this.refreshTokenExpiredAt = refreshTokenExpiredAt;
+        this.refreshTokenExpiredAt = LocalDateTime.now().plusDays(JwtUtil.REFRESH_DURATION_DAYS);
     }
 }

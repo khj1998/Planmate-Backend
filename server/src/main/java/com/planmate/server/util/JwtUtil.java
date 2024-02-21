@@ -24,8 +24,8 @@ import java.util.*;
 @Generated
 public class JwtUtil {
     private static String JWT_SECRET_KEY;
-    public static final Long ACCESS_DURATION_DAYS = 365L;
-    public static final Long REFRESH_DURATION_DAYS = 365L;
+    public static final Long ACCESS_DURATION_DAYS = 3L;
+    public static final Long REFRESH_DURATION_DAYS = 14L;
     private static final Long ACCESS_DURATION_MILLIS = 3 * 24 * 60 * 60 * 1000L;
     private static final Long REFRESH_DURATION_MILLIS = 14 * 24 * 60 * 60 * 1000L;
 

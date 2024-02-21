@@ -13,4 +13,9 @@ public class TokenNotFoundException extends RuntimeException {
         super(id.toString());
         this.message = id.toString();
     }
+
+    public TokenNotFoundException(String token) {
+        super(token);
+        this.message = token;
+    }
 }

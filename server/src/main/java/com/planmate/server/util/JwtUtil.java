@@ -151,8 +151,8 @@ public class JwtUtil {
                 .compact();
     }
 
-    private static String getAccessTokenByRequest() {
-        String accessToken = null;
+    public static String getAccessTokenByRequest() {
+        String accessToken;
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 

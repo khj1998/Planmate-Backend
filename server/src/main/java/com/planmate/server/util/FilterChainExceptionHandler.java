@@ -2,6 +2,7 @@ package com.planmate.server.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.planmate.server.exception.ApiErrorResponse;
+import com.planmate.server.exception.token.AuthorizationHeaderException;
 import com.planmate.server.util.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -21,14 +22,10 @@ import java.io.IOException;
 public class FilterChainExceptionHandler extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String token = getAccessToken(request);
-
-        if (!isBearerHeader(request)) {
-            setExceptionResponse(response,HttpStatus.BAD_REQUEST.value(), "Authorization Header is not started with Bearer");
-            return;
-        }
 
         try {
+            checkBearerHeader(request);
+            String token = getAccessToken(request);
             JwtUtil.validateToken(token);
             filterChain.doFilter(request,response);
         } catch (ExpiredJwtException ex) {
@@ -39,12 +36,17 @@ public class FilterChainExceptionHandler extends OncePerRequestFilter {
             setExceptionResponse(response,HttpStatus.UNAUTHORIZED.value(),"unsupported token");
         } catch (SignatureException ex) {
             setExceptionResponse(response,HttpStatus.UNAUTHORIZED.value(),"signature is not valid");
+        } catch (AuthorizationHeaderException ex) {
+            setExceptionResponse(response,HttpStatus.BAD_REQUEST.value(), "Authorization Header is not started with Bearer");
         }
     }
 
-    private Boolean isBearerHeader(HttpServletRequest request) {
+    private void checkBearerHeader(HttpServletRequest request) throws AuthorizationHeaderException {
         String header = request.getHeader("Authorization");
-        return !ObjectUtils.isEmpty(header) && header.startsWith("Bearer ");
+
+        if (!ObjectUtils.isEmpty(header) && header.startsWith("Bearer ")) {
+            throw new AuthorizationHeaderException();
+        }
     }
 
     private String getAccessToken(HttpServletRequest request) {

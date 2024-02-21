@@ -22,18 +22,15 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class LogOutServiceImpl implements LogOutService{
     private final TokenRepository tokenRepository;
-    private final MemberRepository memberRepository;
     private final ExpiredTokenRepository expiredTokenRepository;
 
     @Override
     @Transactional
     public String logout() {
-        Member member = memberRepository.findById(JwtUtil.getUserIdByAccessToken())
-                .orElseThrow(() -> new MemberNotFoundException(JwtUtil.getUserIdByAccessToken()));
+        String accessToken = JwtUtil.getAccessTokenByRequest();
 
-        Token token = tokenRepository.findByTokenId(JwtUtil.getUserIdByAccessToken()).orElseThrow(
-                () -> new TokenNotFoundException(JwtUtil.getUserIdByAccessToken())
-        );
+        Token token = tokenRepository.findByAccessToken(accessToken)
+                .orElseThrow(() -> new TokenNotFoundException(accessToken));
 
         if (token.getAccessTokenExpiredAt().isAfter(LocalDateTime.now())) {
             ExpiredToken expiredToken = ExpiredToken.builder()
@@ -43,12 +40,6 @@ public class LogOutServiceImpl implements LogOutService{
 
             expiredTokenRepository.save(expiredToken);
         }
-
-        token.updateAccessToken(JwtUtil.getExpiredAccessToken(member));
-        token.updateAccessTokenExpiredAt(LocalDateTime.now().minusDays(JwtUtil.ACCESS_DURATION_DAYS));
-
-        token.updateRefreshToken(JwtUtil.getExpiredRefreshToken(member));
-        token.updateRefreshTokenExpiredAt(LocalDateTime.now().minusDays(JwtUtil.REFRESH_DURATION_DAYS));
 
         return tokenRepository.save(token).getAccessToken();
     }

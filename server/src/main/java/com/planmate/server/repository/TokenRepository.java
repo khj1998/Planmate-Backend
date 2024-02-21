@@ -12,6 +12,7 @@ import java.util.Optional;
 public interface TokenRepository extends JpaRepository<Token, Long> {
     @Query("select t from Token t where t.tokenId = :tokenId and t.accessToken  = :accessToken and t.refreshToken = :refreshToken")
     Optional<Token> findByAccessTokenAndRefreshToken(@Param("tokenId") Long tokenId,@Param("accessToken") String accessToken,@Param("refreshToken") String refreshToken);
+    Optional<Token> findByAccessToken(@Param("accessToken") String accessToken);
     Optional<Token> findByTokenId(Long tokenId);
     void deleteByTokenId(Long id);
 }

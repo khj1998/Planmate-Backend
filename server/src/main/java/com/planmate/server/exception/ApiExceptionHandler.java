@@ -31,7 +31,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(TokenNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleException(TokenNotFoundException ex) {
-        ApiErrorResponse response = new ApiErrorResponse("ERROR-0002","Member has invalid token : member " + ex.getMessage() + "번");
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0002","Token is not found: " + ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 

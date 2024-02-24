@@ -72,4 +72,14 @@ public class AdminController {
         noticeService.deleteNotice(noticeId);
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("/user/unban")
+    @ApiOperation("이메일로 요청받아 사용자 벤 해제")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200",description = "사용자 벤 해제 성공")
+    })
+    public ResponseEntity unbanMember(@RequestParam("email") String email) {
+        adminService.removeUserBan(email);
+        return ResponseEntity.ok().build();
+    }
 }

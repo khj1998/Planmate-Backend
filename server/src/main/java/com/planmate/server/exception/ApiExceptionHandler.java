@@ -2,6 +2,7 @@ package com.planmate.server.exception;
 
 import com.planmate.server.exception.comment.CommentNotFoundException;
 import com.planmate.server.exception.converter.InvalidSubjectTypeException;
+import com.planmate.server.exception.member.MemberBanNotFoundException;
 import com.planmate.server.exception.member.MemberBannedException;
 import com.planmate.server.exception.member.MemberNotFoundException;
 import com.planmate.server.exception.notice.NoticeNotFoundException;
@@ -111,5 +112,11 @@ public class ApiExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handleException(MemberBannedException ex) {
         ApiErrorResponse response = new ApiErrorResponse("ERROR-0019",ex.getMessage() +" account has been banned");
         return new ResponseEntity<>(response,HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(MemberBanNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleException(MemberBanNotFoundException ex) {
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0020",ex.getMessage() + " email has not been banned");
+        return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
     }
 }

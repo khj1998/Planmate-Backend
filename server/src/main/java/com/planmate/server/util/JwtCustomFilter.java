@@ -36,13 +36,11 @@ public class JwtCustomFilter extends OncePerRequestFilter {
     protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain) throws ServletException, IOException {
         String accessToken = getAccessToken(request);
 
-        List<String> roleList = JwtUtil.getRolesByAccessToken(accessToken);
-        String userRole = getUserRole(roleList);
-
         try {
-            Long memberId = JwtUtil.getUserIdByAccessToken();
-            memberService.checkMember(JwtUtil.getUserIdByAccessToken());
             tokenService.findExpiredToken(accessToken);
+            Long memberId = JwtUtil.getUserIdByAccessToken();
+            Member member = memberService.checkMember(memberId);
+            String userRole = member.getRole();
 
             UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(memberId,null,
@@ -76,13 +74,5 @@ public class JwtCustomFilter extends OncePerRequestFilter {
     private String getAccessToken(HttpServletRequest request) {
         String header = request.getHeader("Authorization");
         return header.split(" ")[1];
-    }
-
-    private String getUserRole(List<String> roleList) {
-        if (roleList.contains("ROLE_ADMIN")) {
-            return "ROLE_ADMIN";
-        }
-
-        return "ROLE_USER";
     }
 }

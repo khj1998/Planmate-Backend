@@ -46,15 +46,18 @@ public class Member {
     @ApiModelProperty(example = "사용자 권한 정보들")
     private List<Authority> authorities;
 
-    @Generated
-    public boolean hasRole(String role) {
+    public String getRole() {
+        String role = null;
+
         for(int i = 0; i < authorities.size(); i++) {
-            if(authorities.get(i).getRole().equals(role)) {
-                return true;
+            if(authorities.get(i).getAuthorityName().equals("ROLE_ADMIN")) {
+                role = "ROLE_ADMIN";
+            } else if (role == null && authorities.get(i).getAuthorityName().equals("ROLE_USER")) {
+                role = "ROLE_USER";
             }
         }
 
-        return false;
+        return role;
     }
 
     public void updateMemberName(String memberName) {

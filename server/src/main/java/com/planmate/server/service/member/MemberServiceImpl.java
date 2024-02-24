@@ -61,7 +61,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public void checkMember(Long id) throws MemberBannedException {
+    public Member checkMember(Long id) throws MemberBannedException {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new MemberNotFoundException(id));
 
@@ -70,6 +70,8 @@ public class MemberServiceImpl implements MemberService {
         if (bannedEmail.isPresent()) {
             throw new MemberBannedException(member.getEMail());
         }
+
+        return member;
     }
 
     /**

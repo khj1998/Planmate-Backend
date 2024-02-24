@@ -25,7 +25,7 @@ public class AdminServiceImpl implements AdminService {
         Member member = memberRepository.findByMemberName(dto.getNickname())
                 .orElseThrow(() -> new MemberNotFoundException(dto.getNickname()));
 
-        BannedEmail bannedEmail = modelMapper.map(member,BannedEmail.class);
+        BannedEmail bannedEmail = BannedEmail.of(member);
         bannedEmailRepository.save(bannedEmail);
 
         return modelMapper.map(member, MemberResponseDto.class);

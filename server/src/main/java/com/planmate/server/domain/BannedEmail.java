@@ -1,5 +1,7 @@
 package com.planmate.server.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -11,6 +13,8 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "banned_email")
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class BannedEmail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,4 +26,10 @@ public class BannedEmail {
 
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    public static BannedEmail of(Member member) {
+        return BannedEmail.builder()
+                .eMail(member.getEMail())
+                .build();
+    }
 }

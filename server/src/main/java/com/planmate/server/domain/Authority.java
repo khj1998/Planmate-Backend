@@ -20,18 +20,4 @@ public class Authority {
     @Column(name = "authority_name", columnDefinition = "varchar(512)")
     @ApiModelProperty(example = "ROLE_USER | ROLE_ADMIN")
     private String authorityName;
-
-    @Generated
-    public String getRole() {
-        if(authorityName.equals("ROLE_USER")) {
-            return "USER";
-        }
-        else if(authorityName.equals("ROLE_ADMIN")) {
-            return "ADMIN";
-        }
-        else
-        {
-            return "error";
-        }
-    }
 }

@@ -57,12 +57,12 @@ public class LoginController {
     /**
      * Todo
      * 프로덕션에서는 해당 엔드포인트 제거
-     */
+
     @PostMapping(value = "/admin")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "관리자 토큰 생성 응답")
     })
     public ResponseEntity<ReissueTokenResponseDto> createAdminToken(@RequestBody ReissueTokenRequestDto dto) {
         return ResponseEntity.ok(tokenService.createAdminToken(dto));
-    }
+    }*/
 }

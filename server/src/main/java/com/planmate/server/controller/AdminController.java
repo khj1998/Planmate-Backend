@@ -82,4 +82,13 @@ public class AdminController {
         adminService.removeUserBan(email);
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("/expired-token")
+    @ApiOperation("이전에 만료 처리한 토큰 중 만료된 토큰 삭제")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200",description = "만료된 토큰 제거 로직 정상 작동")
+    })
+    public ResponseEntity<Boolean> removeExpiredToken() {
+        return ResponseEntity.ok(adminService.removeExpiredToken());
+    }
 }

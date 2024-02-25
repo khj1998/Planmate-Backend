@@ -7,4 +7,5 @@ import com.planmate.server.dto.response.member.MemberResponseDto;
 public interface AdminService {
     MemberResponseDto banMember(MemberBanRequestDto dto);
     void removeUserBan(String email);
+    Boolean removeExpiredToken();
 }

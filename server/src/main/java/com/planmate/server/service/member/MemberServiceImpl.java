@@ -34,7 +34,6 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-@Generated
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;

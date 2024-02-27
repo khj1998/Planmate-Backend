@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
 @Getter
-@Generated
 public class MemberNotFoundException extends RuntimeException {
     private String message;
 

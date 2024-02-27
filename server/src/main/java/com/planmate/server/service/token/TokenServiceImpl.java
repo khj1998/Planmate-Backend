@@ -29,7 +29,6 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-@Generated
 @RequiredArgsConstructor
 public class TokenServiceImpl implements TokenService {
     @PersistenceContext

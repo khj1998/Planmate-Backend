@@ -6,7 +6,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Generated
 public class ReissueTokenRequestDto {
     private Long id;
     private String accessToken;

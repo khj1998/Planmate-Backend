@@ -24,7 +24,7 @@ spring:
 jwt:
   header: Bearer
   secret: ${JWT_SECRET}
-  #hs256 algorithm
+
 sns:
   google:
     url: https://accounts.google.com/o/oauth2/v2/auth

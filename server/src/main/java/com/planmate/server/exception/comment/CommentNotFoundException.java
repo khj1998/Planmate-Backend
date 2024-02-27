@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Getter
 @ResponseStatus(HttpStatus.NOT_FOUND)
-@Generated
 public class CommentNotFoundException extends RuntimeException {
     private String message;
 

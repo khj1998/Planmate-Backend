@@ -21,16 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class TimeController {
     private final SubjectService subjectService;
 
-    @PostMapping("/reset")
-    @ApiOperation("공부/운동 시간 리셋")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "공부/운동 시간 업데이트 성공")
-    })
-    public ResponseEntity<Boolean> resetTime() {
-        subjectService.backUpAndInit();
-        return ResponseEntity.ok(true);
-    }
-
     @GetMapping("/check")
     @ApiOperation("백업 데이터 확인")
     @ApiResponses({
@@ -38,14 +28,5 @@ public class TimeController {
     })
     public ResponseEntity<Integer> checkData() {
         return ResponseEntity.ok(subjectService.checkBackUpData());
-    }
-
-    @PostMapping("/slice/backup")
-    @ApiOperation("특정 시간까지의 총 공부 시간 백업")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "특정 시간까지 총 공부 시간 백업 성공")
-    })
-    public ResponseEntity<Boolean> backupTimeSlice() {
-        return ResponseEntity.ok(subjectService.backupTimeSlice());
     }
 }

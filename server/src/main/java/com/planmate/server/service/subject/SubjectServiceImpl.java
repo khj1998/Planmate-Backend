@@ -158,15 +158,13 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     @Transactional
-    public Boolean backupTimeSlice() {
+    public void backupTimeSlice() {
         List<Subject> subjectList = subjectRepository.findAll();
 
         HashMap<Member,List<Subject>> memberSubjectGroup = makeMemberSubjectGroup(subjectList);
         List<StudyTimeSlice> studyTimeSliceList = getStudyTimeSliceList(memberSubjectGroup);
 
         studyTimeSliceRepository.saveAll(studyTimeSliceList);
-
-        return true;
     }
 
     @Override

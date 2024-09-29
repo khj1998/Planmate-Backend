@@ -19,5 +19,5 @@ public interface SubjectService {
     void deleteSubject(Long subjectId);
     void backUpAndInit();
     Integer checkBackUpData();
-    Boolean backupTimeSlice();
+    void backupTimeSlice();
 }
